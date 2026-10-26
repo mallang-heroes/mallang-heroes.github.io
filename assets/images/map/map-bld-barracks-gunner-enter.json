@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "map-bld-barracks-gunner-enter-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 162
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-gunner-enter-1": {
+   "frame": {
+    "x": 199,
+    "y": 0,
+    "w": 199,
+    "h": 162
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-gunner-enter-2": {
+   "frame": {
+    "x": 398,
+    "y": 0,
+    "w": 199,
+    "h": 162
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  }
+ },
+ "animations": {
+  "enter": [
+   "map-bld-barracks-gunner-enter-0",
+   "map-bld-barracks-gunner-enter-1",
+   "map-bld-barracks-gunner-enter-2"
+  ]
+ },
+ "meta": {
+  "image": "map-bld-barracks-gunner-enter.png",
+  "scale": "2",
+  "fps": 12,
+  "board_size": {
+   "w": 94,
+   "h": 76
+  },
+  "foot_board": {
+   "x": 542,
+   "y": 372
+  }
+ }
+}

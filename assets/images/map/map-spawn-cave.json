@@ -1,0 +1,74 @@
+{
+ "frames": {
+  "map-spawn-cave-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 200
+   },
+   "duration": 166,
+   "anchor": {
+    "x": 0.4541,
+    "y": 0.712
+   }
+  },
+  "map-spawn-cave-1": {
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 300,
+    "h": 200
+   },
+   "duration": 166,
+   "anchor": {
+    "x": 0.4541,
+    "y": 0.712
+   }
+  },
+  "map-spawn-cave-2": {
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 300,
+    "h": 200
+   },
+   "duration": 166,
+   "anchor": {
+    "x": 0.4541,
+    "y": 0.712
+   }
+  },
+  "map-spawn-cave-3": {
+   "frame": {
+    "x": 900,
+    "y": 0,
+    "w": 300,
+    "h": 200
+   },
+   "duration": 166,
+   "anchor": {
+    "x": 0.4541,
+    "y": 0.712
+   }
+  }
+ },
+ "animations": {
+  "glow": [
+   "map-spawn-cave-0",
+   "map-spawn-cave-1",
+   "map-spawn-cave-2",
+   "map-spawn-cave-3"
+  ]
+ },
+ "meta": {
+  "image": "map-spawn-cave.png",
+  "scale": "2",
+  "fps": 6,
+  "anchor_board": {
+   "x": 1282.0,
+   "y": 104
+  },
+  "note": "anchor = 동굴 입구 바닥 가운데 = 갈림길 시작점"
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "map-bld-barracks-navy-enter-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 182
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-navy-enter-1": {
+   "frame": {
+    "x": 202,
+    "y": 0,
+    "w": 202,
+    "h": 182
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-navy-enter-2": {
+   "frame": {
+    "x": 404,
+    "y": 0,
+    "w": 202,
+    "h": 182
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  }
+ },
+ "animations": {
+  "enter": [
+   "map-bld-barracks-navy-enter-0",
+   "map-bld-barracks-navy-enter-1",
+   "map-bld-barracks-navy-enter-2"
+  ]
+ },
+ "meta": {
+  "image": "map-bld-barracks-navy-enter.png",
+  "scale": "2",
+  "fps": 12,
+  "board_size": {
+   "w": 96,
+   "h": 86
+  },
+  "foot_board": {
+   "x": 968,
+   "y": 372
+  }
+ }
+}

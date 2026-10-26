@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "map-bld-palace-enter-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 259
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-palace-enter-1": {
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 300,
+    "h": 259
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-palace-enter-2": {
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 300,
+    "h": 259
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  }
+ },
+ "animations": {
+  "enter": [
+   "map-bld-palace-enter-0",
+   "map-bld-palace-enter-1",
+   "map-bld-palace-enter-2"
+  ]
+ },
+ "meta": {
+  "image": "map-bld-palace-enter.png",
+  "scale": "2",
+  "fps": 12,
+  "board_size": {
+   "w": 142,
+   "h": 122
+  },
+  "foot_board": {
+   "x": 702,
+   "y": 432
+  }
+ }
+}

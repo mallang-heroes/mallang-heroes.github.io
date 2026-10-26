@@ -1,0 +1,113 @@
+{
+ "frames": {
+  "unit-spear-jangsu-attack-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 254,
+    "h": 192
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5039,
+    "y": 0.9792
+   }
+  },
+  "unit-spear-jangsu-attack-1": {
+   "frame": {
+    "x": 254,
+    "y": 0,
+    "w": 254,
+    "h": 192
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5039,
+    "y": 0.9792
+   }
+  },
+  "unit-spear-jangsu-attack-2": {
+   "frame": {
+    "x": 508,
+    "y": 0,
+    "w": 254,
+    "h": 192
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5039,
+    "y": 0.9792
+   }
+  },
+  "unit-spear-jangsu-attack-3": {
+   "frame": {
+    "x": 762,
+    "y": 0,
+    "w": 254,
+    "h": 192
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5039,
+    "y": 0.9792
+   },
+   "events": {
+    "hit": {
+     "x": 245.3,
+     "y": 116.7
+    }
+   }
+  },
+  "unit-spear-jangsu-attack-4": {
+   "frame": {
+    "x": 1016,
+    "y": 0,
+    "w": 254,
+    "h": 192
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5039,
+    "y": 0.9792
+   }
+  },
+  "unit-spear-jangsu-attack-5": {
+   "frame": {
+    "x": 1270,
+    "y": 0,
+    "w": 254,
+    "h": 192
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5039,
+    "y": 0.9792
+   }
+  }
+ },
+ "animations": {
+  "attack": [
+   "unit-spear-jangsu-attack-0",
+   "unit-spear-jangsu-attack-1",
+   "unit-spear-jangsu-attack-2",
+   "unit-spear-jangsu-attack-3",
+   "unit-spear-jangsu-attack-4",
+   "unit-spear-jangsu-attack-5"
+  ]
+ },
+ "meta": {
+  "image": "unit-spear-jangsu-attack.png",
+  "size": {
+   "w": 1524,
+   "h": 192
+  },
+  "scale": "2",
+  "fps": 12,
+  "board_frame": {
+   "w": 127,
+   "h": 96
+  },
+  "source": "Gemini parts sheet → cutout rig (tools/rig_spear.py)",
+  "note": "anchor = 발밑(하단 중앙에 가까운 점, 비율). 창이 몸 밖으로 나와 프레임이 72보다 넓음. events.hit = 창끝 타격점(@2x 프레임 픽셀). 좌우 반전 시 x' = w - x."
+ }
+}

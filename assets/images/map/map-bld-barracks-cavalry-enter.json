@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "map-bld-barracks-cavalry-enter-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 156
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-cavalry-enter-1": {
+   "frame": {
+    "x": 180,
+    "y": 0,
+    "w": 180,
+    "h": 156
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-cavalry-enter-2": {
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 180,
+    "h": 156
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  }
+ },
+ "animations": {
+  "enter": [
+   "map-bld-barracks-cavalry-enter-0",
+   "map-bld-barracks-cavalry-enter-1",
+   "map-bld-barracks-cavalry-enter-2"
+  ]
+ },
+ "meta": {
+  "image": "map-bld-barracks-cavalry-enter.png",
+  "scale": "2",
+  "fps": 12,
+  "board_size": {
+   "w": 85,
+   "h": 74
+  },
+  "foot_board": {
+   "x": 862,
+   "y": 372
+  }
+ }
+}

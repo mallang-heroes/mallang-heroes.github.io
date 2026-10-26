@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "map-bld-barracks-archer-enter-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 166
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-archer-enter-1": {
+   "frame": {
+    "x": 202,
+    "y": 0,
+    "w": 202,
+    "h": 166
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-archer-enter-2": {
+   "frame": {
+    "x": 404,
+    "y": 0,
+    "w": 202,
+    "h": 166
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  }
+ },
+ "animations": {
+  "enter": [
+   "map-bld-barracks-archer-enter-0",
+   "map-bld-barracks-archer-enter-1",
+   "map-bld-barracks-archer-enter-2"
+  ]
+ },
+ "meta": {
+  "image": "map-bld-barracks-archer-enter.png",
+  "scale": "2",
+  "fps": 12,
+  "board_size": {
+   "w": 96,
+   "h": 78
+  },
+  "foot_board": {
+   "x": 436,
+   "y": 372
+  }
+ }
+}

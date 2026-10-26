@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "map-bld-barracks-mystic-enter-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 172,
+    "h": 164
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-mystic-enter-1": {
+   "frame": {
+    "x": 172,
+    "y": 0,
+    "w": 172,
+    "h": 164
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  },
+  "map-bld-barracks-mystic-enter-2": {
+   "frame": {
+    "x": 344,
+    "y": 0,
+    "w": 172,
+    "h": 164
+   },
+   "duration": 80,
+   "anchor": {
+    "x": 0.5,
+    "y": 1.0
+   }
+  }
+ },
+ "animations": {
+  "enter": [
+   "map-bld-barracks-mystic-enter-0",
+   "map-bld-barracks-mystic-enter-1",
+   "map-bld-barracks-mystic-enter-2"
+  ]
+ },
+ "meta": {
+  "image": "map-bld-barracks-mystic-enter.png",
+  "scale": "2",
+  "fps": 12,
+  "board_size": {
+   "w": 81,
+   "h": 78
+  },
+  "foot_board": {
+   "x": 1074,
+   "y": 372
+  }
+ }
+}
