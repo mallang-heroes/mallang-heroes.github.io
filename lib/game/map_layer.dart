@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/painting.dart';
 
 import 'board.dart';
@@ -73,8 +74,8 @@ class SpawnCave extends PositionComponent with HasGameReference<MallangGame> {
   void render(Canvas canvas) => _sheet.draw(canvas, _sheet.frameAt(_t), game.map.cave);
 }
 
-/// 궁 (병사가 들어갈 때 들썩임).
-class Palace extends PositionComponent with HasGameReference<MallangGame> {
+/// 궁 (보급병이 나올 때 들썩임). 누르면 보급 설정 창.
+class Palace extends PositionComponent with TapCallbacks, HasGameReference<MallangGame> {
   Palace() : super(priority: 2);
 
   late Still _still;
@@ -82,6 +83,12 @@ class Palace extends PositionComponent with HasGameReference<MallangGame> {
   double _enterT = -1;
 
   void bounce() => _enterT = 0;
+
+  @override
+  bool containsLocalPoint(Vector2 point) => game.map.palace.rect.inflate(8).contains(point.toOffset());
+
+  @override
+  void onTapDown(TapDownEvent event) => game.openPalace();
 
   @override
   Future<void> onLoad() async {

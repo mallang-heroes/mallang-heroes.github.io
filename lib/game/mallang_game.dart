@@ -29,10 +29,10 @@ class MallangGame extends FlameGame {
   late final RoadTrack track;
   late final Palace palace;
 
-  /// 그림이 준비된 병과의 장수 그림.
-  final Map<String, UnitArt> unitArt = {};
+  /// 맵 유닛 그림: 병과 → [군졸, 정병, 군관, 장수] (그림이 없는 등급은 null).
+  final Map<String, List<UnitArt?>> fieldArt = {};
 
-  /// 막사 등급별 대기 시트 (군졸·정병·군관). 그림이 없는 병과는 없음.
+  /// 막사 창 등급별 대기 시트 (군졸·정병·군관·장수). 그림이 없는 병과는 없음.
   final Map<String, List<Sheet>> tierIdle = {};
 
   /// 보급병 걷기 시트 (군졸·정병·군관).
@@ -44,7 +44,14 @@ class MallangGame extends FlameGame {
   /// 몬스터 그림 (폴더 이름 → 그림). 못 불러온 종은 임시 말랑이로 그린다.
   final Map<String, MonsterArt> monsterArt = {};
   final Map<String, Barracks> barracks = {};
-  final List<General> generals = [];
+  final List<FieldUnit> units = [];
+
+  /// 병과별 보급 방향: true면 막사로, false면 맵에 소환 (궁에서 설정).
+  final Map<String, bool> supplyToBarracks = {for (final b in Rules.branches) b: false};
+
+  /// 상세 창이 열린 유닛 / 집기로 들고 있는 유닛.
+  FieldUnit? detailUnit;
+  FieldUnit? heldUnit;
 
   /// 화면(오버레이)이 다시 그려져야 할 때 올린다.
   final changes = ValueNotifier<int>(0);
@@ -74,9 +81,20 @@ class MallangGame extends FlameGame {
     camera.viewfinder.position = Vector2.zero();
     map = await MapData.load();
     track = RoadTrack(map);
-    // 슬라임 장수 그림이 있는 병과 (나머지는 코드로 그린 임시 슬라임)
+    // 맵 유닛 그림 (군졸·정병·군관: 대기·걷기 / 장수: 대기·공격, 걷기는 있으면)
     for (final b in Board.branches) {
       if (!slimeBranches.contains(b.key)) continue;
+      final arts = <UnitArt?>[];
+      final idles = <Sheet>[];
+      final walks = <Sheet>[];
+      for (final t in const ['gunjol', 'jeongbyeong', 'gungwan']) {
+        final dir = 'units/${b.key}/$t/unit-${b.key}-$t';
+        final idle = await Sheet.load(images, '$dir-idle.json');
+        final walk = await Sheet.load(images, '$dir-walk.json');
+        idles.add(idle);
+        walks.add(walk);
+        arts.add(UnitArt(idle, null, walk));
+      }
       final dir = 'units/${b.key}/jangsu/unit-${b.key}-jangsu';
       Sheet? walk;
       try {
@@ -84,23 +102,14 @@ class MallangGame extends FlameGame {
       } catch (_) {
         walk = null; // 장수 걷기 그림은 아직 없음
       }
-      unitArt[b.name] = UnitArt(
+      arts.add(UnitArt(
         await Sheet.load(images, '$dir-idle.json'),
         await Sheet.load(images, '$dir-attack.json'),
         walk,
-      );
-    }
-    // 막사 창에 보이는 군졸·정병·군관 대기 동작
-    for (final b in Board.branches) {
-      if (!slimeBranches.contains(b.key)) continue;
-      tierIdle[b.name] = [
-        for (final t in const ['gunjol', 'jeongbyeong', 'gungwan'])
-          await Sheet.load(images, 'units/${b.key}/$t/unit-${b.key}-$t-idle.json'),
-      ];
-      tierWalk[b.name] = [
-        for (final t in const ['gunjol', 'jeongbyeong', 'gungwan'])
-          await Sheet.load(images, 'units/${b.key}/$t/unit-${b.key}-$t-walk.json'),
-      ];
+      ));
+      fieldArt[b.name] = arts;
+      tierIdle[b.name] = [...idles, arts[3]!.idle];
+      tierWalk[b.name] = walks;
     }
     // 몬스터 12종 (스테이지별 일반·보스)
     for (var st = 0; st < monsterKinds.length; st++) {
@@ -122,6 +131,7 @@ class MallangGame extends FlameGame {
       barracks[b.name] = c;
       await world.add(c);
     }
+    await world.add(PlaceCatcher());
     await world.add(Hud());
     _startRound();
   }
@@ -131,17 +141,20 @@ class MallangGame extends FlameGame {
       m.removeFromParent();
     }
     monsters.clear();
-    for (final g in generals) {
-      g.removeFromParent();
+    for (final u in units) {
+      u.removeFromParent();
     }
+    units.clear();
     for (final w in walkers) {
       w.removeFromParent();
     }
     walkers.clear();
-    generals.clear();
     for (final b in barracks.values) {
-      b.counts.setAll(0, [0, 0, 0]);
+      b.counts.setAll(0, [0, 0, 0, 0]);
     }
+    detailUnit = null;
+    heldUnit = null;
+    overlays.removeAll(['detail', 'held', 'palace', 'barracks']);
     round = 0;
     kills = 0;
     silver = 0;
@@ -215,27 +228,60 @@ class MallangGame extends FlameGame {
 
   void _supply() {
     final got = Rules.supply(round, rng);
-    // 궁 문 앞에서 나와 각자 막사로 걸어간다 (도착해야 인원에 더해짐).
+    // 궁 문 앞에서 나와, 막사로 가거나(막사로) 막사 앞 빈자리로 간다(소환).
     final door = Offset(map.palace.foot.dx, map.palace.foot.dy - 4);
     palace.bounce();
     var i = 0;
     for (final (br, tier) in got) {
       final b = barracks[br]!;
-      final w = SupplyWalker(br, tier, door, Offset(b.position.x, b.position.y - 4), i * 0.18);
-      walkers.add(w);
-      world.add(w);
+      if (supplyToBarracks[br]!) {
+        final w = SupplyWalker(br, tier, door, b.door, i * 0.18);
+        walkers.add(w);
+        world.add(w);
+      } else {
+        _spawnUnit(br, tier, door, delay: i * 0.18);
+      }
       i++;
     }
   }
 
   void supplyArrived(SupplyWalker w) {
     walkers.remove(w);
-    final b = barracks[w.branch]!;
-    b.counts[w.tier]++;
+    _enterBarracks(w.branch, w.tier);
+  }
+
+  void _enterBarracks(String branch, int tier) {
+    final b = barracks[branch]!;
+    b.counts[tier]++;
     b.bounce();
-    world.add(FloatText('+1 ${Rules.tierNames[w.tier]}', b.position + Vector2(0, -b.size.y - 14),
+    world.add(FloatText('+1 ${Rules.tierNames[tier]}', b.position + Vector2(0, -b.size.y - 14),
         const Color(0xFFFFF4D6)));
     _changed();
+  }
+
+  /// [from]에서 나타나 해당 막사 앞 빈자리로 걸어가는 유닛을 만든다.
+  FieldUnit? _spawnUnit(String branch, int tier, Offset from, {double delay = 0}) {
+    final b = barracks[branch]!;
+    final spot = _nearestFree(Offset(b.position.x, b.position.y + 84), spacing: tier >= 3 ? 33 : 24);
+    if (spot == null) {
+      toast('맵에 자리가 없어서 $branch ${Rules.tierNames[tier]}이(가) 막사로 들어갔어요');
+      _enterBarracks(branch, tier);
+      return null;
+    }
+    final u = FieldUnit(branch, tier, Vector2(from.dx, from.dy), delay: delay);
+    units.add(u);
+    world.add(u);
+    u.moveTo(Vector2(spot.dx, spot.dy), run: false);
+    return u;
+  }
+
+  /// 막사로 돌아온 유닛이 문에 닿았을 때.
+  void unitEntered(FieldUnit u) {
+    units.remove(u);
+    u.removeFromParent();
+    if (detailUnit == u) closeDetail();
+    if (heldUnit == u) cancelHeld();
+    _enterBarracks(u.branch, u.tier);
   }
 
   void killMonster(Monster m) {
@@ -250,7 +296,7 @@ class MallangGame extends FlameGame {
   void _end(Phase p, String reason) {
     phase = p;
     endReason = reason;
-    overlays.remove('barracks');
+    overlays.removeAll(['barracks', 'detail', 'held', 'palace']);
     overlays.add('result');
     _changed();
   }
@@ -269,8 +315,9 @@ class MallangGame extends FlameGame {
     return inRange.take(n).toList();
   }
 
-  /// 배치 가능: 길 · 궁 · 막사 · 포탈 · 다른 장수 위가 아니어야 한다.
-  bool canPlace(Offset p, {General? except}) {
+  /// 배치 가능: 길 · 궁 · 막사 · 포탈 · 다른 유닛 위가 아니어야 한다.
+  bool canPlace(Offset p, {FieldUnit? except, double? spacing}) {
+    final me = spacing ?? except?.spacing ?? 33;
     if (p.dx < 44 || p.dx > Board.playWidth - 44 || p.dy < 48 || p.dy > Board.height - 40) return false;
     if (track.distanceToRoad(p) < map.roadWidth / 2 + 28) return false;
     // 건물: 그림 둘레 + 아래 이름표 자리
@@ -282,18 +329,19 @@ class MallangGame extends FlameGame {
       if (d.blocks && (d.foot - p).distance < 36) return false;
     }
     if ((p.dx - map.cave.dx).abs() < 80 && p.dy < map.cave.dy + 40) return false;
-    for (final g in generals) {
-      if (g != except && (g.restSpot.toOffset() - p).distance < 66) return false;
+    for (final u in units) {
+      if (u == except || u.returning) continue;
+      if ((u.restSpot.toOffset() - p).distance < me + u.spacing) return false;
     }
     return true;
   }
 
-  Offset? _nearestFree(Offset from) {
+  Offset? _nearestFree(Offset from, {double spacing = 33}) {
     for (var r = 0.0; r < 420; r += 12) {
       for (var a = 0; a < 360; a += 15) {
         final x = ((from.dx + r * math.cos(a * math.pi / 180)) / 12).roundToDouble() * 12;
         final y = ((from.dy + r * math.sin(a * math.pi / 180)) / 12).roundToDouble() * 12;
-        if (canPlace(Offset(x, y))) return Offset(x, y);
+        if (canPlace(Offset(x, y), spacing: spacing)) return Offset(x, y);
       }
     }
     return null;
@@ -308,6 +356,8 @@ class MallangGame extends FlameGame {
 
   void openBarracks(String branch) {
     if (phase != Phase.playing) return;
+    if (detailUnit != null) closeDetail();
+    overlays.remove('palace');
     selectedBranch = branch;
     overlays.add('barracks');
     _changed();
@@ -318,43 +368,174 @@ class MallangGame extends FlameGame {
     selectedBranch = null;
   }
 
-  /// 같은 병과 3명 → 무작위 병과의 다음 등급 1명.
-  void promote(String branch, int tier) {
+  /// 막사 + 맵에 있는 해당 병과·등급 수.
+  int countOf(String branch, int tier) =>
+      barracks[branch]!.counts[tier] +
+      units.where((u) => u.branch == branch && u.tier == tier && !u.returning).length;
+
+  int fieldCount(String branch, int tier) =>
+      units.where((u) => u.branch == branch && u.tier == tier && !u.returning).length;
+
+  bool canSummonGeneral(String branch) => [0, 1, 2].every((t) => countOf(branch, t) > 0);
+
+  /// 재료 1명 쓰기: 막사에 있으면 막사에서, 없으면 맵에서.
+  void _take(String branch, int tier) {
     final b = barracks[branch]!;
-    if (tier > 1 || b.counts[tier] < 3) return;
-    b.counts[tier] -= 3;
+    if (b.counts[tier] > 0) {
+      b.counts[tier]--;
+      return;
+    }
+    final u = units.firstWhere((u) => u.branch == branch && u.tier == tier && !u.returning);
+    units.remove(u);
+    u.removeFromParent();
+    if (detailUnit == u) closeDetail();
+    if (heldUnit == u) cancelHeld();
+  }
+
+  /// 새로 생긴 유닛: 그 병과 보급 설정이 '막사로'면 막사로, 아니면 막사 문에서 나와 맵으로.
+  void _deliver(String branch, int tier) {
+    if (supplyToBarracks[branch]!) {
+      _enterBarracks(branch, tier);
+    } else {
+      final b = barracks[branch]!;
+      b.bounce();
+      _spawnUnit(branch, tier, b.door);
+    }
+  }
+
+  /// 같은 병과 3명 → 무작위 병과의 다음 등급 1명 (막사·맵 재료 모두 사용).
+  void promote(String branch, int tier) {
+    if (tier > 1 || countOf(branch, tier) < 3) return;
+    for (var k = 0; k < 3; k++) {
+      _take(branch, tier);
+    }
     final to = Rules.branches[rng.nextInt(Rules.branches.length)];
-    barracks[to]!.counts[tier + 1]++;
+    _deliver(to, tier + 1);
     toast('$branch ${Rules.tierNames[tier]} 3명 → $to ${Rules.tierNames[tier + 1]}');
     _changed();
   }
 
-  /// 같은 병과 군관 + 정병 + 군졸 → 장수 (빈 자리에 자동 배치).
+  /// 같은 병과 군관 + 정병 + 군졸 → 장수 (막사 문에서 나와 막사 앞에 선다).
   void summonGeneral(String branch) {
-    final b = barracks[branch]!;
-    if (!b.canSummonGeneral) return;
-    // 막사 바로 앞(아래)에 나타난다. 끌어서 놓으면 그 자리까지 걸어간다.
-    final spot = _nearestFree(Offset(b.position.x, b.position.y + 84));
-    if (spot == null) {
-      toast('장수를 놓을 자리가 없어요');
-      return;
-    }
+    if (!canSummonGeneral(branch)) return;
     for (var t = 0; t < 3; t++) {
-      b.counts[t]--;
+      _take(branch, t);
     }
-    final g = General(branch, Vector2(spot.dx, spot.dy));
-    generals.add(g);
-    world.add(g);
+    final b = barracks[branch]!;
+    b.bounce();
+    _spawnUnit(branch, 3, b.door);
     toast('$branch 장수 소환! 끌어서 놓으면 그 자리로 걸어가요');
+    _changed();
+  }
+
+  /// 막사에서 1명 꺼내 맵으로.
+  void takeOut(String branch, int tier) {
+    final b = barracks[branch]!;
+    if (b.counts[tier] <= 0) return;
+    b.counts[tier]--;
+    b.bounce();
+    _spawnUnit(branch, tier, b.door);
     _changed();
   }
 
   void sell(String branch, int tier) {
     final b = barracks[branch]!;
-    if (b.counts[tier] <= 0) return;
+    if (tier > 2 || b.counts[tier] <= 0) return;
     b.counts[tier]--;
     silver += Rules.sellPrice[tier];
     toast('$branch ${Rules.tierNames[tier]} 판매 +${Rules.sellPrice[tier]}냥');
+    _changed();
+  }
+
+  // ── 유닛 상세 · 집기 · 궁 설정 ──
+
+  void openDetail(FieldUnit u) {
+    if (phase != Phase.playing) return;
+    if (heldUnit != null) {
+      placeUnit(heldUnit!, u.position.toOffset());
+      return;
+    }
+    detailUnit?.selected = false;
+    detailUnit = u;
+    u.selected = true;
+    overlays.remove('barracks');
+    overlays.remove('palace');
+    overlays.add('detail');
+    _changed();
+  }
+
+  void closeDetail() {
+    detailUnit?.selected = false;
+    detailUnit = null;
+    overlays.remove('detail');
+    _changed();
+  }
+
+  /// 상세 창 '집기': 놓을 곳을 누르면 그 자리로 이동.
+  void pickUp() {
+    final u = detailUnit;
+    if (u == null) return;
+    closeDetail();
+    heldUnit = u;
+    overlays.add('held');
+    _changed();
+  }
+
+  void cancelHeld() {
+    heldUnit = null;
+    overlays.remove('held');
+    _changed();
+  }
+
+  /// 상세 창 '막사로 보내기'.
+  void sendHome() {
+    final u = detailUnit;
+    if (u == null) return;
+    closeDetail();
+    u.sendHome();
+    _changed();
+  }
+
+  /// 유닛을 [p]로 옮긴다 (끌어 놓기 · 집기 공용). 못 놓는 곳이면 알림만.
+  void placeUnit(FieldUnit u, Offset p) {
+    final snapped = Offset((p.dx / 12).roundToDouble() * 12, (p.dy / 12).roundToDouble() * 12);
+    if (!canPlace(snapped, except: u)) {
+      toast('길 · 궁 · 막사 · 다른 유닛 위에는 놓을 수 없어요');
+      return;
+    }
+    if (heldUnit == u) cancelHeld();
+    if ((Vector2(snapped.dx, snapped.dy) - u.position).length < 2) return;
+    u.moveTo(Vector2(snapped.dx, snapped.dy));
+  }
+
+  /// 빈 땅을 눌렀을 때 (집기 중이면 그 자리로 옮김).
+  void tapGround(Offset p) {
+    final u = heldUnit;
+    if (u != null) placeUnit(u, p);
+  }
+
+  void openPalace() {
+    if (phase != Phase.playing) return;
+    if (detailUnit != null) closeDetail();
+    overlays.remove('barracks');
+    overlays.add('palace');
+    _changed();
+  }
+
+  void closePalace() {
+    overlays.remove('palace');
+    _changed();
+  }
+
+  void setSupply(String branch, bool toBarracks) {
+    supplyToBarracks[branch] = toBarracks;
+    _changed();
+  }
+
+  void setAllSupply(bool toBarracks) {
+    for (final b in Rules.branches) {
+      supplyToBarracks[b] = toBarracks;
+    }
     _changed();
   }
 

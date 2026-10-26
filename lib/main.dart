@@ -53,6 +53,9 @@ class _GameScreenState extends State<GameScreen> {
                 game: game,
                 overlayBuilderMap: {
                   'barracks': (context, g) => BarracksDialog(game: g),
+                  'detail': (context, g) => DetailDialog(game: g),
+                  'held': (context, g) => HeldBanner(game: g),
+                  'palace': (context, g) => PalaceDialog(game: g),
                   'result': (context, g) => ResultDialog(game: g),
                 },
               ),

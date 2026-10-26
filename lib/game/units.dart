@@ -43,7 +43,7 @@ void fireAt(MallangGame game, String branch, double power, Vector2 from, List<Mo
   }
 }
 
-/// 막사: 안에 있는 군졸·정병·군관은 사거리 없이 선두 몬스터를 친다.
+/// 막사: 보급병·돌아온 유닛을 보관하는 대기석 (막사 안 유닛은 공격하지 않음).
 class Barracks extends PositionComponent with TapCallbacks, HasGameReference<MallangGame> {
   Barracks(this.branch, BuildingSpot spot)
       : super(
@@ -54,22 +54,15 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
         );
 
   final String branch;
-  final List<int> counts = [0, 0, 0]; // 군졸, 정병, 군관
-  double _cool = 0;
+  final List<int> counts = [0, 0, 0, 0]; // 군졸, 정병, 군관, 장수
   late Still _still;
   late Sheet _enter;
   double _enterT = -1;
 
-  double get power {
-    var p = 0.0;
-    for (var t = 0; t < 3; t++) {
-      p += counts[t] * Rules.tierPower[t];
-    }
-    return p;
-  }
+  /// 문 앞 (보급병이 들어가고 유닛이 나오는 자리).
+  Offset get door => Offset(position.x, position.y - 4);
 
-  int get total => counts[0] + counts[1] + counts[2];
-  bool get canSummonGeneral => counts[0] > 0 && counts[1] > 0 && counts[2] > 0;
+  int get total => counts.fold(0, (a, n) => a + n);
 
   /// 병사가 들어올 때 건물이 들썩인다.
   void bounce() => _enterT = 0;
@@ -91,27 +84,20 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
       _enterT += dt;
       if (_enterT > _enter.duration) _enterT = -1;
     }
-    if (total == 0) return;
-    _cool -= dt;
-    if (_cool > 0) return;
-    final targets = game.leadMonsters(Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
-    if (targets.isEmpty) return;
-    _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(0));
-    fireAt(game, branch, power * Rules.barracksDamage * game.atkMul(0), position + Vector2(0, -size.y * 0.6), targets);
   }
 
   @override
   void onTapDown(TapDownEvent event) => game.openBarracks(branch);
 
-  /// 막사 아래 등급별 인원: 군졸(흰 옷) · 정병(병과색) · 군관(어두운 갑주·은 테).
+  /// 막사 아래 등급별 인원: 군졸(흰 옷) · 정병(병과색) · 군관(어두운 갑주·은 테) · 장수(금 테).
   void _tierCounts(Canvas canvas, Offset center) {
-    const r = 11.0;
-    const gap = 26.0;
-    final fills = [const Color(0xFFFFFFFF), branchColor(branch), const Color(0xFF4A4E54)];
-    final rims = [_ink, _ink, const Color(0xFFC9CED6)];
-    final inks = [_ink, const Color(0xFFFFFFFF), const Color(0xFFFFFFFF)];
-    for (var t = 0; t < 3; t++) {
-      final c = center + Offset((t - 1) * gap, 0);
+    const r = 10.5;
+    const gap = 24.0;
+    final fills = [const Color(0xFFFFFFFF), branchColor(branch), const Color(0xFF4A4E54), branchColor(branch)];
+    final rims = [_ink, _ink, const Color(0xFFC9CED6), const Color(0xFFF2C14E)];
+    final inks = [_ink, const Color(0xFFFFFFFF), const Color(0xFFFFFFFF), const Color(0xFFFFFFFF)];
+    for (var t = 0; t < 4; t++) {
+      final c = center + Offset((t - 1.5) * gap, 0);
       final empty = counts[t] == 0;
       canvas.drawCircle(c, r, Paint()..color = fills[t].withValues(alpha: empty ? 0.45 : 1));
       canvas.drawCircle(
@@ -119,14 +105,14 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
           r,
           Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = t == 2 ? 2 : 1.4
+            ..strokeWidth = t >= 2 ? 2.2 : 1.4
             ..color = rims[t].withValues(alpha: empty ? 0.4 : 1));
       final tp = TextPainter(
         text: TextSpan(
           text: '${counts[t]}',
           style: TextStyle(
               fontFamily: 'Pretendard',
-              fontSize: 13,
+              fontSize: 12.5,
               fontWeight: FontWeight.w700,
               color: inks[t].withValues(alpha: empty ? 0.5 : 1)),
         ),
@@ -145,9 +131,10 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
       _still.draw(canvas, foot);
     }
 
+    final toBarracks = game.supplyToBarracks[branch] ?? false;
     final tp = TextPainter(
       text: TextSpan(
-        text: branch,
+        text: toBarracks ? '$branch · 막사로' : branch,
         style: const TextStyle(
             fontFamily: 'Pretendard', fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFFFFFFFF)),
       ),
@@ -159,7 +146,7 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
         Paint()..color = branchColor(branch));
     tp.paint(canvas, c - Offset(tp.width / 2, tp.height / 2));
     _tierCounts(canvas, Offset(size.x / 2, size.y + 36));
-    if (canSummonGeneral) {
+    if (game.canSummonGeneral(branch)) {
       final dot = Offset(size.x - 4, 6);
       canvas.drawCircle(dot, 8, Paint()..color = const Color(0xFFF2C14E));
       canvas.drawCircle(
@@ -173,53 +160,86 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
   }
 }
 
-/// 맵에 놓인 장수. 끌어서 놓으면 그 자리까지 걸어가고(처음) / 뛰어가고(이후), 누르면 사거리가 보인다.
-class General extends PositionComponent
+/// 맵에 나와 싸우는 유닛 (군졸·정병·군관·장수).
+/// 끌거나 '집기'로 옮기면 그 자리까지 걸어가고(처음) / 뛰어가며(이후), 이동 중에는 공격하지 않는다.
+/// 누르면 상세 창이 열린다.
+class FieldUnit extends PositionComponent
     with TapCallbacks, DragCallbacks, HasGameReference<MallangGame> {
-  General(this.branch, Vector2 at)
-      : super(position: at, size: Vector2(72, 84), anchor: const Anchor(0.5, 0.85), priority: 8);
+  FieldUnit(this.branch, this.tier, Vector2 at, {double delay = 0})
+      : _wait = delay,
+        super(position: at, size: Vector2(72, 84), anchor: const Anchor(0.5, 0.85), priority: 8);
 
-  static const double walkSpeed = 160; // 소환 후 첫 자리로 걸어갈 때 (px/초)
-  static const double runSpeed = 240; // 자리를 옮길 때
+  static const double walkSpeed = 160; // 처음 자리 잡으러 갈 때 (px/초)
+  static const double runSpeed = 240; // 자리를 옮기거나 막사로 돌아갈 때
 
   final String branch;
-  bool showRange = false;
+  final int tier; // 0 군졸, 1 정병, 2 군관, 3 장수
+  bool selected = false;
+  double _wait; // 보급병: 출발 전 대기 (안 보임)
   double _cool = 0;
   double _t = 0;
   double _attackT = -1;
   bool _flip = false;
   bool _placedOnce = false;
 
+  /// 막사로 돌아가는 중 (공격 안 함, 도착하면 막사 인원이 됨).
+  bool returning = false;
+
   /// 공격 동작 중 무기를 내미는 프레임에서 쏠 대상 (그 프레임 전까지 대기).
   List<Monster>? _pending;
   double _releaseAt = 0;
 
-  /// 이동 중이면 목적지 (이동 중에는 공격하지 않음).
   Vector2? _target;
   double _speed = walkSpeed;
 
-  /// 끄는 중인 놓을 자리 미리보기.
   Vector2? _ghost;
   bool _ghostOk = true;
 
   bool get moving => _target != null;
+  bool get visible => _wait <= 0;
+  int get group => tier >= 3 ? 1 : 0; // 강화 묶음
+  String get title => '$branch ${Rules.tierNames[tier]}';
 
-  /// 다른 장수와 겹침을 판단할 자리 (이동 중이면 목적지).
+  /// 다른 유닛과 겹침을 판단할 자리 (이동 중이면 목적지).
   Vector2 get restSpot => _target ?? position;
 
-  /// 그림 리소스가 있는 병과는 시트로, 없으면 코드로 그린다.
-  UnitArt? get _art => game.unitArt[branch];
+  /// 겹치지 않게 비워 둘 반지름 (장수는 크게).
+  double get spacing => tier >= 3 ? 33 : 24;
+
+  UnitArt? get art => game.fieldArt[branch]?[tier];
 
   double get radius => Rules.rangeRadius(branch);
+  double get power => Rules.tierPower[tier] * game.atkMul(group);
+
+  /// [target]까지 이동. [run]이면 뛰어서.
+  void moveTo(Vector2 target, {bool? run}) {
+    _speed = (run ?? _placedOnce) ? runSpeed : walkSpeed;
+    _placedOnce = true;
+    _target = target.clone();
+    _attackT = -1;
+    _pending = null;
+  }
+
+  /// 막사로 돌아가기: 막사 문까지 뛰어가서 들어간다.
+  void sendHome() {
+    final door = game.barracks[branch]!.door;
+    returning = true;
+    selected = false;
+    moveTo(Vector2(door.dx, door.dy), run: true);
+  }
 
   @override
   void update(double dt) {
+    if (_wait > 0) {
+      _wait -= dt;
+      return;
+    }
     _t += dt;
-    final art = _art;
+    final a = art;
     if (_attackT >= 0) {
       _attackT += dt;
       if (_pending != null && _attackT >= _releaseAt) _release();
-      if (art == null || _attackT > art.attack.duration) _attackT = -1;
+      if (_attackT > (a?.attack?.duration ?? 0.18)) _attackT = -1;
     }
     final target = _target;
     if (target != null) {
@@ -228,27 +248,30 @@ class General extends PositionComponent
       if (d.length <= step) {
         position.setFrom(target);
         _target = null;
+        if (returning) game.unitEntered(this);
       } else {
         if (d.x.abs() > 1) _flip = d.x < 0;
         position += d.normalized() * step;
       }
       return;
     }
-    if (_ghost != null) return;
+    if (_ghost != null || returning) return;
     _cool -= dt;
     if (_cool > 0) return;
     final targets = game.monstersInRange(
         position, radius, Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
     if (targets.isEmpty) return;
-    _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(1));
+    _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(group));
     _flip = targets.first.position.x < position.x;
-    _attackT = 0;
-    if (art == null) {
-      fireAt(game, branch, Rules.tierPower[3] * game.atkMul(1), position + Vector2(0, -40), targets);
+    final atk = a?.attack;
+    if (atk == null) {
+      _attackT = 0.0001; // 짧게 앞으로 튀는 동작
+      fireAt(game, branch, power, position + Vector2(0, -24), targets);
       return;
     }
+    _attackT = 0;
     _pending = targets;
-    _releaseAt = _eventTime(art.attack);
+    _releaseAt = _eventTime(atk);
   }
 
   /// 공격 시트에서 타격점·발사 지점이 있는 프레임이 시작되는 시각.
@@ -265,15 +288,14 @@ class General extends PositionComponent
   void _release() {
     var targets = _pending!.where((m) => !m.dead && m.isMounted).toList();
     _pending = null;
-    final art = _art;
     if (targets.isEmpty) {
       targets = game.monstersInRange(position, radius, Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
       if (targets.isEmpty) return;
     }
-    final power = Rules.tierPower[3] * game.atkMul(1);
     SheetFrame? ev;
-    if (art != null) {
-      for (final f in art.attack.frames) {
+    final atk = art?.attack;
+    if (atk != null) {
+      for (final f in atk.frames) {
         if (f.hit != null || f.projectile != null) {
           ev = f;
           break;
@@ -295,9 +317,10 @@ class General extends PositionComponent
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
-    showRange = !showRange;
-  }
+  bool containsLocalPoint(Vector2 point) => visible && !returning && super.containsLocalPoint(point);
+
+  @override
+  void onTapUp(TapUpEvent event) => game.openDetail(this);
 
   @override
   void onDragStart(DragStartEvent event) {
@@ -322,17 +345,7 @@ class General extends PositionComponent
     _ghost = null;
     priority = 8;
     if (g == null) return;
-    final snapped = Vector2((g.x / 12).roundToDouble() * 12, (g.y / 12).roundToDouble() * 12);
-    if (!game.canPlace(snapped.toOffset(), except: this)) {
-      game.toast('길 · 궁 · 막사 · 다른 장수 위에는 놓을 수 없어요');
-      return;
-    }
-    if ((snapped - position).length < 2) return;
-    _speed = _placedOnce ? runSpeed : walkSpeed;
-    _placedOnce = true;
-    _target = snapped;
-    _attackT = -1;
-    _pending = null;
+    game.placeUnit(this, g.toOffset());
   }
 
   @override
@@ -363,31 +376,32 @@ class General extends PositionComponent
 
   @override
   void render(Canvas canvas) {
+    if (!visible) return;
     final ax = size.x / 2;
     final ay = size.y * 0.85;
     final color = branchColor(branch);
     final foot = Offset(ax, ay);
+    final a = art;
 
     // 끄는 중: 놓을 자리에 사거리와 흐린 모습
     final ghost = _ghost;
     if (ghost != null) {
       final gf = foot + (ghost - position).toOffset();
       _drawRange(canvas, gf, _ghostOk, color);
-      final art = _art;
-      if (art != null) {
+      if (a != null) {
         canvas.saveLayer(null, Paint()..color = const Color.fromRGBO(255, 255, 255, 0.45));
-        art.idle.draw(canvas, 0, gf, flip: _flip);
+        a.idle.draw(canvas, 0, gf, flip: _flip);
         canvas.restore();
       } else {
         canvas.drawCircle(gf.translate(0, -20), 18, Paint()..color = color.withValues(alpha: 0.4));
       }
-    } else if (showRange && !moving) {
+    } else if ((selected || game.heldUnit == this) && !moving) {
       _drawRange(canvas, foot, true, color);
     }
 
-    // 이동 중: 목적지 표시
+    // 이동 중: 목적지 표시 (막사로 돌아갈 때는 표시 안 함)
     final target = _target;
-    if (target != null) {
+    if (target != null && !returning) {
       final tf = foot + (target - position).toOffset();
       canvas.drawOval(Rect.fromCenter(center: tf, width: 34, height: 12),
           Paint()
@@ -396,24 +410,45 @@ class General extends PositionComponent
             ..color = color.withValues(alpha: 0.8));
     }
 
+    // 막사 문에 가까워지면 서서히 사라짐 (들어가는 모습)
+    var alpha = 1.0;
+    if (returning && target != null) {
+      final d = (target - position).length;
+      alpha = (d / 40).clamp(0.0, 1.0);
+    }
+    if (alpha < 1) canvas.saveLayer(null, Paint()..color = Color.fromRGBO(255, 255, 255, alpha));
+
+    // 집기 상태: 발밑에 금색 고리
+    if (game.heldUnit == this) {
+      canvas.drawOval(Rect.fromCenter(center: foot, width: 54, height: 18),
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 3
+            ..color = const Color(0xFFF2C14E));
+    }
+
     final hop = _hop;
-    final art = _art;
-    if (art != null) {
-      final walk = art.walk;
+    if (a != null) {
+      final walk = a.walk;
       final run = _speed >= runSpeed;
+      final atk = a.attack;
       if (moving && walk != null) {
         walk.draw(canvas, walk.frameAt(_t * (run ? 1.6 : 1)), foot, flip: _flip);
-      } else if (_attackT >= 0) {
-        art.attack.draw(canvas, art.attack.frameAt(_attackT, loop: false), foot, flip: _flip);
+      } else if (_attackT >= 0 && atk != null) {
+        atk.draw(canvas, atk.frameAt(_attackT, loop: false), foot, flip: _flip);
       } else {
-        art.idle.draw(canvas, art.idle.frameAt(_t), foot.translate(0, -hop), flip: _flip);
+        // 공격 시트가 없는 등급: 쏠 때 앞으로 살짝 튀어나옴
+        final lunge = (_attackT >= 0 && _attackT < 0.18) ? math.sin(_attackT / 0.18 * math.pi) * 5 : 0.0;
+        a.idle.draw(canvas, a.idle.frameAt(_t), foot.translate(_flip ? -lunge : lunge, -hop), flip: _flip);
       }
+      if (alpha < 1) canvas.restore();
       return;
     }
-    const notReady = false;
     canvas.save();
     canvas.translate(0, -hop);
-    canvas.saveLayer(null, Paint()..color = Color.fromRGBO(255, 255, 255, notReady ? 0.55 : 1));
+    final k = tier >= 3 ? 1.0 : 0.7;
+    canvas.translate(ax * (1 - k), ay * (1 - k));
+    canvas.scale(k);
     // 받침
     canvas.drawOval(Rect.fromCenter(center: Offset(ax, ay), width: 56, height: 14),
         Paint()..color = color.withValues(alpha: 0.55));
@@ -423,49 +458,38 @@ class General extends PositionComponent
       ..strokeJoin = StrokeJoin.round
       ..color = _ink;
     final bob = math.sin(_t * 4) * 1.5;
-    // 몸 (말랑한 방울)
     final body = Path()
       ..moveTo(ax - 22, ay - 2)
       ..quadraticBezierTo(ax - 26, ay - 40 + bob, ax, ay - 46 + bob)
       ..quadraticBezierTo(ax + 26, ay - 40 + bob, ax + 22, ay - 2)
       ..quadraticBezierTo(ax, ay + 3, ax - 22, ay - 2)
       ..close();
-    canvas.drawPath(body, Paint()..color = color);
+    canvas.drawPath(body, Paint()..color = tier == 0 ? const Color(0xFFF4F1EA) : color);
     canvas.drawPath(body, line);
-    // 얼굴
     canvas.drawCircle(Offset(ax + 6, ay - 26 + bob), 3, Paint()..color = _ink);
     canvas.drawCircle(Offset(ax + 16, ay - 26 + bob), 3, Paint()..color = _ink);
-    canvas.drawCircle(Offset(ax + 7, ay - 27 + bob), 1, Paint()..color = const Color(0xFFFFFFFF));
-    canvas.drawCircle(Offset(ax + 17, ay - 27 + bob), 1, Paint()..color = const Color(0xFFFFFFFF));
-    // 투구
-    final helm = Path()
-      ..moveTo(ax - 20, ay - 38 + bob)
-      ..quadraticBezierTo(ax, ay - 62 + bob, ax + 20, ay - 38 + bob)
-      ..close();
-    canvas.drawPath(helm, Paint()..color = const Color(0xFF5C6066));
-    canvas.drawPath(helm, line);
-    canvas.drawRect(Rect.fromLTWH(ax - 22, ay - 40 + bob, 44, 4), Paint()..color = const Color(0xFFE3C77A));
-    canvas.drawLine(Offset(ax, ay - 50 + bob), Offset(ax, ay - 64 + bob),
-        Paint()
-          ..strokeWidth = 3
-          ..color = const Color(0xFFC2483F));
+    if (tier >= 2) {
+      final helm = Path()
+        ..moveTo(ax - 20, ay - 38 + bob)
+        ..quadraticBezierTo(ax, ay - 62 + bob, ax + 20, ay - 38 + bob)
+        ..close();
+      canvas.drawPath(helm, Paint()..color = const Color(0xFF5C6066));
+      canvas.drawPath(helm, line);
+    }
     canvas.restore();
-    canvas.restore();
-
-    // 병과 이름
-    final tp = TextPainter(
-      text: TextSpan(
-        text: branch,
-        style: TextStyle(
-            fontFamily: 'Pretendard', fontSize: 12, fontWeight: FontWeight.w700, color: color),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    final chip = Rect.fromCenter(center: Offset(ax, ay + 9), width: tp.width + 10, height: tp.height);
-    canvas.drawRRect(RRect.fromRectAndRadius(chip, const Radius.circular(5)),
-        Paint()..color = const Color(0xEEFBF8F1));
-    tp.paint(canvas, Offset(ax - tp.width / 2, ay + 9 - tp.height / 2));
+    if (alpha < 1) canvas.restore();
   }
+}
+
+/// 빈 땅 누르기 (집기로 들고 있을 때만 받음).
+class PlaceCatcher extends PositionComponent with TapCallbacks, HasGameReference<MallangGame> {
+  PlaceCatcher() : super(size: Vector2(Board.playWidth, Board.height), priority: 1);
+
+  @override
+  bool containsLocalPoint(Vector2 point) => game.heldUnit != null && super.containsLocalPoint(point);
+
+  @override
+  void onTapUp(TapUpEvent event) => game.tapGround(event.localPosition.toOffset());
 }
 
 /// 투사체. [target]이 있으면 날아가는 동안 몬스터를 따라가고, 닿을 때 [onImpact]로 피해가 들어간다.
@@ -550,11 +574,13 @@ class FloatText extends PositionComponent {
   }
 }
 
-/// 병과 장수 그림 (대기·공격 시트).
+/// 맵 유닛 그림 (대기·공격·걷기 시트).
 class UnitArt {
   UnitArt(this.idle, this.attack, [this.walk]);
   final Sheet idle;
-  final Sheet attack;
+
+  /// 공격 시트 (군졸~군관은 아직 없음).
+  final Sheet? attack;
 
   /// 걷기 시트가 있으면 이동할 때 사용 (없으면 대기 그림으로 통통 뛰며 이동).
   final Sheet? walk;
