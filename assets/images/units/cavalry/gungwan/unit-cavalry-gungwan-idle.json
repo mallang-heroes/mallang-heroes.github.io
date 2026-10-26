@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-cavalry-gungwan-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 164
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4144,
+    "y": 0.9402
+   }
+  },
+  "unit-cavalry-gungwan-idle-1": {
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 144,
+    "h": 164
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4144,
+    "y": 0.9402
+   }
+  },
+  "unit-cavalry-gungwan-idle-2": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 144,
+    "h": 164
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4144,
+    "y": 0.9402
+   }
+  },
+  "unit-cavalry-gungwan-idle-3": {
+   "frame": {
+    "x": 432,
+    "y": 0,
+    "w": 144,
+    "h": 164
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4144,
+    "y": 0.9402
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-cavalry-gungwan-idle-0",
+   "unit-cavalry-gungwan-idle-1",
+   "unit-cavalry-gungwan-idle-2",
+   "unit-cavalry-gungwan-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-cavalry-gungwan-idle.png",
+  "size": {
+   "w": 576,
+   "h": 164
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 72,
+   "h": 82
+  },
+  "body_height": 76,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

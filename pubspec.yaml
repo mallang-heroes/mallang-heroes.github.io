@@ -28,6 +28,14 @@ flutter:
     - assets/images/units/gunner/jeongbyeong/
     - assets/images/units/gunner/gungwan/
     - assets/images/units/gunner/jangsu/
+    - assets/images/units/cavalry/gunjol/
+    - assets/images/units/cavalry/jeongbyeong/
+    - assets/images/units/cavalry/gungwan/
+    - assets/images/units/cavalry/jangsu/
+    - assets/images/units/navy/gunjol/
+    - assets/images/units/navy/jeongbyeong/
+    - assets/images/units/navy/gungwan/
+    - assets/images/units/navy/jangsu/
     - assets/images/monsters/mob-boar/
     - assets/images/monsters/boss-boar/
     - assets/images/monsters/mob-tiger/

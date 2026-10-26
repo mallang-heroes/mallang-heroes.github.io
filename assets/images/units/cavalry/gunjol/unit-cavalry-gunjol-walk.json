@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-cavalry-gunjol-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 142,
+    "h": 162
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4366,
+    "y": 0.9453
+   }
+  },
+  "unit-cavalry-gunjol-walk-1": {
+   "frame": {
+    "x": 142,
+    "y": 0,
+    "w": 142,
+    "h": 162
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4366,
+    "y": 0.9453
+   }
+  },
+  "unit-cavalry-gunjol-walk-2": {
+   "frame": {
+    "x": 284,
+    "y": 0,
+    "w": 142,
+    "h": 162
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4366,
+    "y": 0.9453
+   }
+  },
+  "unit-cavalry-gunjol-walk-3": {
+   "frame": {
+    "x": 426,
+    "y": 0,
+    "w": 142,
+    "h": 162
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4366,
+    "y": 0.9453
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-cavalry-gunjol-walk-0",
+   "unit-cavalry-gunjol-walk-1",
+   "unit-cavalry-gunjol-walk-2",
+   "unit-cavalry-gunjol-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-cavalry-gunjol-walk.png",
+  "size": {
+   "w": 568,
+   "h": 162
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 71,
+   "h": 81
+  },
+  "body_height": 64,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

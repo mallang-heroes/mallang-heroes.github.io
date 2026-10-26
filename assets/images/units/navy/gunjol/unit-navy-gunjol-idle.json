@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-navy-gunjol-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 112
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5389,
+    "y": 0.9173
+   }
+  },
+  "unit-navy-gunjol-idle-1": {
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 112
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5389,
+    "y": 0.9173
+   }
+  },
+  "unit-navy-gunjol-idle-2": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 112
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5389,
+    "y": 0.9173
+   }
+  },
+  "unit-navy-gunjol-idle-3": {
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 112
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5389,
+    "y": 0.9173
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-navy-gunjol-idle-0",
+   "unit-navy-gunjol-idle-1",
+   "unit-navy-gunjol-idle-2",
+   "unit-navy-gunjol-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-navy-gunjol-idle.png",
+  "size": {
+   "w": 480,
+   "h": 112
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 60,
+   "h": 56
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-cavalry-gunjol-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4338,
+    "y": 0.9319
+   }
+  },
+  "unit-cavalry-gunjol-idle-1": {
+   "frame": {
+    "x": 136,
+    "y": 0,
+    "w": 136,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4338,
+    "y": 0.9319
+   }
+  },
+  "unit-cavalry-gunjol-idle-2": {
+   "frame": {
+    "x": 272,
+    "y": 0,
+    "w": 136,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4338,
+    "y": 0.9319
+   }
+  },
+  "unit-cavalry-gunjol-idle-3": {
+   "frame": {
+    "x": 408,
+    "y": 0,
+    "w": 136,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4338,
+    "y": 0.9319
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-cavalry-gunjol-idle-0",
+   "unit-cavalry-gunjol-idle-1",
+   "unit-cavalry-gunjol-idle-2",
+   "unit-cavalry-gunjol-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-cavalry-gunjol-idle.png",
+  "size": {
+   "w": 544,
+   "h": 140
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 68,
+   "h": 70
+  },
+  "body_height": 64,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

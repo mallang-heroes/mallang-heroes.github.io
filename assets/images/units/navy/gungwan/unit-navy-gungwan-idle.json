@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-navy-gungwan-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 106,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4953,
+    "y": 0.9253
+   }
+  },
+  "unit-navy-gungwan-idle-1": {
+   "frame": {
+    "x": 106,
+    "y": 0,
+    "w": 106,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4953,
+    "y": 0.9253
+   }
+  },
+  "unit-navy-gungwan-idle-2": {
+   "frame": {
+    "x": 212,
+    "y": 0,
+    "w": 106,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4953,
+    "y": 0.9253
+   }
+  },
+  "unit-navy-gungwan-idle-3": {
+   "frame": {
+    "x": 318,
+    "y": 0,
+    "w": 106,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4953,
+    "y": 0.9253
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-navy-gungwan-idle-0",
+   "unit-navy-gungwan-idle-1",
+   "unit-navy-gungwan-idle-2",
+   "unit-navy-gungwan-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-navy-gungwan-idle.png",
+  "size": {
+   "w": 424,
+   "h": 132
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 53,
+   "h": 66
+  },
+  "body_height": 60,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}
