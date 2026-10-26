@@ -31,6 +31,9 @@ class MallangGame extends FlameGame {
 
   /// 그림이 준비된 병과의 장수 그림.
   final Map<String, UnitArt> unitArt = {};
+
+  /// 막사 등급별 대기 시트 (군졸·정병·군관). 그림이 없는 병과는 없음.
+  final Map<String, List<Sheet>> tierIdle = {};
   final rng = math.Random();
   final List<Monster> monsters = [];
   final Map<String, Barracks> barracks = {};
@@ -72,6 +75,14 @@ class MallangGame extends FlameGame {
         await Sheet.load(images, '$dir-idle.json'),
         await Sheet.load(images, '$dir-attack.json'),
       );
+    }
+    // 막사 창에 보이는 군졸·정병·군관 대기 동작
+    for (final b in Board.branches) {
+      if (!slimeBranches.contains(b.key)) continue;
+      tierIdle[b.name] = [
+        for (final t in const ['gunjol', 'jeongbyeong', 'gungwan'])
+          await Sheet.load(images, 'units/${b.key}/$t/unit-${b.key}-$t-idle.json'),
+      ];
     }
     await world.add(MapLayer());
     await world.add(SpawnCave());
