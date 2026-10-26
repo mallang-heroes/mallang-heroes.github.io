@@ -8,7 +8,7 @@
 |---|---|
 | `art/source/gemini/` | 제미나이 원본 (맵 4장 + 배치 가이드, 창병 장수 기준 그림·파츠 시트와 잘라 낸 파츠, `monsters/` 몬스터 시안·표정·조각) |
 | `art/tools/map/` | `build_map.py` — 배경 정리·길 중심선 추출, 장식·건물·동굴 추출과 배치 |
-| `art/tools/monster/` | `build_monsters.py`(몬스터 시안 → 다리·꼬리 리깅, 표정 교체, 걷기·피격·쓰러짐·보스 등장 시트), `preview_road.py`(길 위 걷기 GIF) |
+| `art/tools/monster/` | `build_monsters.py`(몬스터 시안 → 다리·꼬리 리깅, 표정 교체, 걷기·피격·쓰러짐·보스 등장 시트), `preview_road.py`(길 위 걷기 GIF), `build_aura.py`(좀비가 된 왕 기운) |
 | `art/tools/rig/` | `extract.py`(배경 제거·파츠 분리), `rig_spear.py`(창병 장수 리깅·애니메이션), `preview.py`(미리보기) |
 | `art/docs/` | 제미나이 프롬프트(캐릭터·맵), 진행 현황, 이전 프롬프트 |
 | `art/preview/` | 확인용 이미지·GIF (게임에는 안 씀) |

@@ -40,6 +40,9 @@ class MallangGame extends FlameGame {
   final List<SupplyWalker> walkers = [];
   final rng = math.Random();
   final List<Monster> monsters = [];
+
+  /// 몬스터 그림 (폴더 이름 → 그림). 못 불러온 종은 임시 말랑이로 그린다.
+  final Map<String, MonsterArt> monsterArt = {};
   final Map<String, Barracks> barracks = {};
   final List<General> generals = [];
 
@@ -98,6 +101,17 @@ class MallangGame extends FlameGame {
         for (final t in const ['gunjol', 'jeongbyeong', 'gungwan'])
           await Sheet.load(images, 'units/${b.key}/$t/unit-${b.key}-$t-walk.json'),
       ];
+    }
+    // 몬스터 12종 (스테이지별 일반·보스)
+    for (var st = 0; st < monsterKinds.length; st++) {
+      for (final isBoss in const [false, true]) {
+        final key = monsterKey(st, isBoss);
+        try {
+          monsterArt[key] = await MonsterArt.load(images, key);
+        } catch (e) {
+          debugPrint('몬스터 그림을 못 불러옴: $key ($e)');
+        }
+      }
     }
     await world.add(MapLayer());
     await world.add(SpawnCave());
@@ -227,6 +241,8 @@ class MallangGame extends FlameGame {
   void killMonster(Monster m) {
     monsters.remove(m);
     m.removeFromParent();
+    final fx = m.deathEffect();
+    if (fx != null) world.add(fx);
     kills++;
     silver += Rules.silverPerKill[Rules.stage(m.round)];
   }

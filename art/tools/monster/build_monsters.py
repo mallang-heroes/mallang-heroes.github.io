@@ -78,10 +78,10 @@ MONSTERS = {
                        legs=TIGER_LEGS, tail=("poly", TIGER_TAIL, (166, 492)),
                        head=(610, 180, 960, 600), swing=12),
     "mob-gumiho": dict(code="m5", file="m5-fox", key="green", boss=False, base="ref",
-                       legs=FOX_LEGS["mob-gumiho"], tail=("outside", FOX_BODY["mob-gumiho"], (430, 600)),
+                       legs=FOX_LEGS["mob-gumiho"], tail=("outside", FOX_BODY["mob-gumiho"], (430, 600)), tail_flames=True,
                        head=(628, 312, 912, 618), swing=16, body_width=600),
     "boss-gumiho": dict(code="m6", file="m6-boss-fox", key="green", boss=True, base="ref",
-                        legs=FOX_LEGS["boss-gumiho"], tail=("outside", FOX_BODY["boss-gumiho"], (430, 610)),
+                        legs=FOX_LEGS["boss-gumiho"], tail=("outside", FOX_BODY["boss-gumiho"], (430, 610)), tail_flames=True,
                         head=(676, 282, 944, 604), swing=13, body_width=620),
     "mob-dokkaebi": dict(code="m7", file="m7-dokkaebi", key="magenta", boss=False, base="ref", legs_behind=True,
                          legs=[("back_leg", [(285, 772), (502, 772), (482, 862), (445, 952), (262, 952), (262, 800)], 0.0, "far"),
@@ -371,6 +371,12 @@ def build_rig(name, cfg):
             tmask = (pm if kind == "poly" else ~pm) & alpha & body_mask
             body_mask &= ~tmask
             tail = dict(img=with_alpha(whole, tmask), pivot=pivot)
+            if cfg.get("tail_flames"):
+                t = tail["img"].astype(int)
+                fl = (t[..., 3] > 0) & (t[..., 2] - t[..., 0] > 28) & (t[..., 1] > t[..., 0])
+                fl = ndimage.binary_dilation(ndimage.binary_opening(fl, iterations=2), iterations=3) & (t[..., 3] > 0)
+                tail["flame"] = with_alpha(tail["img"], fl)
+                tail["img"] = with_alpha(tail["img"], ~fl)
         else:
             tail = dict(img=np.zeros_like(whole), pivot=(0, 0))
         body = with_alpha(whole, body_mask)
@@ -463,6 +469,12 @@ def pose(rig, t, face="normal", swing=None, tail_amp=None, bob=0.0, tilt=0.0):
     order = [l for l in rig["legs"] if l["side"] == "far"]
     fl = int(round(lift)) if cfg.get("float") else 0
     canvas.alpha_composite(rot_layer(rig["tail"]["img"], rig["tail"]["pivot"], tail_deg), (0, fl))
+    if "flame" in rig["tail"]:
+        # 여우불: 꼬리를 따라가되 더 빠르게 일렁이고 밝기가 숨 쉬듯 바뀜
+        f = rot_layer(rig["tail"]["flame"], rig["tail"]["pivot"], tail_deg + 2.2 * math.sin(2 * math.pi * 2 * t))
+        a = np.asarray(f).astype(np.float32)
+        a[..., 3] *= 0.82 + 0.18 * (0.5 + 0.5 * math.sin(2 * math.pi * 3 * t + 1))
+        canvas.alpha_composite(Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA"), (0, int(round(-3 * abs(math.sin(2 * math.pi * 2 * t))))))
     for l in order:
         canvas.alpha_composite(rot_layer(l["img"], l["pivot"], A * math.sin(2 * math.pi * (t + l["phase"]))))
     body = Image.fromarray(rig["bodies"][face], "RGBA")
