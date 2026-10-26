@@ -64,10 +64,15 @@ class MallangGame extends FlameGame {
     camera.viewfinder.position = Vector2.zero();
     map = await MapData.load();
     track = RoadTrack(map);
-    unitArt['창병'] = UnitArt(
-      await Sheet.load(images, 'units/spear/jangsu/unit-spear-jangsu-idle.json'),
-      await Sheet.load(images, 'units/spear/jangsu/unit-spear-jangsu-attack.json'),
-    );
+    // 슬라임 장수 그림이 있는 병과 (나머지는 코드로 그린 임시 슬라임)
+    for (final b in Board.branches) {
+      if (!slimeBranches.contains(b.key)) continue;
+      final dir = 'units/${b.key}/jangsu/unit-${b.key}-jangsu';
+      unitArt[b.name] = UnitArt(
+        await Sheet.load(images, '$dir-idle.json'),
+        await Sheet.load(images, '$dir-attack.json'),
+      );
+    }
     await world.add(MapLayer());
     await world.add(SpawnCave());
     palace = Palace();

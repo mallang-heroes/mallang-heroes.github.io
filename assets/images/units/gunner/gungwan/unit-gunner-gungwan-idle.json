@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-gunner-gungwan-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4183,
+    "y": 0.9263
+   }
+  },
+  "unit-gunner-gungwan-idle-1": {
+   "frame": {
+    "x": 104,
+    "y": 0,
+    "w": 104,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4183,
+    "y": 0.9263
+   }
+  },
+  "unit-gunner-gungwan-idle-2": {
+   "frame": {
+    "x": 208,
+    "y": 0,
+    "w": 104,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4183,
+    "y": 0.9263
+   }
+  },
+  "unit-gunner-gungwan-idle-3": {
+   "frame": {
+    "x": 312,
+    "y": 0,
+    "w": 104,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4183,
+    "y": 0.9263
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-gunner-gungwan-idle-0",
+   "unit-gunner-gungwan-idle-1",
+   "unit-gunner-gungwan-idle-2",
+   "unit-gunner-gungwan-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-gunner-gungwan-idle.png",
+  "size": {
+   "w": 416,
+   "h": 132
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 52,
+   "h": 66
+  },
+  "body_height": 60,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

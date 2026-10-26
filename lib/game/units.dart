@@ -14,6 +14,17 @@ const _ink = Color(0xFF2A211C);
 
 Color branchColor(String branch) => Board.branch(branch).color;
 
+/// 슬라임 그림이 준비된 병과 (assets/images/units/<key>/<tier>/).
+const slimeBranches = {'spear', 'archer', 'gunner'};
+
+/// 막사 등급 그림 경로 (없으면 null).
+String? tierImagePath(String branch, int tier) {
+  final key = Board.branch(branch).key;
+  if (!slimeBranches.contains(key)) return null;
+  const tiers = ['gunjol', 'jeongbyeong', 'gungwan', 'jangsu'];
+  return 'assets/images/units/$key/${tiers[tier]}/unit-$key-${tiers[tier]}.png';
+}
+
 /// 한 번 공격: 대상 고르기 → 피해 → 투사체 그림.
 void fireAt(MallangGame game, String branch, double power, Vector2 from, List<Monster> targets,
     {bool shot = true, bool melee = false}) {

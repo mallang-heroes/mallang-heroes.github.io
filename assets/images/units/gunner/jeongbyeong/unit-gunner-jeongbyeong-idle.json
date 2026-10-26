@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-gunner-jeongbyeong-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 114,
+    "h": 120
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9189
+   }
+  },
+  "unit-gunner-jeongbyeong-idle-1": {
+   "frame": {
+    "x": 114,
+    "y": 0,
+    "w": 114,
+    "h": 120
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9189
+   }
+  },
+  "unit-gunner-jeongbyeong-idle-2": {
+   "frame": {
+    "x": 228,
+    "y": 0,
+    "w": 114,
+    "h": 120
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9189
+   }
+  },
+  "unit-gunner-jeongbyeong-idle-3": {
+   "frame": {
+    "x": 342,
+    "y": 0,
+    "w": 114,
+    "h": 120
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9189
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-gunner-jeongbyeong-idle-0",
+   "unit-gunner-jeongbyeong-idle-1",
+   "unit-gunner-jeongbyeong-idle-2",
+   "unit-gunner-jeongbyeong-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-gunner-jeongbyeong-idle.png",
+  "size": {
+   "w": 456,
+   "h": 120
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 57,
+   "h": 60
+  },
+  "body_height": 54,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

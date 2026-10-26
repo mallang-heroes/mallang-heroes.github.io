@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-archer-gunjol-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 100,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5183,
+    "y": 0.9306
+   }
+  },
+  "unit-archer-gunjol-walk-1": {
+   "frame": {
+    "x": 100,
+    "y": 0,
+    "w": 100,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5183,
+    "y": 0.9306
+   }
+  },
+  "unit-archer-gunjol-walk-2": {
+   "frame": {
+    "x": 200,
+    "y": 0,
+    "w": 100,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5183,
+    "y": 0.9306
+   }
+  },
+  "unit-archer-gunjol-walk-3": {
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 100,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5183,
+    "y": 0.9306
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-archer-gunjol-walk-0",
+   "unit-archer-gunjol-walk-1",
+   "unit-archer-gunjol-walk-2",
+   "unit-archer-gunjol-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-archer-gunjol-walk.png",
+  "size": {
+   "w": 400,
+   "h": 122
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 50,
+   "h": 61
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}
