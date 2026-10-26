@@ -1,0 +1,14 @@
+{
+  "name": "말랑영웅전",
+  "short_name": "말랑영웅전",
+  "start_url": ".",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#3E4A2E",
+  "theme_color": "#3E4A2E",
+  "description": "한국 위인 랜덤 디펜스",
+  "icons": [
+    {"src": "icons/Icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/Icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

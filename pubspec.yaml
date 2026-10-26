@@ -1,0 +1,22 @@
+name: mallang_heroes
+description: 말랑영웅전 — 한국 위인 랜덤 디펜스
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.18.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Regular.otf
+          weight: 400
+        - asset: assets/fonts/Pretendard-Bold.otf
+          weight: 700
