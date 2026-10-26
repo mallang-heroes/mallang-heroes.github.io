@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-spear-gunjol-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.533,
+    "y": 0.9058
+   }
+  },
+  "unit-spear-gunjol-idle-1": {
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 96,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.533,
+    "y": 0.9058
+   }
+  },
+  "unit-spear-gunjol-idle-2": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 96,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.533,
+    "y": 0.9058
+   }
+  },
+  "unit-spear-gunjol-idle-3": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 96,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.533,
+    "y": 0.9058
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-spear-gunjol-idle-0",
+   "unit-spear-gunjol-idle-1",
+   "unit-spear-gunjol-idle-2",
+   "unit-spear-gunjol-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-spear-gunjol-idle.png",
+  "size": {
+   "w": 384,
+   "h": 104
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 48,
+   "h": 52
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

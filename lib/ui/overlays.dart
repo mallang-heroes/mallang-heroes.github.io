@@ -63,6 +63,7 @@ class BarracksDialog extends StatelessWidget {
                             for (var t = 0; t < 3; t++)
                               Expanded(
                                 child: _TierCell(
+                                  image: tierImagePath(br, t),
                                   name: Rules.tierNames[t],
                                   count: b.counts[t],
                                   color: color,
@@ -105,6 +106,7 @@ class BarracksDialog extends StatelessWidget {
 
 class _TierCell extends StatelessWidget {
   const _TierCell({
+    this.image,
     required this.name,
     required this.count,
     required this.color,
@@ -115,6 +117,7 @@ class _TierCell extends StatelessWidget {
     required this.onSell,
   });
 
+  final String? image;
   final String name;
   final int count;
   final Color color;
@@ -130,6 +133,14 @@ class _TierCell extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Column(
         children: [
+          if (image != null)
+            SizedBox(
+              height: 64,
+              child: Opacity(
+                opacity: count > 0 ? 1 : 0.45,
+                child: Image.asset(image!, fit: BoxFit.contain, filterQuality: FilterQuality.medium),
+              ),
+            ),
           Text(name, style: const TextStyle(fontSize: 15, color: _ink)),
           Text('$count',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: count > 0 ? color : Colors.black26)),

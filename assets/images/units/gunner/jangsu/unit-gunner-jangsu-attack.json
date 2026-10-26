@@ -1,0 +1,113 @@
+{
+ "frames": {
+  "unit-gunner-jangsu-attack-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 178,
+    "h": 156
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.397,
+    "y": 0.9368
+   }
+  },
+  "unit-gunner-jangsu-attack-1": {
+   "frame": {
+    "x": 178,
+    "y": 0,
+    "w": 178,
+    "h": 156
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.397,
+    "y": 0.9368
+   }
+  },
+  "unit-gunner-jangsu-attack-2": {
+   "frame": {
+    "x": 356,
+    "y": 0,
+    "w": 178,
+    "h": 156
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.397,
+    "y": 0.9368
+   }
+  },
+  "unit-gunner-jangsu-attack-3": {
+   "frame": {
+    "x": 534,
+    "y": 0,
+    "w": 178,
+    "h": 156
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.397,
+    "y": 0.9368
+   },
+   "events": {
+    "projectile": {
+     "x": 166.7,
+     "y": 83.1
+    }
+   }
+  },
+  "unit-gunner-jangsu-attack-4": {
+   "frame": {
+    "x": 712,
+    "y": 0,
+    "w": 178,
+    "h": 156
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.397,
+    "y": 0.9368
+   }
+  },
+  "unit-gunner-jangsu-attack-5": {
+   "frame": {
+    "x": 890,
+    "y": 0,
+    "w": 178,
+    "h": 156
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.397,
+    "y": 0.9368
+   }
+  }
+ },
+ "animations": {
+  "attack": [
+   "unit-gunner-jangsu-attack-0",
+   "unit-gunner-jangsu-attack-1",
+   "unit-gunner-jangsu-attack-2",
+   "unit-gunner-jangsu-attack-3",
+   "unit-gunner-jangsu-attack-4",
+   "unit-gunner-jangsu-attack-5"
+  ]
+ },
+ "meta": {
+  "image": "unit-gunner-jangsu-attack.png",
+  "size": {
+   "w": 1068,
+   "h": 156
+  },
+  "scale": "2",
+  "fps": 12,
+  "board_frame": {
+   "w": 89,
+   "h": 78
+  },
+  "body_height": 66,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

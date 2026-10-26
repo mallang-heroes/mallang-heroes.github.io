@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-archer-jeongbyeong-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4931,
+    "y": 0.9376
+   }
+  },
+  "unit-archer-jeongbyeong-walk-1": {
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4931,
+    "y": 0.9376
+   }
+  },
+  "unit-archer-jeongbyeong-walk-2": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4931,
+    "y": 0.9376
+   }
+  },
+  "unit-archer-jeongbyeong-walk-3": {
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4931,
+    "y": 0.9376
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-archer-jeongbyeong-walk-0",
+   "unit-archer-jeongbyeong-walk-1",
+   "unit-archer-jeongbyeong-walk-2",
+   "unit-archer-jeongbyeong-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-archer-jeongbyeong-walk.png",
+  "size": {
+   "w": 480,
+   "h": 140
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 60,
+   "h": 70
+  },
+  "body_height": 54,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

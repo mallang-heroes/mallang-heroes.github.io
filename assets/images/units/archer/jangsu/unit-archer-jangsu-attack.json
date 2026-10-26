@@ -1,0 +1,113 @@
+{
+ "frames": {
+  "unit-archer-jangsu-attack-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 146
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3938,
+    "y": 0.9374
+   }
+  },
+  "unit-archer-jangsu-attack-1": {
+   "frame": {
+    "x": 204,
+    "y": 0,
+    "w": 204,
+    "h": 146
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3938,
+    "y": 0.9374
+   }
+  },
+  "unit-archer-jangsu-attack-2": {
+   "frame": {
+    "x": 408,
+    "y": 0,
+    "w": 204,
+    "h": 146
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3938,
+    "y": 0.9374
+   }
+  },
+  "unit-archer-jangsu-attack-3": {
+   "frame": {
+    "x": 612,
+    "y": 0,
+    "w": 204,
+    "h": 146
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3938,
+    "y": 0.9374
+   },
+   "events": {
+    "projectile": {
+     "x": 194.3,
+     "y": 70.3
+    }
+   }
+  },
+  "unit-archer-jangsu-attack-4": {
+   "frame": {
+    "x": 816,
+    "y": 0,
+    "w": 204,
+    "h": 146
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3938,
+    "y": 0.9374
+   }
+  },
+  "unit-archer-jangsu-attack-5": {
+   "frame": {
+    "x": 1020,
+    "y": 0,
+    "w": 204,
+    "h": 146
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3938,
+    "y": 0.9374
+   }
+  }
+ },
+ "animations": {
+  "attack": [
+   "unit-archer-jangsu-attack-0",
+   "unit-archer-jangsu-attack-1",
+   "unit-archer-jangsu-attack-2",
+   "unit-archer-jangsu-attack-3",
+   "unit-archer-jangsu-attack-4",
+   "unit-archer-jangsu-attack-5"
+  ]
+ },
+ "meta": {
+  "image": "unit-archer-jangsu-attack.png",
+  "size": {
+   "w": 1224,
+   "h": 146
+  },
+  "scale": "2",
+  "fps": 12,
+  "board_frame": {
+   "w": 102,
+   "h": 73
+  },
+  "body_height": 66,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

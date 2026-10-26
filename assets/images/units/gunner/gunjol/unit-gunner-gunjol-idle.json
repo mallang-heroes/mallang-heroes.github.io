@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-gunner-gunjol-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 98,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5255,
+    "y": 0.9058
+   }
+  },
+  "unit-gunner-gunjol-idle-1": {
+   "frame": {
+    "x": 98,
+    "y": 0,
+    "w": 98,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5255,
+    "y": 0.9058
+   }
+  },
+  "unit-gunner-gunjol-idle-2": {
+   "frame": {
+    "x": 196,
+    "y": 0,
+    "w": 98,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5255,
+    "y": 0.9058
+   }
+  },
+  "unit-gunner-gunjol-idle-3": {
+   "frame": {
+    "x": 294,
+    "y": 0,
+    "w": 98,
+    "h": 104
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5255,
+    "y": 0.9058
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-gunner-gunjol-idle-0",
+   "unit-gunner-gunjol-idle-1",
+   "unit-gunner-gunjol-idle-2",
+   "unit-gunner-gunjol-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-gunner-gunjol-idle.png",
+  "size": {
+   "w": 392,
+   "h": 104
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 49,
+   "h": 52
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

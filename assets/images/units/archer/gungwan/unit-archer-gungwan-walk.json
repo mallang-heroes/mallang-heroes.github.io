@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-archer-gungwan-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 106,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4937,
+    "y": 0.9368
+   }
+  },
+  "unit-archer-gungwan-walk-1": {
+   "frame": {
+    "x": 106,
+    "y": 0,
+    "w": 106,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4937,
+    "y": 0.9368
+   }
+  },
+  "unit-archer-gungwan-walk-2": {
+   "frame": {
+    "x": 212,
+    "y": 0,
+    "w": 106,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4937,
+    "y": 0.9368
+   }
+  },
+  "unit-archer-gungwan-walk-3": {
+   "frame": {
+    "x": 318,
+    "y": 0,
+    "w": 106,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4937,
+    "y": 0.9368
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-archer-gungwan-walk-0",
+   "unit-archer-gungwan-walk-1",
+   "unit-archer-gungwan-walk-2",
+   "unit-archer-gungwan-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-archer-gungwan-walk.png",
+  "size": {
+   "w": 424,
+   "h": 154
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 53,
+   "h": 77
+  },
+  "body_height": 60,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

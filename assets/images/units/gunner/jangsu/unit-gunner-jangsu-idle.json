@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-gunner-jangsu-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 154,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.3139,
+    "y": 0.9384
+   }
+  },
+  "unit-gunner-jangsu-idle-1": {
+   "frame": {
+    "x": 154,
+    "y": 0,
+    "w": 154,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.3139,
+    "y": 0.9384
+   }
+  },
+  "unit-gunner-jangsu-idle-2": {
+   "frame": {
+    "x": 308,
+    "y": 0,
+    "w": 154,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.3139,
+    "y": 0.9384
+   }
+  },
+  "unit-gunner-jangsu-idle-3": {
+   "frame": {
+    "x": 462,
+    "y": 0,
+    "w": 154,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.3139,
+    "y": 0.9384
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-gunner-jangsu-idle-0",
+   "unit-gunner-jangsu-idle-1",
+   "unit-gunner-jangsu-idle-2",
+   "unit-gunner-jangsu-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-gunner-jangsu-idle.png",
+  "size": {
+   "w": 616,
+   "h": 144
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 77,
+   "h": 72
+  },
+  "body_height": 66,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

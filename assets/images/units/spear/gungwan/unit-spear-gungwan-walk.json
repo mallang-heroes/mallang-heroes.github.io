@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-spear-gungwan-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3722,
+    "y": 0.9368
+   }
+  },
+  "unit-spear-gungwan-walk-1": {
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3722,
+    "y": 0.9368
+   }
+  },
+  "unit-spear-gungwan-walk-2": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3722,
+    "y": 0.9368
+   }
+  },
+  "unit-spear-gungwan-walk-3": {
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3722,
+    "y": 0.9368
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-spear-gungwan-walk-0",
+   "unit-spear-gungwan-walk-1",
+   "unit-spear-gungwan-walk-2",
+   "unit-spear-gungwan-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-spear-gungwan-walk.png",
+  "size": {
+   "w": 480,
+   "h": 154
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 60,
+   "h": 77
+  },
+  "body_height": 60,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

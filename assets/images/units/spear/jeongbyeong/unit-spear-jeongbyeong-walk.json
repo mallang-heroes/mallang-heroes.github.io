@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-spear-jeongbyeong-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3815,
+    "y": 0.94
+   }
+  },
+  "unit-spear-jeongbyeong-walk-1": {
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 128,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3815,
+    "y": 0.94
+   }
+  },
+  "unit-spear-jeongbyeong-walk-2": {
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 128,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3815,
+    "y": 0.94
+   }
+  },
+  "unit-spear-jeongbyeong-walk-3": {
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 128,
+    "h": 140
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3815,
+    "y": 0.94
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-spear-jeongbyeong-walk-0",
+   "unit-spear-jeongbyeong-walk-1",
+   "unit-spear-jeongbyeong-walk-2",
+   "unit-spear-jeongbyeong-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-spear-jeongbyeong-walk.png",
+  "size": {
+   "w": 512,
+   "h": 140
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 64,
+   "h": 70
+  },
+  "body_height": 54,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

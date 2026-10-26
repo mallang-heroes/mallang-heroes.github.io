@@ -16,7 +16,18 @@ flutter:
   assets:
     - assets/data/
     - assets/images/map/
+    - assets/images/units/spear/gunjol/
+    - assets/images/units/spear/jeongbyeong/
+    - assets/images/units/spear/gungwan/
     - assets/images/units/spear/jangsu/
+    - assets/images/units/archer/gunjol/
+    - assets/images/units/archer/jeongbyeong/
+    - assets/images/units/archer/gungwan/
+    - assets/images/units/archer/jangsu/
+    - assets/images/units/gunner/gunjol/
+    - assets/images/units/gunner/jeongbyeong/
+    - assets/images/units/gunner/gungwan/
+    - assets/images/units/gunner/jangsu/
   fonts:
     - family: Pretendard
       fonts:
