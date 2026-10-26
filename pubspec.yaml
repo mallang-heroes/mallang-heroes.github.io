@@ -13,6 +13,10 @@ dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/data/
+    - assets/images/map/
+    - assets/images/units/spear/jangsu/
   fonts:
     - family: Pretendard
       fonts:

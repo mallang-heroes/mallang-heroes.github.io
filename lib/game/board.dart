@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui';
+
+import 'package:flutter/services.dart' show rootBundle;
 
 /// 보드 좌표 (기준 해상도 1560×720, 오른쪽 156px은 패널).
 class Board {
@@ -7,74 +10,16 @@ class Board {
   static const double height = 720;
   static const double playWidth = 1404;
 
-  static const double cx = 702;
-  static const double cy = 360;
-  static const double yT = 120;
-  static const double yB = 600;
-  static const double xPL = 54;
-  static const double xPR = 1350;
-  static const double cornerRadius = 110;
-
-  /// 출현 갈림길: 포탈(위)에서 순환로 오른쪽 위 모서리까지 곧게 내려온다.
-  static const double portalY = 58;
-  static const double joinY = 211.2;
-
-  static final double run = (yB - yT) / 2 * math.tan(math.pi / 6);
-  static final double xL = xPL + run;
-  static final double xR = xPR - run;
-  static final double joinX = xR + (joinY - yT) / (cy - yT) * (xPR - xR);
-
-  /// 길쭉한 육각형 꼭짓점 (오른쪽 위부터 시계 방향). [a] > 0 이면 바깥으로 a만큼 평행이동.
-  static List<Offset> vertices([double a = 0]) {
-    final t = a * math.tan(math.pi / 6);
-    final s = a / math.sin(math.pi / 3);
-    return [
-      Offset(xR + t, yT - a),
-      Offset(xPR + s, cy),
-      Offset(xR + t, yB + a),
-      Offset(xL - t, yB + a),
-      Offset(xPL - s, cy),
-      Offset(xL - t, yT - a),
-    ];
-  }
-
-  /// 모서리를 둥글린 순환로. 시작점은 오른쪽 위 모서리 직전, 진행 방향은 시계 방향.
-  static Path roundedLoop(List<Offset> v, double r) {
-    Offset toward(Offset from, Offset to, double d) {
-      final dir = to - from;
-      return from + dir / dir.distance * d;
-    }
-
-    final n = v.length;
-    final path = Path();
-    for (var i = 0; i < n; i++) {
-      final c = v[i];
-      final a = toward(c, v[(i - 1 + n) % n], r);
-      final b = toward(c, v[(i + 1) % n], r);
-      if (i == 0) {
-        path.moveTo(a.dx, a.dy);
-      } else {
-        path.lineTo(a.dx, a.dy);
-      }
-      path.quadraticBezierTo(c.dx, c.dy, b.dx, b.dy);
-    }
-    path.close();
-    return path;
-  }
-
-  static final Path loop = roundedLoop(vertices(), cornerRadius);
-  static Path get spur => Path()
-    ..moveTo(joinX, portalY)
-    ..lineTo(joinX, joinY);
-
   static const List<Branch> branches = [
-    Branch('창병', Color(0xFF9A3B2E), cx - 372),
-    Branch('궁병', Color(0xFF3F6B3A), cx - 267),
-    Branch('포수', Color(0xFF5E4E8C), cx - 162),
-    Branch('기병', Color(0xFF8A6418), cx + 162),
-    Branch('수군', Color(0xFF2E5E8C), cx + 267),
-    Branch('술사', Color(0xFF4A4E54), cx + 372),
+    Branch('창병', 'spear', Color(0xFF9A3B2E)),
+    Branch('궁병', 'archer', Color(0xFF3F6B3A)),
+    Branch('포수', 'gunner', Color(0xFF5E4E8C)),
+    Branch('기병', 'cavalry', Color(0xFF8A6418)),
+    Branch('수군', 'navy', Color(0xFF2E5E8C)),
+    Branch('술사', 'mystic', Color(0xFF4A4E54)),
   ];
+
+  static Branch branch(String name) => branches.firstWhere((b) => b.name == name);
 
   /// 단계별 몬스터 이동 속도 (px/s). 1–10R, 11–20R, ...
   static const List<double> stageSpeed = [30, 33, 36, 40, 44, 48];
@@ -84,38 +29,148 @@ class Board {
 
 class Branch {
   final String name;
+  final String key; // 그림 파일 이름에 쓰는 영문 키
   final Color color;
-  final double x;
-  const Branch(this.name, this.color, this.x);
+  const Branch(this.name, this.key, this.color);
 }
 
-/// 몬스터 이동 경로: 갈림길을 내려온 뒤 순환로를 시계 방향으로 계속 돈다.
-class RoadTrack {
-  RoadTrack() {
-    _loop = Board.loop.computeMetrics().first;
-    loopLength = _loop.length;
-    spurLength = Board.joinY - Board.portalY;
-    final target = Offset(Board.joinX, Board.joinY);
-    var best = 0.0;
-    var bestDist = double.infinity;
-    for (var d = 0.0; d < loopLength; d += 1) {
-      final p = _loop.getTangentForOffset(d)!.position;
-      final dist = (p - target).distance;
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = d;
-      }
-    }
-    joinDistance = best;
-    for (var d = 0.0; d < loopLength; d += 8) {
-      _samples.add(_loop.getTangentForOffset(d)!.position);
-    }
-    for (var y = Board.portalY; y <= Board.joinY; y += 8) {
-      _samples.add(Offset(Board.joinX, y));
+/// 건물 자리: 바닥 가운데(foot)와 보드 크기.
+class BuildingSpot {
+  final Offset foot;
+  final double w;
+  final double h;
+  const BuildingSpot(this.foot, this.w, this.h);
+
+  Rect get rect => Rect.fromLTWH(foot.dx - w / 2, foot.dy - h, w, h);
+}
+
+class Deco {
+  final String kind;
+  final Offset foot;
+  final bool blocks;
+  const Deco(this.kind, this.foot, this.blocks);
+}
+
+/// `assets/data/map-path.json` (제미나이 맵에서 추출한 경로·건물·장식 자리).
+class MapData {
+  MapData({
+    required this.spawn,
+    required this.loop,
+    required this.roadWidth,
+    required this.cave,
+    required this.buildings,
+    required this.decorations,
+  });
+
+  final List<Offset> spawn; // 동굴 입구 → 합류점
+  final List<Offset> loop; // 합류점부터 시계 방향, 닫힌 고리
+  final double roadWidth;
+  final Offset cave;
+  final Map<String, BuildingSpot> buildings; // palace, spear, archer, ...
+  final List<Deco> decorations;
+
+  BuildingSpot get palace => buildings['palace']!;
+
+  static Future<MapData> load() async {
+    final j = jsonDecode(await rootBundle.loadString('assets/data/map-path.json')) as Map<String, dynamic>;
+    List<Offset> pts(List<dynamic> l) =>
+        [for (final p in l) Offset((p[0] as num).toDouble(), (p[1] as num).toDouble())];
+    Offset xy(Map<String, dynamic> m) => Offset((m['x'] as num).toDouble(), (m['y'] as num).toDouble());
+    final b = j['buildings'] as Map<String, dynamic>;
+    return MapData(
+      spawn: pts(j['spawn']['points'] as List),
+      loop: pts(j['loop']['points'] as List),
+      roadWidth: (j['roadWidth'] as num).toDouble(),
+      cave: xy(j['spawn']['cave_anchor'] as Map<String, dynamic>),
+      buildings: {
+        for (final e in b.entries)
+          e.key: BuildingSpot(
+            xy(e.value['foot'] as Map<String, dynamic>),
+            (e.value['w'] as num).toDouble(),
+            (e.value['h'] as num).toDouble(),
+          ),
+      },
+      decorations: [
+        for (final d in j['decorations'] as List)
+          Deco(d['kind'] as String, Offset((d['x'] as num).toDouble(), (d['y'] as num).toDouble()),
+              d['blocks'] as bool),
+      ],
+    );
+  }
+}
+
+/// 꺾은선 하나를 길이로 따라가는 도구.
+class _Polyline {
+  _Polyline(this.pts, {required this.closed}) {
+    final n = closed ? pts.length + 1 : pts.length;
+    acc.add(0);
+    for (var i = 1; i < n; i++) {
+      acc.add(acc.last + (pts[i % pts.length] - pts[i - 1]).distance);
     }
   }
 
+  final List<Offset> pts;
+  final bool closed;
+  final List<double> acc = [];
+  double get length => acc.last;
+
+  int _seg(double s) {
+    var lo = 0, hi = acc.length - 1;
+    while (hi - lo > 1) {
+      final mid = (lo + hi) >> 1;
+      if (acc[mid] <= s) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return lo;
+  }
+
+  Offset at(double s) {
+    s = s.clamp(0, length);
+    final i = _seg(s);
+    final a = pts[i];
+    final b = pts[(i + 1) % pts.length];
+    final segLen = acc[i + 1] - acc[i];
+    final t = segLen == 0 ? 0.0 : (s - acc[i]) / segLen;
+    return Offset.lerp(a, b, t)!;
+  }
+
+  Offset dir(double s) {
+    s = s.clamp(0, length);
+    final i = _seg(s);
+    final d = pts[(i + 1) % pts.length] - pts[i];
+    return d.distance == 0 ? const Offset(1, 0) : d / d.distance;
+  }
+}
+
+/// 몬스터 이동 경로: 동굴에서 갈림길을 내려온 뒤 순환로를 시계 방향으로 계속 돈다.
+class RoadTrack {
+  RoadTrack(this.map)
+      : _spawn = _Polyline(map.spawn, closed: false),
+        _loop = _Polyline(map.loop, closed: true) {
+    for (var i = 0; i < map.loop.length; i += 2) {
+      _samples.add(map.loop[i]);
+    }
+    for (var i = 0; i < map.spawn.length; i += 2) {
+      _samples.add(map.spawn[i]);
+    }
+  }
+
+  final MapData map;
+  final _Polyline _spawn;
+  final _Polyline _loop;
   final List<Offset> _samples = [];
+
+  double get spawnLength => _spawn.length;
+  double get loopLength => _loop.length;
+
+  Offset positionAt(double s) =>
+      s < _spawn.length ? _spawn.at(s) : _loop.at((s - _spawn.length) % _loop.length);
+
+  Offset directionAt(double s) =>
+      s < _spawn.length ? _spawn.dir(s) : _loop.dir((s - _spawn.length) % _loop.length);
 
   /// 길 중심선까지의 거리 (배치 가능 판정용).
   double distanceToRoad(Offset p) {
@@ -126,20 +181,4 @@ class RoadTrack {
     }
     return math.sqrt(best);
   }
-
-  late final PathMetric _loop;
-  late final double loopLength;
-  late final double spurLength;
-  late final double joinDistance;
-
-  Tangent _at(double s) {
-    if (s < spurLength) {
-      return Tangent(Offset(Board.joinX, Board.portalY + s), const Offset(0, 1));
-    }
-    final d = (joinDistance + s - spurLength) % loopLength;
-    return _loop.getTangentForOffset(d)!;
-  }
-
-  Offset positionAt(double s) => _at(s).position;
-  Offset directionAt(double s) => _at(s).vector;
 }

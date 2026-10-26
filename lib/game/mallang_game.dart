@@ -11,6 +11,7 @@ import 'hud.dart';
 import 'map_layer.dart';
 import 'monster.dart';
 import 'rules.dart';
+import 'sheets.dart';
 import 'units.dart';
 
 enum Phase { playing, won, lost }
@@ -24,7 +25,12 @@ class MallangGame extends FlameGame {
         );
   factory MallangGame() => MallangGame._(World());
 
+  late final MapData map;
   late final RoadTrack track;
+  late final Palace palace;
+
+  /// 그림이 준비된 병과의 장수 그림.
+  final Map<String, UnitArt> unitArt = {};
   final rng = math.Random();
   final List<Monster> monsters = [];
   final Map<String, Barracks> barracks = {};
@@ -54,11 +60,18 @@ class MallangGame extends FlameGame {
   Future<void> onLoad() async {
     camera.viewfinder.anchor = Anchor.topLeft;
     camera.viewfinder.position = Vector2.zero();
-    track = RoadTrack();
+    map = await MapData.load();
+    track = RoadTrack(map);
+    unitArt['창병'] = UnitArt(
+      await Sheet.load(images, 'units/spear/jangsu/unit-spear-jangsu-idle.json'),
+      await Sheet.load(images, 'units/spear/jangsu/unit-spear-jangsu-attack.json'),
+    );
     await world.add(MapLayer());
-    await world.add(PortalSwirl());
+    await world.add(SpawnCave());
+    palace = Palace();
+    await world.add(palace);
     for (final b in Board.branches) {
-      final c = Barracks(b.name, b.x);
+      final c = Barracks(b.name, map.buildings[b.key]!);
       barracks[b.name] = c;
       await world.add(c);
     }
@@ -156,7 +169,8 @@ class MallangGame extends FlameGame {
     }
     perBranch.forEach((br, n) {
       final b = barracks[br]!;
-      world.add(FloatText('+$n', b.position + Vector2(0, -70), const Color(0xFFFFF4D6)));
+      b.bounce();
+      world.add(FloatText('+$n', b.position + Vector2(0, -b.size.y - 14), const Color(0xFFFFF4D6)));
     });
   }
 
@@ -195,12 +209,16 @@ class MallangGame extends FlameGame {
   /// 배치 가능: 길 · 궁 · 막사 · 포탈 · 다른 장수 위가 아니어야 한다.
   bool canPlace(Offset p, {General? except}) {
     if (p.dx < 44 || p.dx > Board.playWidth - 44 || p.dy < 48 || p.dy > Board.height - 40) return false;
-    if (track.distanceToRoad(p) < 27 + 30) return false;
-    if ((p.dx - Board.cx).abs() < 110 && (p.dy - Board.cy).abs() < 90) return false;
-    for (final b in Board.branches) {
-      if ((p.dx - b.x).abs() < 62 && (p.dy - Board.cy).abs() < 70) return false;
+    if (track.distanceToRoad(p) < map.roadWidth / 2 + 28) return false;
+    // 건물: 그림 둘레 + 아래 이름표 자리
+    for (final b in map.buildings.values) {
+      final r = Rect.fromLTRB(b.rect.left - 22, b.rect.top - 6, b.rect.right + 22, b.foot.dy + 34);
+      if (r.contains(p)) return false;
     }
-    if ((p.dx - Board.joinX).abs() < 55 && p.dy < 110) return false;
+    for (final d in map.decorations) {
+      if (d.blocks && (d.foot - p).distance < 36) return false;
+    }
+    if ((p.dx - map.cave.dx).abs() < 80 && p.dy < map.cave.dy + 40) return false;
     for (final g in generals) {
       if (g != except && (g.position.toOffset() - p).distance < 66) return false;
     }
@@ -252,7 +270,7 @@ class MallangGame extends FlameGame {
   void summonGeneral(String branch) {
     final b = barracks[branch]!;
     if (!b.canSummonGeneral) return;
-    final spot = _nearestFree(Offset(b.position.x, Board.cy - 130));
+    final spot = _nearestFree(Offset(b.position.x, b.position.y - b.size.y - 70));
     if (spot == null) {
       toast('장수를 놓을 자리가 없어요');
       return;
