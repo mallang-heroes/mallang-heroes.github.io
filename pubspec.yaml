@@ -36,6 +36,8 @@ flutter:
     - assets/images/monsters/boss-gumiho/
     - assets/images/monsters/mob-dokkaebi/
     - assets/images/monsters/boss-dokkaebi/
+    - assets/images/monsters/mob-ghost/
+    - assets/images/monsters/boss-ghost/
   fonts:
     - family: Pretendard
       fonts:

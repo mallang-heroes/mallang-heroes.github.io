@@ -14,7 +14,7 @@
 | `art/preview/` | 확인용 이미지·GIF (게임에는 안 씀) |
 | `assets/images/map/` | 배경(@2x 3120×1440), 궁·막사(+들썩임 3프레임), 장식 13종, 출현 동굴(4프레임) |
 | `assets/images/units/spear/jangsu/` | 창병 장수 기본·대기 4·공격 6 (@2x 시트 + JSON), 받침 없는 `-nopad` |
-| `assets/images/monsters/<이름>/` | 몬스터 8종(mob-boar·boss-boar·mob-tiger·boss-tiger·mob-gumiho·boss-gumiho·mob-dokkaebi·boss-dokkaebi): 정지 1장, `-walk`(6)·`-hit`(1)·`-die`(4, 보스 6)·보스 `-appear`(6) @2x 시트 + JSON |
+| `assets/images/monsters/<이름>/` | 몬스터 10종(mob-/boss- × boar·tiger·gumiho·dokkaebi·ghost): 정지 1장, `-walk`(6)·`-hit`(1)·`-die`(4, 보스 6)·보스 `-appear`(6) @2x 시트 + JSON |
 | `assets/data/map-path.json` | 순환로·출현 갈림길 점 목록, 건물 자리·크기, 장식 위치(blocks: 유닛 배치를 막는지) |
 
 ## 수치

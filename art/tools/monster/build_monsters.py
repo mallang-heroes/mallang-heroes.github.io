@@ -94,6 +94,15 @@ MONSTERS = {
                                 ("front_leg", [(666, 776), (742, 768), (812, 936), (806, 960), (612, 960), (624, 890), (666, 862)], 0.5, "near")],
                           arms=[("front_arm", [(762, 556), (862, 596), (892, 700), (874, 778), (770, 778), (748, 640)], 0.0)],
                           tail=None, head=(330, 48, 772, 578), swing=13, arm_swing=8),
+    "mob-ghost": dict(code="m9", file="m9-ghost", key="green", boss=False, base="ref", float=True,
+                      legs=[], anchor=(520, 905),
+                      tail=("poly", [(190, 740), (330, 740), (372, 842), (360, 912), (190, 912)], (362, 840)),
+                      head=(428, 92, 690, 400), erase=(540, 180, 700, 380), swing=0),
+    "boss-ghost": dict(code="m10", file="m10-boss-ghost", key="green", boss=True, base="ref", float=True,
+                       legs=[], anchor=(560, 770), body_width=680,
+                       orbit=[(190, 360, 295, 530), (750, 255, 850, 410), (795, 535, 900, 710)],
+                       tail=("poly", [(90, 575), (330, 575), (392, 640), (392, 712), (90, 712)], (388, 662)),
+                       head=(560, 242, 700, 404), erase=(590, 285, 705, 404), swing=0),
 }
 FRAME = {False: (40, 44), True: (72, 76)}   # 보드 px, @2x로 내보냄
 
@@ -336,6 +345,14 @@ def build_rig(name, cfg):
             xs = [p[0] for p in pts if p[1] == top] or [p[0] for p in pts]
             arms.append(dict(name=aname, img=with_alpha(whole, up & alpha), phase=phase,
                              pivot=((min(xs) + max(xs)) / 2, top + 4)))
+        orbit = []
+        for box in cfg.get("orbit", []):
+            x0, y0, x1, y1 = box
+            m = np.zeros(alpha.shape, bool)
+            m[y0:y1, x0:x1] = True
+            m &= alpha & body_mask
+            body_mask &= ~m
+            orbit.append(with_alpha(whole, m))
         if cfg.get("tail"):
             kind, pts, pivot = cfg["tail"]
             pm = poly_mask(alpha.shape, pts)
@@ -389,9 +406,13 @@ def build_rig(name, cfg):
         b = body.copy()
         b[..., 3] = np.where(zone & ~cover, 0, b[..., 3])
         bodies[k] = paste(b, h, x, y)
-    feet = max(l["bottom"] for l in legs)
-    cxs = [l["cx"] for l in legs]
-    anchor = ((min(cxs) + max(cxs)) / 2, feet)
+    if cfg.get("anchor"):
+        anchor = cfg["anchor"]
+        feet = anchor[1]
+    else:
+        feet = max(l["bottom"] for l in legs)
+        cxs = [l["cx"] for l in legs]
+        anchor = ((min(cxs) + max(cxs)) / 2, feet)
     # 크기: 일반은 전신이 프레임 안, 구미호는 몸통 폭 기준(꼬리는 넘침)
     fw, fh = FRAME[cfg["boss"]]
     allm = (body[..., 3] > 0) | (tail["img"][..., 3] > 0)
@@ -406,7 +427,8 @@ def build_rig(name, cfg):
         arms = []
     for a in arms:
         allm |= a["img"][..., 3] > 0
-    return dict(bodies=bodies, legs=legs, arms=arms, tail=tail, anchor=anchor, scale=s, cfg=cfg)
+    return dict(bodies=bodies, legs=legs, arms=arms, tail=tail, anchor=anchor, scale=s, cfg=cfg,
+                orbit=orbit if cfg["base"] != "assemble" else [])
 
 
 def rot_layer(img, pivot, deg):
@@ -426,7 +448,8 @@ def pose(rig, t, face="normal", swing=None, tail_amp=None, bob=0.0, tilt=0.0):
     tail_deg = TA * math.sin(2 * math.pi * (t - 0.18))
     lift = -bob
     order = [l for l in rig["legs"] if l["side"] == "far"]
-    canvas.alpha_composite(rot_layer(rig["tail"]["img"], rig["tail"]["pivot"], tail_deg), (0, 0))
+    fl = int(round(lift)) if cfg.get("float") else 0
+    canvas.alpha_composite(rot_layer(rig["tail"]["img"], rig["tail"]["pivot"], tail_deg), (0, fl))
     for l in order:
         canvas.alpha_composite(rot_layer(l["img"], l["pivot"], A * math.sin(2 * math.pi * (t + l["phase"]))))
     body = Image.fromarray(rig["bodies"][face], "RGBA")
@@ -444,6 +467,9 @@ def pose(rig, t, face="normal", swing=None, tail_amp=None, bob=0.0, tilt=0.0):
     for a in rig.get("arms", []):
         canvas.alpha_composite(rot_layer(a["img"], a["pivot"], AA * math.sin(2 * math.pi * (t + a["phase"]))),
                                (0, int(round(lift))))
+    for i, o in enumerate(rig.get("orbit", [])):
+        dy = 14 * math.sin(2 * math.pi * (t + i / 3))
+        canvas.alpha_composite(Image.fromarray(o, "RGBA"), (0, int(round(dy + lift * 0.4))))
     return canvas
 
 
@@ -506,8 +532,13 @@ def render_set(rig):
     walk = []
     for i in range(6):
         t = i / 6
-        bob = 10 * (0.5 - 0.5 * math.cos(4 * math.pi * t))
-        walk.append((finalize(pose(rig, t, bob=bob, tilt=1.2 * math.sin(2 * math.pi * t)), rig), 100))
+        if cfg.get("float"):
+            bob = 22 * (0.5 - 0.5 * math.cos(2 * math.pi * t))
+            tilt = 2.0 * math.sin(2 * math.pi * t)
+        else:
+            bob = 10 * (0.5 - 0.5 * math.cos(4 * math.pi * t))
+            tilt = 1.2 * math.sin(2 * math.pi * t)
+        walk.append((finalize(pose(rig, t, bob=bob, tilt=tilt), rig), 100))
     sets["walk"] = walk
     # 피격 1: 아야 얼굴 + 하얀 번쩍임 + 살짝 눌림
     sets["hit"] = [(finalize(pose(rig, 0, face="ouch", swing=0), rig, sx=1.04, sy=0.96, white=0.45), 120)]
