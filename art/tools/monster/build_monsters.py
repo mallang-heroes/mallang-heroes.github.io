@@ -83,6 +83,17 @@ MONSTERS = {
     "boss-gumiho": dict(code="m6", file="m6-boss-fox", key="green", boss=True, base="ref",
                         legs=FOX_LEGS["boss-gumiho"], tail=("outside", FOX_BODY["boss-gumiho"], (430, 610)),
                         head=(676, 282, 944, 604), swing=13, body_width=620),
+    "mob-dokkaebi": dict(code="m7", file="m7-dokkaebi", key="magenta", boss=False, base="ref", legs_behind=True,
+                         legs=[("back_leg", [(285, 772), (502, 772), (482, 862), (445, 952), (262, 952), (262, 800)], 0.0, "far"),
+                               ("front_leg", [(508, 776), (700, 776), (770, 900), (772, 934), (586, 934), (556, 860)], 0.5, "near")],
+                         arms=[("front_arm", [(684, 562), (760, 590), (790, 724), (690, 730), (672, 640)], 0.0)],
+                         tail=None, head=(338, 98, 732, 458), swing=18, arm_swing=10),
+    "boss-dokkaebi": dict(code="m8", file="m8-boss-dokkaebi", key="magenta", boss=True, base="ref", legs_behind=True,
+                          peel_white=True, erase=(560, 40, 800, 470), match_skin=True,
+                          legs=[("back_leg", [(244, 800), (300, 794), (420, 842), (424, 972), (244, 972)], 0.0, "far"),
+                                ("front_leg", [(666, 776), (742, 768), (812, 936), (806, 960), (612, 960), (624, 890), (666, 862)], 0.5, "near")],
+                          arms=[("front_arm", [(762, 556), (862, 596), (892, 700), (874, 778), (770, 778), (748, 640)], 0.0)],
+                          tail=None, head=(330, 48, 772, 578), swing=13, arm_swing=8),
 }
 FRAME = {False: (40, 44), True: (72, 76)}   # 보드 px, @2x로 내보냄
 
@@ -145,6 +156,22 @@ def largest(a, min_area=0):
     return b[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
 
 
+def peel_white(a):
+    """머리 둘레의 흰 스티커 테두리(+그 바깥 선)를 걷어 냄.
+    흰색을 뺀 가장 큰 덩어리(머리)만 남기고, 그 안의 흰 부분(이·눈)은 구멍 메우기로 되살림."""
+    rgb = a[..., :3].astype(int)
+    solid = a[..., 3] > 40
+    white = (rgb.min(-1) > 185) & (rgb.max(-1) - rgb.min(-1) < 50)
+    core = ndimage.binary_opening(solid & ~white, iterations=3)
+    lab, n = ndimage.label(core)
+    if n == 0:
+        return a
+    sizes = ndimage.sum(core, lab, range(1, n + 1))
+    head = ndimage.binary_dilation(lab == int(np.argmax(sizes)) + 1, iterations=3) & solid & ~white
+    head = ndimage.binary_fill_holes(head)
+    return with_alpha(a, ndimage.binary_dilation(head, iterations=1))
+
+
 def faces(cfg):
     """표정 시트 2×2 → {'normal','ouch','dizzy','roar'} 잘린 머리 RGBA 배열."""
     im = arr(key_out(os.path.join(SRC, cfg["file"] + "-face.png"), cfg["key"]))
@@ -155,8 +182,10 @@ def faces(cfg):
         # 위·아래 머리가 맞닿아 있을 수 있어, 가장 얇은 가로줄에서 나눔
         rows = (half[..., 3] > 60).sum(1)
         cut = 380 + int(np.argmin(rows[380:660]))
-        out[top] = defringe(largest(half[:cut]), cfg["key"])
-        out[bot] = defringe(largest(half[cut:]), cfg["key"])
+        for k, part in ((top, half[:cut]), (bot, half[cut:])):
+            if cfg.get("peel_white"):
+                part = peel_white(part)
+            out[k] = defringe(largest(part), cfg["key"])
     return out
 
 
@@ -295,16 +324,55 @@ def build_rig(name, cfg):
             ys, _ = np.where(leg_px)
             legs.append(dict(name=lname, img=with_alpha(whole, up & alpha), pivot=pivot, phase=phase,
                              side=side, bottom=int(ys.max()), cx=pivot[0]))
-        kind, pts, pivot = cfg["tail"]
-        pm = poly_mask(alpha.shape, pts)
-        tmask = (pm if kind == "poly" else ~pm) & alpha & body_mask
-        body_mask &= ~tmask
-        tail = dict(img=with_alpha(whole, tmask), pivot=pivot)
+        arms = []
+        for aname, pts, phase in cfg.get("arms", []):
+            pm = poly_mask(alpha.shape, pts)
+            arm_px = pm & alpha & body_mask
+            body_mask &= ~arm_px
+            up = pm.copy()
+            for k in range(1, 18):
+                up |= np.roll(pm, -k, axis=0)
+            top = min(p[1] for p in pts)
+            xs = [p[0] for p in pts if p[1] == top] or [p[0] for p in pts]
+            arms.append(dict(name=aname, img=with_alpha(whole, up & alpha), phase=phase,
+                             pivot=((min(xs) + max(xs)) / 2, top + 4)))
+        if cfg.get("tail"):
+            kind, pts, pivot = cfg["tail"]
+            pm = poly_mask(alpha.shape, pts)
+            tmask = (pm if kind == "poly" else ~pm) & alpha & body_mask
+            body_mask &= ~tmask
+            tail = dict(img=with_alpha(whole, tmask), pivot=pivot)
+        else:
+            tail = dict(img=np.zeros_like(whole), pivot=(0, 0))
         body = with_alpha(whole, body_mask)
 
     # 표정별 몸통 (머리 덮어쓰기)
     bodies = {"normal": body}
     hx0, hy0, hx1, hy1 = cfg["head"]
+
+    def skin(img):
+        """피부·털 바탕색: 외곽선·머리카락(어두움)과 하이라이트를 뺀 가장 흔한 색 무리."""
+        px = img[img[..., 3] > 220][:, :3].astype(np.float32)
+        lum = px.mean(1)
+        px = px[(lum > 60) & (lum < 235)]
+        if len(px) < 50:
+            return None
+        q = (px // 24).astype(int)
+        keys, inv, cnt = np.unique(q, axis=0, return_inverse=True, return_counts=True)
+        top = np.argsort(cnt)[-3:]
+        sel = np.isin(inv.ravel(), top)
+        return px[sel].mean(0)
+
+    if cfg.get("match_skin"):
+        rs, fs = skin(body[hy0:hy1, hx0:hx1]), skin(fc["normal"])
+        if rs is not None and fs is not None:
+            gain = rs / np.maximum(fs, 1)
+            for k in ("ouch", "dizzy", "roar"):
+                f = fc[k].astype(np.float32)
+                lum = f[..., :3].mean(-1, keepdims=True)
+                w = np.clip((lum - 45) / 60, 0, 1)        # 외곽선·검은 머리는 그대로
+                f[..., :3] = np.clip(f[..., :3] * (1 + (gain - 1) * w), 0, 255)
+                fc[k] = f.astype(np.uint8)
     for k in ("ouch", "dizzy", "roar"):
         h, x, y = fit_head(fc[k], cfg["head"])
         cover = np.zeros(body.shape[:2], bool)
@@ -312,8 +380,12 @@ def build_rig(name, cfg):
         cover[y:y + h.shape[0], x:x + h.shape[1]] = h[..., 3] > 60
         cover = ndimage.binary_dilation(cover, iterations=3)
         zone = np.zeros_like(cover)
-        zone[hy0:hy1 + 10, (hx0 + hx1) // 2:hx1 + 60] = True
-        zone[max(0, hy0 - 20):hy0 + (hy1 - hy0) // 3, hx0 + (hx1 - hx0) // 4:hx1 + 60] = True   # 금관·귀 위쪽
+        if cfg.get("erase"):
+            ex0, ey0, ex1, ey1 = cfg["erase"]
+            zone[ey0:ey1, ex0:ex1] = True
+        else:
+            zone[hy0:hy1 + 10, (hx0 + hx1) // 2:hx1 + 60] = True
+            zone[max(0, hy0 - 20):hy0 + (hy1 - hy0) // 3, hx0 + (hx1 - hx0) // 4:hx1 + 60] = True   # 금관·귀 위쪽
         b = body.copy()
         b[..., 3] = np.where(zone & ~cover, 0, b[..., 3])
         bodies[k] = paste(b, h, x, y)
@@ -330,7 +402,11 @@ def build_rig(name, cfg):
         s = fw * 2 * 0.98 / cfg["body_width"]
     else:
         s = min(fw * 2 / (xs.max() - xs.min() + 1), fh * 2 / (feet - ys.min() + 1))
-    return dict(bodies=bodies, legs=legs, tail=tail, anchor=anchor, scale=s, cfg=cfg)
+    if cfg["base"] == "assemble":
+        arms = []
+    for a in arms:
+        allm |= a["img"][..., 3] > 0
+    return dict(bodies=bodies, legs=legs, arms=arms, tail=tail, anchor=anchor, scale=s, cfg=cfg)
 
 
 def rot_layer(img, pivot, deg):
@@ -343,7 +419,7 @@ def pose(rig, t, face="normal", swing=None, tail_amp=None, bob=0.0, tilt=0.0):
     """t: 걷기 주기 0~1. 원본 좌표 큰 캔버스 RGBA 이미지."""
     cfg = rig["cfg"]
     A = cfg["swing"] if swing is None else swing
-    fox = cfg["tail"][0] == "outside" if cfg["base"] != "assemble" else False
+    fox = bool(cfg.get("tail")) and cfg["tail"][0] == "outside" and cfg["base"] != "assemble"
     TA = (4 if fox else 9) if tail_amp is None else tail_amp
     W = rig["bodies"]["normal"].shape[1]
     canvas = Image.new("RGBA", (W, W))
@@ -364,6 +440,10 @@ def pose(rig, t, face="normal", swing=None, tail_amp=None, bob=0.0, tilt=0.0):
     if not cfg.get("legs_behind"):
         for l in near:
             canvas.alpha_composite(rot_layer(l["img"], l["pivot"], A * math.sin(2 * math.pi * (t + l["phase"]))))
+    AA = cfg.get("arm_swing", 0) if swing is None else swing * 0.6
+    for a in rig.get("arms", []):
+        canvas.alpha_composite(rot_layer(a["img"], a["pivot"], AA * math.sin(2 * math.pi * (t + a["phase"]))),
+                               (0, int(round(lift))))
     return canvas
 
 

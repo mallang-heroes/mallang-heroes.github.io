@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 D = os.path.join(ROOT, "assets", "images", "monsters")
-NAMES = ["mob-boar", "boss-boar", "mob-tiger", "boss-tiger", "mob-gumiho", "boss-gumiho"]
+NAMES = ["mob-boar", "boss-boar", "mob-tiger", "boss-tiger", "mob-gumiho", "boss-gumiho", "mob-dokkaebi", "boss-dokkaebi"]
 
 
 def load(name):
@@ -21,7 +21,7 @@ def load(name):
 
 
 sets = [load(n) for n in NAMES]
-W, H, road_y = 1560, 300, 210          # @2x 픽셀 (보드 780×150)
+W, H, road_y = 2000, 320, 230          # @2x 픽셀 (보드 780×150)
 xs, x = [], 70
 for fr in sets:
     w = max(im.width for im, _ in fr)

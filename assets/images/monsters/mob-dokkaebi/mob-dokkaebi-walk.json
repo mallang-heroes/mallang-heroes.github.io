@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "mob-dokkaebi-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 70,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4939,
+    "y": 0.9376
+   }
+  },
+  "mob-dokkaebi-walk-1": {
+   "frame": {
+    "x": 70,
+    "y": 0,
+    "w": 70,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4939,
+    "y": 0.9376
+   }
+  },
+  "mob-dokkaebi-walk-2": {
+   "frame": {
+    "x": 140,
+    "y": 0,
+    "w": 70,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4939,
+    "y": 0.9376
+   }
+  },
+  "mob-dokkaebi-walk-3": {
+   "frame": {
+    "x": 210,
+    "y": 0,
+    "w": 70,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4939,
+    "y": 0.9376
+   }
+  },
+  "mob-dokkaebi-walk-4": {
+   "frame": {
+    "x": 280,
+    "y": 0,
+    "w": 70,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4939,
+    "y": 0.9376
+   }
+  },
+  "mob-dokkaebi-walk-5": {
+   "frame": {
+    "x": 350,
+    "y": 0,
+    "w": 70,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4939,
+    "y": 0.9376
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "mob-dokkaebi-walk-0",
+   "mob-dokkaebi-walk-1",
+   "mob-dokkaebi-walk-2",
+   "mob-dokkaebi-walk-3",
+   "mob-dokkaebi-walk-4",
+   "mob-dokkaebi-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "mob-dokkaebi-walk.png",
+  "size": {
+   "w": 420,
+   "h": 99
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

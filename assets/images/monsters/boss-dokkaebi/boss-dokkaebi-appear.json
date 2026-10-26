@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-dokkaebi-appear-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 166,
+    "h": 275
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5544,
+    "y": 0.9375
+   }
+  },
+  "boss-dokkaebi-appear-1": {
+   "frame": {
+    "x": 166,
+    "y": 0,
+    "w": 166,
+    "h": 275
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5544,
+    "y": 0.9375
+   }
+  },
+  "boss-dokkaebi-appear-2": {
+   "frame": {
+    "x": 332,
+    "y": 0,
+    "w": 166,
+    "h": 275
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5544,
+    "y": 0.9375
+   }
+  },
+  "boss-dokkaebi-appear-3": {
+   "frame": {
+    "x": 498,
+    "y": 0,
+    "w": 166,
+    "h": 275
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5544,
+    "y": 0.9375
+   }
+  },
+  "boss-dokkaebi-appear-4": {
+   "frame": {
+    "x": 664,
+    "y": 0,
+    "w": 166,
+    "h": 275
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5544,
+    "y": 0.9375
+   }
+  },
+  "boss-dokkaebi-appear-5": {
+   "frame": {
+    "x": 830,
+    "y": 0,
+    "w": 166,
+    "h": 275
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5544,
+    "y": 0.9375
+   }
+  }
+ },
+ "animations": {
+  "appear": [
+   "boss-dokkaebi-appear-0",
+   "boss-dokkaebi-appear-1",
+   "boss-dokkaebi-appear-2",
+   "boss-dokkaebi-appear-3",
+   "boss-dokkaebi-appear-4",
+   "boss-dokkaebi-appear-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-dokkaebi-appear.png",
+  "size": {
+   "w": 996,
+   "h": 275
+  },
+  "scale": "2",
+  "fps": 12,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

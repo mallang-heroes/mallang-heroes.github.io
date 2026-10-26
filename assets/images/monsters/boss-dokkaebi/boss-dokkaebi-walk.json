@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-dokkaebi-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 150,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5466,
+    "y": 0.9578
+   }
+  },
+  "boss-dokkaebi-walk-1": {
+   "frame": {
+    "x": 150,
+    "y": 0,
+    "w": 150,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5466,
+    "y": 0.9578
+   }
+  },
+  "boss-dokkaebi-walk-2": {
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 150,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5466,
+    "y": 0.9578
+   }
+  },
+  "boss-dokkaebi-walk-3": {
+   "frame": {
+    "x": 450,
+    "y": 0,
+    "w": 150,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5466,
+    "y": 0.9578
+   }
+  },
+  "boss-dokkaebi-walk-4": {
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 150,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5466,
+    "y": 0.9578
+   }
+  },
+  "boss-dokkaebi-walk-5": {
+   "frame": {
+    "x": 750,
+    "y": 0,
+    "w": 150,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5466,
+    "y": 0.9578
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "boss-dokkaebi-walk-0",
+   "boss-dokkaebi-walk-1",
+   "boss-dokkaebi-walk-2",
+   "boss-dokkaebi-walk-3",
+   "boss-dokkaebi-walk-4",
+   "boss-dokkaebi-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-dokkaebi-walk.png",
+  "size": {
+   "w": 900,
+   "h": 164
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

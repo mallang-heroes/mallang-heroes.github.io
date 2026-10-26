@@ -14,7 +14,7 @@
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon wild boar as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon wild boar, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon wild boar, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -42,7 +42,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon king boar as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon king boar, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon king boar, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -71,7 +71,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon tiger as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon tiger, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon tiger, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -98,7 +98,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon king tiger as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon king tiger, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon king tiger, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -126,7 +126,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon nine-tailed fox as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon nine-tailed fox, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon nine-tailed fox, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -155,7 +155,7 @@ Background: one solid flat bright green (#00FF00) color only. No floor, no shado
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon nine-tailed fox queen as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon nine-tailed fox queen, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon nine-tailed fox queen, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -186,7 +186,7 @@ Background: one solid flat bright green (#00FF00) color only. No floor, no shado
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon dokkaebi goblin as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon dokkaebi goblin, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon dokkaebi goblin, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -214,7 +214,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon dokkaebi chief as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon dokkaebi chief, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon dokkaebi chief, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -244,7 +244,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon maiden ghost as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon maiden ghost, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon maiden ghost, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -273,7 +273,7 @@ Background: one solid flat bright green (#00FF00) color only. No floor, no shado
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon ghost queen as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon ghost queen, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon ghost queen, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -303,7 +303,7 @@ Background: one solid flat bright green (#00FF00) color only. No floor, no shado
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon zombie soldier as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon zombie soldier, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon zombie soldier, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it
@@ -331,7 +331,7 @@ Background: one solid flat magenta (#FF00FF) color only. No floor, no shadow, no
 ```
 Generate an image now. Do not write any words, letters or numbers anywhere in the image.
 Use the attached cute cartoon zombie king as the exact reference: same design, colors, scale and art style (cute casual mobile game art, soft painted shading, light from the top-left, clean dark outline).
-Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon zombie king, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded fluffy edge just below the chin, like a sticker of the face. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
+Do NOT redraw the whole reference picture. Draw an EXPRESSION SHEET: FOUR separate floating heads of this cute cartoon zombie king, arranged in a 2 by 2 grid, each head facing RIGHT, each head ending in a soft rounded edge just below the chin. Keep the same dark outline as the reference: NO white border, NO sticker outline, NO glow around the heads. No body, no legs, no tails, no other characters — only four heads, with wide empty space between them so they never touch or overlap:
 Top left: normal grumpy face
 Top right: eyes squeezed shut in a funny cartoon "ouch" face
 Bottom left: silly cartoon dizzy face with spiral eyes and a few small stars above it

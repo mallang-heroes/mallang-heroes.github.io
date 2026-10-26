@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "mob-dokkaebi-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 90,
+    "h": 105
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9228
+   }
+  },
+  "mob-dokkaebi-die-1": {
+   "frame": {
+    "x": 90,
+    "y": 0,
+    "w": 90,
+    "h": 105
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9228
+   }
+  },
+  "mob-dokkaebi-die-2": {
+   "frame": {
+    "x": 180,
+    "y": 0,
+    "w": 90,
+    "h": 105
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9228
+   }
+  },
+  "mob-dokkaebi-die-3": {
+   "frame": {
+    "x": 270,
+    "y": 0,
+    "w": 90,
+    "h": 105
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4196,
+    "y": 0.9228
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "mob-dokkaebi-die-0",
+   "mob-dokkaebi-die-1",
+   "mob-dokkaebi-die-2",
+   "mob-dokkaebi-die-3"
+  ]
+ },
+ "meta": {
+  "image": "mob-dokkaebi-die.png",
+  "size": {
+   "w": 360,
+   "h": 105
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}
