@@ -38,6 +38,8 @@ flutter:
     - assets/images/monsters/boss-dokkaebi/
     - assets/images/monsters/mob-ghost/
     - assets/images/monsters/boss-ghost/
+    - assets/images/monsters/mob-zombie/
+    - assets/images/monsters/boss-zombie-king/
   fonts:
     - family: Pretendard
       fonts:

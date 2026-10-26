@@ -103,6 +103,18 @@ MONSTERS = {
                        orbit=[(190, 360, 295, 530), (750, 255, 850, 410), (795, 535, 900, 710)],
                        tail=("poly", [(90, 575), (330, 575), (392, 640), (392, 712), (90, 712)], (388, 662)),
                        head=(560, 242, 700, 404), erase=(590, 285, 705, 404), swing=0),
+    "mob-zombie": dict(code="m11", file="m11-zombie", key="magenta", boss=False, base="ref", legs_behind=True,
+                       legs=[("back_leg", [(372, 648), (472, 648), (472, 778), (342, 778), (342, 690)], 0.0, "far"),
+                             ("front_leg", [(515, 655), (612, 655), (672, 695), (672, 762), (572, 762), (528, 722)], 0.5, "near")],
+                       arms=[("arms", [(586, 442), (756, 442), (756, 500), (690, 552), (586, 552)], 0.0, (598, 478))],
+                       tail=None, head=(398, 250, 640, 474), erase=(440, 250, 645, 474), swing=14, arm_swing=6),
+    "boss-zombie-king": dict(code="m12", file="m12-zombie-king", key="magenta", boss=True, base="ref", legs_behind=True,
+                             frame=(96, 100),
+                             legs=[("back_leg", [(348, 692), (432, 692), (432, 780), (348, 780)], 0.0, "far"),
+                                   ("front_leg", [(596, 690), (702, 690), (702, 770), (596, 770)], 0.5, "near")],
+                             arms=[("left_tablet", [(178, 328), (318, 328), (318, 562), (178, 562)], 0.0, (310, 470)),
+                                   ("right_tablet", [(760, 316), (886, 316), (886, 530), (760, 530)], 0.5, (772, 450))],
+                             tail=None, head=(448, 238, 612, 452), erase=[(478, 228, 616, 400), (446, 228, 478, 366)], swing=10, arm_swing=5),
 }
 FRAME = {False: (40, 44), True: (72, 76)}   # 보드 px, @2x로 내보냄
 
@@ -334,7 +346,7 @@ def build_rig(name, cfg):
             legs.append(dict(name=lname, img=with_alpha(whole, up & alpha), pivot=pivot, phase=phase,
                              side=side, bottom=int(ys.max()), cx=pivot[0]))
         arms = []
-        for aname, pts, phase in cfg.get("arms", []):
+        for aname, pts, phase, *pv in cfg.get("arms", []):
             pm = poly_mask(alpha.shape, pts)
             arm_px = pm & alpha & body_mask
             body_mask &= ~arm_px
@@ -344,7 +356,7 @@ def build_rig(name, cfg):
             top = min(p[1] for p in pts)
             xs = [p[0] for p in pts if p[1] == top] or [p[0] for p in pts]
             arms.append(dict(name=aname, img=with_alpha(whole, up & alpha), phase=phase,
-                             pivot=((min(xs) + max(xs)) / 2, top + 4)))
+                             pivot=pv[0] if pv else ((min(xs) + max(xs)) / 2, top + 4)))
         orbit = []
         for box in cfg.get("orbit", []):
             x0, y0, x1, y1 = box
@@ -398,8 +410,9 @@ def build_rig(name, cfg):
         cover = ndimage.binary_dilation(cover, iterations=3)
         zone = np.zeros_like(cover)
         if cfg.get("erase"):
-            ex0, ey0, ex1, ey1 = cfg["erase"]
-            zone[ey0:ey1, ex0:ex1] = True
+            er = cfg["erase"]
+            for ex0, ey0, ex1, ey1 in (er if isinstance(er[0], (tuple, list)) else [er]):
+                zone[ey0:ey1, ex0:ex1] = True
         else:
             zone[hy0:hy1 + 10, (hx0 + hx1) // 2:hx1 + 60] = True
             zone[max(0, hy0 - 20):hy0 + (hy1 - hy0) // 3, hx0 + (hx1 - hx0) // 4:hx1 + 60] = True   # 금관·귀 위쪽
@@ -414,7 +427,7 @@ def build_rig(name, cfg):
         cxs = [l["cx"] for l in legs]
         anchor = ((min(cxs) + max(cxs)) / 2, feet)
     # 크기: 일반은 전신이 프레임 안, 구미호는 몸통 폭 기준(꼬리는 넘침)
-    fw, fh = FRAME[cfg["boss"]]
+    fw, fh = cfg.get("frame", FRAME[cfg["boss"]])
     allm = (body[..., 3] > 0) | (tail["img"][..., 3] > 0)
     for l in legs:
         allm |= l["img"][..., 3] > 0
@@ -640,7 +653,7 @@ def build(name):
     d = os.path.join(OUT, name)
     os.makedirs(d, exist_ok=True)
     os.makedirs(PREV, exist_ok=True)
-    fw, fh = FRAME[cfg["boss"]]
+    fw, fh = cfg.get("frame", FRAME[cfg["boss"]])
     fps = {"walk": 10, "hit": 10, "die": 10, "appear": 12}
     previews = {}
     for anim, frames in sets.items():

@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "mob-zombie-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 79,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3933,
+    "y": 0.9493
+   }
+  },
+  "mob-zombie-walk-1": {
+   "frame": {
+    "x": 79,
+    "y": 0,
+    "w": 79,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3933,
+    "y": 0.9493
+   }
+  },
+  "mob-zombie-walk-2": {
+   "frame": {
+    "x": 158,
+    "y": 0,
+    "w": 79,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3933,
+    "y": 0.9493
+   }
+  },
+  "mob-zombie-walk-3": {
+   "frame": {
+    "x": 237,
+    "y": 0,
+    "w": 79,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3933,
+    "y": 0.9493
+   }
+  },
+  "mob-zombie-walk-4": {
+   "frame": {
+    "x": 316,
+    "y": 0,
+    "w": 79,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3933,
+    "y": 0.9493
+   }
+  },
+  "mob-zombie-walk-5": {
+   "frame": {
+    "x": 395,
+    "y": 0,
+    "w": 79,
+    "h": 99
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3933,
+    "y": 0.9493
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "mob-zombie-walk-0",
+   "mob-zombie-walk-1",
+   "mob-zombie-walk-2",
+   "mob-zombie-walk-3",
+   "mob-zombie-walk-4",
+   "mob-zombie-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "mob-zombie-walk.png",
+  "size": {
+   "w": 474,
+   "h": 99
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

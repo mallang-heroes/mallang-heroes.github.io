@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "mob-zombie-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 126
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3229,
+    "y": 0.8028
+   }
+  },
+  "mob-zombie-die-1": {
+   "frame": {
+    "x": 124,
+    "y": 0,
+    "w": 124,
+    "h": 126
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3229,
+    "y": 0.8028
+   }
+  },
+  "mob-zombie-die-2": {
+   "frame": {
+    "x": 248,
+    "y": 0,
+    "w": 124,
+    "h": 126
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3229,
+    "y": 0.8028
+   }
+  },
+  "mob-zombie-die-3": {
+   "frame": {
+    "x": 372,
+    "y": 0,
+    "w": 124,
+    "h": 126
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.3229,
+    "y": 0.8028
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "mob-zombie-die-0",
+   "mob-zombie-die-1",
+   "mob-zombie-die-2",
+   "mob-zombie-die-3"
+  ]
+ },
+ "meta": {
+  "image": "mob-zombie-die.png",
+  "size": {
+   "w": 496,
+   "h": 126
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-zombie-king-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 257,
+    "h": 198
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.484,
+    "y": 0.973
+   }
+  },
+  "boss-zombie-king-walk-1": {
+   "frame": {
+    "x": 257,
+    "y": 0,
+    "w": 257,
+    "h": 198
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.484,
+    "y": 0.973
+   }
+  },
+  "boss-zombie-king-walk-2": {
+   "frame": {
+    "x": 514,
+    "y": 0,
+    "w": 257,
+    "h": 198
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.484,
+    "y": 0.973
+   }
+  },
+  "boss-zombie-king-walk-3": {
+   "frame": {
+    "x": 771,
+    "y": 0,
+    "w": 257,
+    "h": 198
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.484,
+    "y": 0.973
+   }
+  },
+  "boss-zombie-king-walk-4": {
+   "frame": {
+    "x": 1028,
+    "y": 0,
+    "w": 257,
+    "h": 198
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.484,
+    "y": 0.973
+   }
+  },
+  "boss-zombie-king-walk-5": {
+   "frame": {
+    "x": 1285,
+    "y": 0,
+    "w": 257,
+    "h": 198
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.484,
+    "y": 0.973
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "boss-zombie-king-walk-0",
+   "boss-zombie-king-walk-1",
+   "boss-zombie-king-walk-2",
+   "boss-zombie-king-walk-3",
+   "boss-zombie-king-walk-4",
+   "boss-zombie-king-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-zombie-king-walk.png",
+  "size": {
+   "w": 1542,
+   "h": 198
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 96,
+   "h": 100
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

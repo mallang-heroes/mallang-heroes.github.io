@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-zombie-king-appear-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 288,
+    "h": 345
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.4844,
+    "y": 0.9133
+   }
+  },
+  "boss-zombie-king-appear-1": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 288,
+    "h": 345
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.4844,
+    "y": 0.9133
+   }
+  },
+  "boss-zombie-king-appear-2": {
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 288,
+    "h": 345
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.4844,
+    "y": 0.9133
+   }
+  },
+  "boss-zombie-king-appear-3": {
+   "frame": {
+    "x": 864,
+    "y": 0,
+    "w": 288,
+    "h": 345
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.4844,
+    "y": 0.9133
+   }
+  },
+  "boss-zombie-king-appear-4": {
+   "frame": {
+    "x": 1152,
+    "y": 0,
+    "w": 288,
+    "h": 345
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.4844,
+    "y": 0.9133
+   }
+  },
+  "boss-zombie-king-appear-5": {
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 288,
+    "h": 345
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.4844,
+    "y": 0.9133
+   }
+  }
+ },
+ "animations": {
+  "appear": [
+   "boss-zombie-king-appear-0",
+   "boss-zombie-king-appear-1",
+   "boss-zombie-king-appear-2",
+   "boss-zombie-king-appear-3",
+   "boss-zombie-king-appear-4",
+   "boss-zombie-king-appear-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-zombie-king-appear.png",
+  "size": {
+   "w": 1728,
+   "h": 345
+  },
+  "scale": "2",
+  "fps": 12,
+  "loop": false,
+  "body": {
+   "w": 96,
+   "h": 100
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}
