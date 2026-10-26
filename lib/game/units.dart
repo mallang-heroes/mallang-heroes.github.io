@@ -77,7 +77,7 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
 
   @override
   bool containsLocalPoint(Vector2 point) =>
-      point.x >= -8 && point.x <= size.x + 8 && point.y >= -8 && point.y <= size.y + 26;
+      point.x >= -8 && point.x <= size.x + 8 && point.y >= -8 && point.y <= size.y + 50;
 
   @override
   void update(double dt) {
@@ -97,6 +97,39 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
   @override
   void onTapDown(TapDownEvent event) => game.openBarracks(branch);
 
+  /// 막사 아래 등급별 인원: 군졸(흰 옷) · 정병(병과색) · 군관(어두운 갑주·은 테).
+  void _tierCounts(Canvas canvas, Offset center) {
+    const r = 11.0;
+    const gap = 26.0;
+    final fills = [const Color(0xFFFFFFFF), branchColor(branch), const Color(0xFF4A4E54)];
+    final rims = [_ink, _ink, const Color(0xFFC9CED6)];
+    final inks = [_ink, const Color(0xFFFFFFFF), const Color(0xFFFFFFFF)];
+    for (var t = 0; t < 3; t++) {
+      final c = center + Offset((t - 1) * gap, 0);
+      final empty = counts[t] == 0;
+      canvas.drawCircle(c, r, Paint()..color = fills[t].withValues(alpha: empty ? 0.45 : 1));
+      canvas.drawCircle(
+          c,
+          r,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = t == 2 ? 2 : 1.4
+            ..color = rims[t].withValues(alpha: empty ? 0.4 : 1));
+      final tp = TextPainter(
+        text: TextSpan(
+          text: '${counts[t]}',
+          style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: inks[t].withValues(alpha: empty ? 0.5 : 1)),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, c - Offset(tp.width / 2, tp.height / 2));
+    }
+  }
+
   @override
   void render(Canvas canvas) {
     final foot = Offset(size.x / 2, size.y);
@@ -108,7 +141,7 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
 
     final tp = TextPainter(
       text: TextSpan(
-        text: total == 0 ? branch : '$branch ${counts[0]}·${counts[1]}·${counts[2]}',
+        text: branch,
         style: const TextStyle(
             fontFamily: 'Pretendard', fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFFFFFFFF)),
       ),
@@ -117,8 +150,9 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
     final c = Offset(size.x / 2, size.y + 13);
     final chip = Rect.fromCenter(center: c, width: tp.width + 14, height: tp.height + 2);
     canvas.drawRRect(RRect.fromRectAndRadius(chip, const Radius.circular(9)),
-        Paint()..color = branchColor(branch).withValues(alpha: total == 0 ? 0.7 : 1));
+        Paint()..color = branchColor(branch));
     tp.paint(canvas, c - Offset(tp.width / 2, tp.height / 2));
+    _tierCounts(canvas, Offset(size.x / 2, size.y + 36));
     if (canSummonGeneral) {
       final dot = Offset(size.x - 4, 6);
       canvas.drawCircle(dot, 8, Paint()..color = const Color(0xFFF2C14E));
@@ -378,4 +412,53 @@ class UnitArt {
   UnitArt(this.idle, this.attack);
   final Sheet idle;
   final Sheet attack;
+}
+
+/// 보급병: 궁에서 나와 자기 막사까지 걸어간 뒤 막사 인원이 된다.
+class SupplyWalker extends PositionComponent with HasGameReference<MallangGame> {
+  SupplyWalker(this.branch, this.tier, this.from, this.to, double delay)
+      : _t = -delay,
+        super(priority: 4);
+
+  final String branch;
+  final int tier;
+  final Offset from;
+  final Offset to;
+  double _t;
+  static const double duration = 1.4;
+
+  @override
+  void update(double dt) {
+    _t += dt;
+    if (_t >= duration) {
+      game.supplyArrived(this);
+      removeFromParent();
+    }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    if (_t < 0) return;
+    final k = (_t / duration).clamp(0.0, 1.0);
+    final e = k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) * (-2 * k + 2) / 2; // ease-in-out
+    final p = Offset.lerp(from, to, e)!;
+    final alpha = k < 0.1 ? k / 0.1 : (k > 0.85 ? (1 - k) / 0.15 : 1.0);
+    final flip = to.dx < from.dx;
+    canvas.saveLayer(null, Paint()..color = Color.fromRGBO(255, 255, 255, alpha.clamp(0.0, 1.0)));
+    final sheet = game.tierWalk[branch]?[tier];
+    if (sheet != null) {
+      sheet.draw(canvas, sheet.frameAt(_t), p, flip: flip);
+    } else {
+      final bob = math.sin(_t * 14).abs() * 3;
+      final body = Rect.fromCenter(center: p.translate(0, -12 - bob), width: 24, height: 20);
+      canvas.drawOval(body, Paint()..color = branchColor(branch));
+      canvas.drawOval(
+          body,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.4
+            ..color = _ink);
+    }
+    canvas.restore();
+  }
 }

@@ -34,6 +34,10 @@ class MallangGame extends FlameGame {
 
   /// 막사 등급별 대기 시트 (군졸·정병·군관). 그림이 없는 병과는 없음.
   final Map<String, List<Sheet>> tierIdle = {};
+
+  /// 보급병 걷기 시트 (군졸·정병·군관).
+  final Map<String, List<Sheet>> tierWalk = {};
+  final List<SupplyWalker> walkers = [];
   final rng = math.Random();
   final List<Monster> monsters = [];
   final Map<String, Barracks> barracks = {};
@@ -83,6 +87,10 @@ class MallangGame extends FlameGame {
         for (final t in const ['gunjol', 'jeongbyeong', 'gungwan'])
           await Sheet.load(images, 'units/${b.key}/$t/unit-${b.key}-$t-idle.json'),
       ];
+      tierWalk[b.name] = [
+        for (final t in const ['gunjol', 'jeongbyeong', 'gungwan'])
+          await Sheet.load(images, 'units/${b.key}/$t/unit-${b.key}-$t-walk.json'),
+      ];
     }
     await world.add(MapLayer());
     await world.add(SpawnCave());
@@ -105,6 +113,10 @@ class MallangGame extends FlameGame {
     for (final g in generals) {
       g.removeFromParent();
     }
+    for (final w in walkers) {
+      w.removeFromParent();
+    }
+    walkers.clear();
     generals.clear();
     for (final b in barracks.values) {
       b.counts.setAll(0, [0, 0, 0]);
@@ -182,16 +194,27 @@ class MallangGame extends FlameGame {
 
   void _supply() {
     final got = Rules.supply(round, rng);
-    final perBranch = <String, int>{};
+    // 궁 문 앞에서 나와 각자 막사로 걸어간다 (도착해야 인원에 더해짐).
+    final door = Offset(map.palace.foot.dx, map.palace.foot.dy - 4);
+    palace.bounce();
+    var i = 0;
     for (final (br, tier) in got) {
-      barracks[br]!.counts[tier]++;
-      perBranch[br] = (perBranch[br] ?? 0) + 1;
-    }
-    perBranch.forEach((br, n) {
       final b = barracks[br]!;
-      b.bounce();
-      world.add(FloatText('+$n', b.position + Vector2(0, -b.size.y - 14), const Color(0xFFFFF4D6)));
-    });
+      final w = SupplyWalker(br, tier, door, Offset(b.position.x, b.position.y - 4), i * 0.18);
+      walkers.add(w);
+      world.add(w);
+      i++;
+    }
+  }
+
+  void supplyArrived(SupplyWalker w) {
+    walkers.remove(w);
+    final b = barracks[w.branch]!;
+    b.counts[w.tier]++;
+    b.bounce();
+    world.add(FloatText('+1 ${Rules.tierNames[w.tier]}', b.position + Vector2(0, -b.size.y - 14),
+        const Color(0xFFFFF4D6)));
+    _changed();
   }
 
   void killMonster(Monster m) {
@@ -229,7 +252,7 @@ class MallangGame extends FlameGame {
     if (track.distanceToRoad(p) < map.roadWidth / 2 + 28) return false;
     // 건물: 그림 둘레 + 아래 이름표 자리
     for (final b in map.buildings.values) {
-      final r = Rect.fromLTRB(b.rect.left - 22, b.rect.top - 6, b.rect.right + 22, b.foot.dy + 34);
+      final r = Rect.fromLTRB(b.rect.left - 22, b.rect.top - 6, b.rect.right + 22, b.foot.dy + 50);
       if (r.contains(p)) return false;
     }
     for (final d in map.decorations) {
