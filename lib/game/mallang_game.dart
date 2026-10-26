@@ -48,6 +48,8 @@ class MallangGame extends FlameGame {
   Phase phase = Phase.playing;
   String endReason = '';
   int kills = 0;
+  int silver = 0;
+  final List<int> upgradeLv = [0, 0, 0, 0, 0];
   double gameSpeed = 1;
   String? selectedBranch;
   String? toastText;
@@ -93,6 +95,8 @@ class MallangGame extends FlameGame {
     }
     round = 0;
     kills = 0;
+    silver = 0;
+    upgradeLv.setAll(0, [0, 0, 0, 0, 0]);
     boss = null;
     phase = Phase.playing;
     overlays.remove('result');
@@ -178,6 +182,7 @@ class MallangGame extends FlameGame {
     monsters.remove(m);
     m.removeFromParent();
     kills++;
+    silver += Rules.silverPerKill[Rules.stage(m.round)];
   }
 
   void _end(Phase p, String reason) {
@@ -195,14 +200,10 @@ class MallangGame extends FlameGame {
     return live.take(n).toList();
   }
 
-  /// 사거리 안에서 가장 앞선 몬스터부터 n마리 (광역은 그 둘레 가까운 순).
+  /// 사거리 안에서 가장 앞선 몬스터부터 n마리 (단일 1마리, 광역 3마리).
   List<Monster> monstersInRange(Vector2 at, double radius, int n) {
     final inRange = monsters.where((m) => !m.dead && m.position.distanceTo(at) <= radius).toList()
       ..sort((a, b) => b.traveled.compareTo(a.traveled));
-    if (inRange.isEmpty || n == 1) return inRange.take(n).toList();
-    final first = inRange.first;
-    inRange.sort((a, b) =>
-        a.position.distanceTo(first.position).compareTo(b.position.distanceTo(first.position)));
     return inRange.take(n).toList();
   }
 
@@ -289,6 +290,35 @@ class MallangGame extends FlameGame {
     final b = barracks[branch]!;
     if (b.counts[tier] <= 0) return;
     b.counts[tier]--;
+    silver += Rules.sellPrice[tier];
+    toast('$branch ${Rules.tierNames[tier]} 판매 +${Rules.sellPrice[tier]}냥');
+    _changed();
+  }
+
+  // ── 강화 ──
+  double atkMul(int group) => 1 + Rules.atkPerLv * upgradeLv[group];
+  double speedMul(int group) => 1 + Rules.speedPerLv * upgradeLv[group];
+  int upgradeCost(int group) => Rules.upgradeBase[group] + Rules.upgradeStep[group] * upgradeLv[group];
+
+  /// 성공 50%, 실패해도 비용은 사라진다.
+  void tryUpgrade(int group) {
+    if (phase != Phase.playing) return;
+    if (upgradeLv[group] >= Rules.upgradeMax) {
+      toast('${Rules.upgradeNames[group]} 최대 강화예요');
+      return;
+    }
+    final cost = upgradeCost(group);
+    if (silver < cost) {
+      toast('은냥이 부족해요 ($cost냥 필요)');
+      return;
+    }
+    silver -= cost;
+    if (rng.nextDouble() < Rules.upgradeChance) {
+      upgradeLv[group]++;
+      toast('강화 성공! ${Rules.upgradeNames[group]} Lv${upgradeLv[group]}');
+    } else {
+      toast('강화 실패 (−$cost냥)');
+    }
     _changed();
   }
 

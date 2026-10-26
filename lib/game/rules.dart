@@ -36,7 +36,19 @@ class Rules {
 
   static const List<double> normalDefense = [0, 10, 30, 80, 130, 200];
   static const List<double> bossDefense = [20, 40, 80, 150, 220, 300];
-  static const List<double> bossHp = [2000, 8000, 20000, 34000, 50000, 70000];
+  /// 10R: 장수 없이 5강이면 약 8초, 강화 0이면 대부분 실패 (보스는 선두라 막사 화력을 다 받음).
+  static const List<double> bossHp = [3600, 8000, 20000, 34000, 50000, 70000];
+
+  // ── 은냥 · 강화 (기획표 '은냥·강화' 탭) ──
+  static const List<int> silverPerKill = [2, 3, 4, 6, 8, 10]; // 스테이지별 1마리당
+  static const List<String> upgradeNames = ['군졸~군관', '장수', '명장', '천명', '공신'];
+  static const List<int> upgradeBase = [10, 20, 30, 40, 50];
+  static const List<int> upgradeStep = [3, 5, 8, 10, 12];
+  static const int upgradeMax = 20;
+  static const double upgradeChance = 0.5;
+  static const double atkPerLv = 0.05;
+  static const double speedPerLv = 0.02;
+  static const List<int> sellPrice = [5, 15, 45]; // 군졸, 정병, 군관
 
   /// 일반 몬스터 체력 (기획표 '몬스터' 탭 1–50R).
   /// 1–3R은 군졸만으로 정리, 4–5R은 조금 쌓임, 6R부터 다시 정리.

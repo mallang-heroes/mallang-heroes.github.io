@@ -39,8 +39,8 @@ class BarracksDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                     side: BorderSide(color: color, width: 3),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(14),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,6 +69,8 @@ class BarracksDialog extends StatelessWidget {
                                   action: t < 2 ? '3명 승진' : null,
                                   enabled: t < 2 && b.counts[t] >= 3,
                                   onTap: () => game.promote(br, t),
+                                  sellLabel: '판매 +${Rules.sellPrice[t]}냥',
+                                  onSell: b.counts[t] > 0 ? () => game.sell(br, t) : null,
                                 ),
                               ),
                           ],
@@ -85,8 +87,8 @@ class BarracksDialog extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         const Text(
-                          '승진하면 무작위 병과의 다음 등급이 나와요. 막사 병사는 사거리 없이 선두 몬스터를 쳐요.',
-                          style: TextStyle(fontSize: 13, color: Color(0xFF5C6066)),
+                          '승진하면 무작위 병과의 다음 등급이 나와요. 막사 병사는 맨 앞 몬스터를 쳐요.',
+                          style: TextStyle(fontSize: 12, color: Color(0xFF5C6066)),
                         ),
                       ],
                     ),
@@ -109,6 +111,8 @@ class _TierCell extends StatelessWidget {
     required this.action,
     required this.enabled,
     required this.onTap,
+    required this.sellLabel,
+    required this.onSell,
   });
 
   final String name;
@@ -117,6 +121,8 @@ class _TierCell extends StatelessWidget {
   final String? action;
   final bool enabled;
   final VoidCallback onTap;
+  final String sellLabel;
+  final VoidCallback? onSell;
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +137,7 @@ class _TierCell extends StatelessWidget {
           if (action != null)
             OutlinedButton(
               style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(44),
+                minimumSize: const Size.fromHeight(40),
                 foregroundColor: color,
                 side: BorderSide(color: enabled ? color : Colors.black12, width: 2),
               ),
@@ -139,7 +145,15 @@ class _TierCell extends StatelessWidget {
               child: Text(action!),
             )
           else
-            const SizedBox(height: 44),
+            const SizedBox(height: 40),
+          TextButton(
+            style: TextButton.styleFrom(
+              minimumSize: const Size.fromHeight(36),
+              foregroundColor: const Color(0xFF5C6066),
+            ),
+            onPressed: onSell,
+            child: Text(sellLabel, style: const TextStyle(fontSize: 13)),
+          ),
         ],
       ),
     );

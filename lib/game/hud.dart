@@ -17,7 +17,8 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
           priority: 50,
         );
 
-  static const _speedBtn = Rect.fromLTWH(12, 640, 132, 56);
+  static const _speedBtn = Rect.fromLTWH(12, 648, 132, 52);
+  static Rect _upBtn(int g) => Rect.fromLTWH(12, 336.0 + g * 60, 132, 54);
 
   @override
   bool containsLocalPoint(Vector2 point) =>
@@ -25,7 +26,11 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
 
   @override
   void onTapDown(TapDownEvent event) {
-    if (_speedBtn.contains(event.localPosition.toOffset())) game.toggleSpeed();
+    final p = event.localPosition.toOffset();
+    if (_speedBtn.contains(p)) game.toggleSpeed();
+    for (var g = 0; g < Rules.upgradeNames.length; g++) {
+      if (_upBtn(g).contains(p)) game.tryUpgrade(g);
+    }
   }
 
   void _text(Canvas c, String s, Offset at,
@@ -85,10 +90,42 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
           size: 13, color: const Color(0xFF8C2F2B));
     }
 
-    _text(canvas, '처치 ${g.kills}', const Offset(12, 300), size: 15);
-    _text(canvas, '장수 ${g.generals.length}명', const Offset(12, 322), size: 15);
+    // 은냥
+    canvas.drawCircle(const Offset(24, 307), 9, Paint()..color = const Color(0xFFC9CED6));
+    canvas.drawCircle(
+        const Offset(24, 307),
+        9,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..color = const Color(0xFF7D838C));
+    _text(canvas, '${g.silver}냥', const Offset(40, 294), size: 22, bold: true);
 
-    _text(canvas, '막사를 누르면\n승진 · 장수 소환', const Offset(12, 560), size: 13, color: const Color(0xFF5C6066));
+    // 강화 버튼 (명장·천명·공신은 아직 유닛이 없어 잠금)
+    for (var gi = 0; gi < Rules.upgradeNames.length; gi++) {
+      final r = _upBtn(gi);
+      final locked = gi >= 2;
+      final cost = g.upgradeCost(gi);
+      final maxed = g.upgradeLv[gi] >= Rules.upgradeMax;
+      final afford = !locked && !maxed && g.silver >= cost;
+      final rr = RRect.fromRectAndRadius(r, const Radius.circular(10));
+      canvas.drawRRect(rr, Paint()..color = locked ? const Color(0x40FFFFFF) : const Color(0xFFFFFFFF));
+      canvas.drawRRect(
+          rr,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2
+            ..color = afford ? const Color(0xFFB8891E) : const Color(0x332A211C));
+      final fg = locked ? const Color(0x662A211C) : _ink;
+      _text(canvas, Rules.upgradeNames[gi], Offset(r.left + 10, r.top + 6), size: 14, bold: true, color: fg);
+      _text(canvas, 'Lv${g.upgradeLv[gi]}', Offset(r.right - 10 - 34, r.top + 6), size: 14, bold: true, color: fg);
+      _text(
+          canvas,
+          locked ? '준비 중' : (maxed ? '최대' : '$cost냥 · 50%'),
+          Offset(r.left + 10, r.top + 29),
+          size: 13,
+          color: locked ? fg : (afford ? const Color(0xFF8A6418) : const Color(0xFF8C2F2B)));
+    }
 
     final btn = RRect.fromRectAndRadius(_speedBtn, const Radius.circular(12));
     canvas.drawRRect(btn, Paint()..color = g.gameSpeed > 1 ? const Color(0xFF2E5E8C) : const Color(0xFFFFFFFF));

@@ -79,8 +79,8 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
     if (_cool > 0) return;
     final targets = game.leadMonsters(Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
     if (targets.isEmpty) return;
-    _cool = 1 / Rules.stats[branch]!.speed;
-    fireAt(game, branch, power, position + Vector2(0, -size.y * 0.6), targets);
+    _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(0));
+    fireAt(game, branch, power * game.atkMul(0), position + Vector2(0, -size.y * 0.6), targets);
   }
 
   @override
@@ -161,10 +161,10 @@ class General extends PositionComponent
     final targets = game.monstersInRange(
         position, radius, Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
     if (targets.isEmpty) return;
-    _cool = 1 / Rules.stats[branch]!.speed;
+    _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(1));
     _flip = targets.first.position.x < position.x;
     _attackT = 0;
-    fireAt(game, branch, Rules.tierPower[3], position + Vector2(0, -40), targets,
+    fireAt(game, branch, Rules.tierPower[3] * game.atkMul(1), position + Vector2(0, -40), targets,
         melee: art != null && branch == '창병');
   }
 
