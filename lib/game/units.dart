@@ -173,8 +173,8 @@ class General extends PositionComponent
   General(this.branch, Vector2 at)
       : super(position: at, size: Vector2(72, 84), anchor: const Anchor(0.5, 0.85), priority: 8);
 
-  static const double walkSpeed = 100; // 소환 후 첫 자리로 걸어갈 때 (px/초)
-  static const double runSpeed = 170; // 자리를 옮길 때
+  static const double walkSpeed = 160; // 소환 후 첫 자리로 걸어갈 때 (px/초)
+  static const double runSpeed = 240; // 자리를 옮길 때
 
   final String branch;
   bool showRange = false;
