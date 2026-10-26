@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-mystic-gunjol-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.415,
+    "y": 0.9414
+   }
+  },
+  "unit-mystic-gunjol-idle-1": {
+   "frame": {
+    "x": 102,
+    "y": 0,
+    "w": 102,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.415,
+    "y": 0.9414
+   }
+  },
+  "unit-mystic-gunjol-idle-2": {
+   "frame": {
+    "x": 204,
+    "y": 0,
+    "w": 102,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.415,
+    "y": 0.9414
+   }
+  },
+  "unit-mystic-gunjol-idle-3": {
+   "frame": {
+    "x": 306,
+    "y": 0,
+    "w": 102,
+    "h": 140
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.415,
+    "y": 0.9414
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-mystic-gunjol-idle-0",
+   "unit-mystic-gunjol-idle-1",
+   "unit-mystic-gunjol-idle-2",
+   "unit-mystic-gunjol-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-gunjol-idle.png",
+  "size": {
+   "w": 408,
+   "h": 140
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 51,
+   "h": 70
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

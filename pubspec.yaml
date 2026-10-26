@@ -36,6 +36,10 @@ flutter:
     - assets/images/units/navy/jeongbyeong/
     - assets/images/units/navy/gungwan/
     - assets/images/units/navy/jangsu/
+    - assets/images/units/mystic/gunjol/
+    - assets/images/units/mystic/jeongbyeong/
+    - assets/images/units/mystic/gungwan/
+    - assets/images/units/mystic/jangsu/
   fonts:
     - family: Pretendard
       fonts:
