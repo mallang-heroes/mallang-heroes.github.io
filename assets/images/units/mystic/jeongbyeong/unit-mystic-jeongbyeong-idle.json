@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-mystic-jeongbyeong-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 110,
+    "h": 150
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4273,
+    "y": 0.9373
+   }
+  },
+  "unit-mystic-jeongbyeong-idle-1": {
+   "frame": {
+    "x": 110,
+    "y": 0,
+    "w": 110,
+    "h": 150
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4273,
+    "y": 0.9373
+   }
+  },
+  "unit-mystic-jeongbyeong-idle-2": {
+   "frame": {
+    "x": 220,
+    "y": 0,
+    "w": 110,
+    "h": 150
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4273,
+    "y": 0.9373
+   }
+  },
+  "unit-mystic-jeongbyeong-idle-3": {
+   "frame": {
+    "x": 330,
+    "y": 0,
+    "w": 110,
+    "h": 150
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4273,
+    "y": 0.9373
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-mystic-jeongbyeong-idle-0",
+   "unit-mystic-jeongbyeong-idle-1",
+   "unit-mystic-jeongbyeong-idle-2",
+   "unit-mystic-jeongbyeong-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-jeongbyeong-idle.png",
+  "size": {
+   "w": 440,
+   "h": 150
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 55,
+   "h": 75
+  },
+  "body_height": 54,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

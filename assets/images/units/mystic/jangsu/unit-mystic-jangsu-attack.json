@@ -1,0 +1,113 @@
+{
+ "frames": {
+  "unit-mystic-jangsu-attack-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 252,
+    "h": 154
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.2553,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-jangsu-attack-1": {
+   "frame": {
+    "x": 252,
+    "y": 0,
+    "w": 252,
+    "h": 154
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.2553,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-jangsu-attack-2": {
+   "frame": {
+    "x": 504,
+    "y": 0,
+    "w": 252,
+    "h": 154
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.2553,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-jangsu-attack-3": {
+   "frame": {
+    "x": 756,
+    "y": 0,
+    "w": 252,
+    "h": 154
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.2553,
+    "y": 0.9359
+   },
+   "events": {
+    "projectile": {
+     "x": 240.7,
+     "y": 31.5
+    }
+   }
+  },
+  "unit-mystic-jangsu-attack-4": {
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 252,
+    "h": 154
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.2553,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-jangsu-attack-5": {
+   "frame": {
+    "x": 1260,
+    "y": 0,
+    "w": 252,
+    "h": 154
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.2553,
+    "y": 0.9359
+   }
+  }
+ },
+ "animations": {
+  "attack": [
+   "unit-mystic-jangsu-attack-0",
+   "unit-mystic-jangsu-attack-1",
+   "unit-mystic-jangsu-attack-2",
+   "unit-mystic-jangsu-attack-3",
+   "unit-mystic-jangsu-attack-4",
+   "unit-mystic-jangsu-attack-5"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-jangsu-attack.png",
+  "size": {
+   "w": 1512,
+   "h": 154
+  },
+  "scale": "2",
+  "fps": 12,
+  "board_frame": {
+   "w": 126,
+   "h": 77
+  },
+  "body_height": 66,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

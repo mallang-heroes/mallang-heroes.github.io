@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-mystic-gunjol-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 106,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4182,
+    "y": 0.9439
+   }
+  },
+  "unit-mystic-gunjol-walk-1": {
+   "frame": {
+    "x": 106,
+    "y": 0,
+    "w": 106,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4182,
+    "y": 0.9439
+   }
+  },
+  "unit-mystic-gunjol-walk-2": {
+   "frame": {
+    "x": 212,
+    "y": 0,
+    "w": 106,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4182,
+    "y": 0.9439
+   }
+  },
+  "unit-mystic-gunjol-walk-3": {
+   "frame": {
+    "x": 318,
+    "y": 0,
+    "w": 106,
+    "h": 164
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4182,
+    "y": 0.9439
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-mystic-gunjol-walk-0",
+   "unit-mystic-gunjol-walk-1",
+   "unit-mystic-gunjol-walk-2",
+   "unit-mystic-gunjol-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-gunjol-walk.png",
+  "size": {
+   "w": 424,
+   "h": 164
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 53,
+   "h": 82
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

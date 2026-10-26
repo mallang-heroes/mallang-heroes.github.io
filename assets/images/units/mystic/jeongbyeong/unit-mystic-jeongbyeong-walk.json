@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-mystic-jeongbyeong-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 114,
+    "h": 174
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4327,
+    "y": 0.946
+   }
+  },
+  "unit-mystic-jeongbyeong-walk-1": {
+   "frame": {
+    "x": 114,
+    "y": 0,
+    "w": 114,
+    "h": 174
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4327,
+    "y": 0.946
+   }
+  },
+  "unit-mystic-jeongbyeong-walk-2": {
+   "frame": {
+    "x": 228,
+    "y": 0,
+    "w": 114,
+    "h": 174
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4327,
+    "y": 0.946
+   }
+  },
+  "unit-mystic-jeongbyeong-walk-3": {
+   "frame": {
+    "x": 342,
+    "y": 0,
+    "w": 114,
+    "h": 174
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4327,
+    "y": 0.946
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-mystic-jeongbyeong-walk-0",
+   "unit-mystic-jeongbyeong-walk-1",
+   "unit-mystic-jeongbyeong-walk-2",
+   "unit-mystic-jeongbyeong-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-jeongbyeong-walk.png",
+  "size": {
+   "w": 456,
+   "h": 174
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 57,
+   "h": 87
+  },
+  "body_height": 54,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}
