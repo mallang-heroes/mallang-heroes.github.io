@@ -26,12 +26,18 @@ String? tierImagePath(String branch, int tier) {
 }
 
 /// 한 번 공격: 대상 고르기 → 피해 → 투사체 그림.
+/// [onImpact]이면 투사체가 몬스터에 닿을 때 피해가 들어가고, 투사체는 움직이는 몬스터를 따라간다.
 void fireAt(MallangGame game, String branch, double power, Vector2 from, List<Monster> targets,
-    {bool shot = true, bool melee = false}) {
+    {bool shot = true, bool melee = false, bool onImpact = false}) {
   final st = Rules.stats[branch]!;
   for (final m in targets) {
     final crit = game.rng.nextDouble() < st.crit;
     final raw = st.atk * Rules.damageScale * power * (crit ? Rules.critMultiplier : 1);
+    if (onImpact && shot && !melee) {
+      game.world.add(Shot(from.clone(), m.hitPoint, branchColor(branch),
+          aoe: st.aoe, target: m, onImpact: () => m.takeDamage(raw)));
+      continue;
+    }
     if (shot) game.world.add(Shot(melee ? m.hitPoint : from.clone(), m.hitPoint, branchColor(branch), aoe: st.aoe));
     m.takeDamage(raw);
   }
@@ -184,6 +190,10 @@ class General extends PositionComponent
   bool _flip = false;
   bool _placedOnce = false;
 
+  /// 공격 동작 중 무기를 내미는 프레임에서 쏠 대상 (그 프레임 전까지 대기).
+  List<Monster>? _pending;
+  double _releaseAt = 0;
+
   /// 이동 중이면 목적지 (이동 중에는 공격하지 않음).
   Vector2? _target;
   double _speed = walkSpeed;
@@ -208,6 +218,7 @@ class General extends PositionComponent
     final art = _art;
     if (_attackT >= 0) {
       _attackT += dt;
+      if (_pending != null && _attackT >= _releaseAt) _release();
       if (art == null || _attackT > art.attack.duration) _attackT = -1;
     }
     final target = _target;
@@ -232,8 +243,55 @@ class General extends PositionComponent
     _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(1));
     _flip = targets.first.position.x < position.x;
     _attackT = 0;
-    fireAt(game, branch, Rules.tierPower[3] * game.atkMul(1), position + Vector2(0, -40), targets,
-        melee: art != null && branch == '창병');
+    if (art == null) {
+      fireAt(game, branch, Rules.tierPower[3] * game.atkMul(1), position + Vector2(0, -40), targets);
+      return;
+    }
+    _pending = targets;
+    _releaseAt = _eventTime(art.attack);
+  }
+
+  /// 공격 시트에서 타격점·발사 지점이 있는 프레임이 시작되는 시각.
+  static double _eventTime(Sheet s) {
+    var t = 0.0;
+    for (final f in s.frames) {
+      if (f.hit != null || f.projectile != null) return t;
+      t += f.seconds;
+    }
+    return 0;
+  }
+
+  /// 무기를 내민 프레임: 근접은 그 자리에서 타격, 원거리는 무기 끝에서 투사체가 나간다.
+  void _release() {
+    var targets = _pending!.where((m) => !m.dead && m.isMounted).toList();
+    _pending = null;
+    final art = _art;
+    if (targets.isEmpty) {
+      targets = game.monstersInRange(position, radius, Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
+      if (targets.isEmpty) return;
+    }
+    final power = Rules.tierPower[3] * game.atkMul(1);
+    SheetFrame? ev;
+    if (art != null) {
+      for (final f in art.attack.frames) {
+        if (f.hit != null || f.projectile != null) {
+          ev = f;
+          break;
+        }
+      }
+    }
+    if (ev == null) {
+      fireAt(game, branch, power, position + Vector2(0, -40), targets);
+      return;
+    }
+    final melee = ev.hit != null;
+    final p = (ev.hit ?? ev.projectile)!;
+    final w = ev.src.width / artScale;
+    final h = ev.src.height / artScale;
+    var dx = p.dx / artScale - ev.anchor.dx * w;
+    final dy = p.dy / artScale - ev.anchor.dy * h;
+    if (_flip) dx = -dx;
+    fireAt(game, branch, power, position + Vector2(dx, dy), targets, melee: melee, onImpact: true);
   }
 
   @override
@@ -274,6 +332,7 @@ class General extends PositionComponent
     _placedOnce = true;
     _target = snapped;
     _attackT = -1;
+    _pending = null;
   }
 
   @override
@@ -409,14 +468,16 @@ class General extends PositionComponent
   }
 }
 
-/// 투사체 (피해는 쏠 때 바로 들어가고, 그림만 날아간다).
+/// 투사체. [target]이 있으면 날아가는 동안 몬스터를 따라가고, 닿을 때 [onImpact]로 피해가 들어간다.
 class Shot extends PositionComponent {
-  Shot(this.from, this.to, this.color, {this.aoe = false}) : super(priority: 15);
+  Shot(this.from, this.to, this.color, {this.aoe = false, this.target, this.onImpact}) : super(priority: 15);
 
   final Vector2 from;
   final Vector2 to;
   final Color color;
   final bool aoe;
+  final Monster? target;
+  void Function()? onImpact;
   double _t = 0;
   static const double _flight = 0.18;
   static const double _burst = 0.16;
@@ -424,6 +485,13 @@ class Shot extends PositionComponent {
   @override
   void update(double dt) {
     _t += dt;
+    final m = target;
+    if (m != null && !m.dead && _t < _flight) to.setFrom(m.hitPoint);
+    if (_t >= _flight && onImpact != null) {
+      final hit = onImpact!;
+      onImpact = null;
+      hit();
+    }
     if (_t > _flight + _burst) removeFromParent();
   }
 
