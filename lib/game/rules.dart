@@ -38,9 +38,12 @@ class Rules {
   static const List<double> bossDefense = [20, 40, 80, 150, 220, 300];
   static const List<double> bossHp = [2000, 8000, 20000, 34000, 50000, 70000];
 
+  /// 1–10R 일반 몬스터 체력: 1–3R은 군졸만으로 정리, 4–5R은 조금 쌓임, 6R부터 다시 정리.
+  static const List<double> earlyHp = [15, 35, 55, 140, 165, 80, 100, 120, 140, 160];
+
   static double normalHp(int r) {
     double lerp(double a, double b, double t) => a + (b - a) * t;
-    if (r <= 10) return 11.0 * r;
+    if (r <= 10) return earlyHp[r - 1];
     if (r <= 20) return lerp(290, 840, (r - 11) / 9);
     if (r <= 30) return lerp(860, 1940, (r - 21) / 9);
     if (r <= 40) return lerp(1500, 2480, (r - 31) / 8);
