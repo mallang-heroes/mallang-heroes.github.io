@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-navy-jangsu-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4821,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-idle-1": {
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 112,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4821,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-idle-2": {
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 112,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4821,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-idle-3": {
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 112,
+    "h": 144
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4821,
+    "y": 0.937
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-navy-jangsu-idle-0",
+   "unit-navy-jangsu-idle-1",
+   "unit-navy-jangsu-idle-2",
+   "unit-navy-jangsu-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-navy-jangsu-idle.png",
+  "size": {
+   "w": 448,
+   "h": 144
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 56,
+   "h": 72
+  },
+  "body_height": 66,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

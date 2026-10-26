@@ -9,7 +9,13 @@ import json, math, os, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 from scipy import ndimage
-from keying import key_out
+from keying import key_out as _key_out
+import os as _os
+SHADOW_BRANCHES = {"navy", "mystic"}
+_CUR = {"b": None}
+def key_out(p, *a, **k):
+    k.setdefault("drop_shadow", _CUR["b"] in SHADOW_BRANCHES)
+    return _key_out(p, *a, **k)
 from split_units import split_characters
 
 H = os.path.dirname(os.path.abspath(__file__))
@@ -55,7 +61,9 @@ def helmet_width(img):
     a = np.asarray(img).astype(np.int32)
     r, g, b, al = a[..., 0], a[..., 1], a[..., 2], a[..., 3]
     mx, mn = np.maximum(np.maximum(r, g), b), np.minimum(np.minimum(r, g), b)
-    steel = (al > 200) & (b >= r) & (b > g - 8) & (mx - mn < 60) & (mx > 80) & (mx < 210)
+    steel = (al > 200) & (mx - mn < 45) & (mx > 60) & (mx < 215)
+    ys0, ys1 = np.where(al.max(1) > 20)[0][[0, -1]]
+    steel[int(ys0 + (ys1 - ys0) * .45):] = False          # 투구는 위쪽에만 (사슬·칼날 제외)
     steel = ndimage.binary_opening(steel, iterations=2)
     lab, n = ndimage.label(steel)
     if n == 0:
@@ -196,6 +204,7 @@ def export(branch, tier, sprites, anims, out, pad=None):
 
 
 def main(branch):
+    _CUR["b"] = branch
     src = os.path.join(H, "src2")
     out = os.path.join(H, "out2", branch)
     os.makedirs(out, exist_ok=True)
@@ -245,7 +254,7 @@ def main(branch):
             hb, ha = helmet_width(J_base), helmet_width(J_attack)
             hh = J_base.getbbox(); ha_h = J_attack.height
             same_height = abs((hh[3] - hh[1]) / ha_h - 1) < .12      # 그림 전체 높이가 비슷하면 같은 크기로 그린 것
-            if hb and ha and abs(ha / hb - 1) > .06 and not same_height:      # 공격 그림이 다른 크기로 그려졌으면 투구 폭으로 맞춤
+            if hb and ha and abs(ha / hb - 1) > .06:      # 공격 그림이 다른 크기로 그려졌으면 투구 폭으로 맞춤
                 class _L: pass
                 ref = _L(); ref.k = sp["base"].k * hb / ha; ref.foot = None
                 sp["attack"] = Sprite(J_attack, TGT[t], like=ref)

@@ -5,7 +5,7 @@ from keying import key_out
 from split_units import split_characters
 from process_branch import clean_edges, remove_sparkle
 b = sys.argv[1]
-A = clean_edges(remove_sparkle(key_out(f"src2/{b}-A.png"), None))
+A = clean_edges(remove_sparkle(key_out(f"src2/{b}-A.png", drop_shadow=b in ("navy", "mystic")), None))
 units = split_characters(A, 4)
 for (bb, im), n in zip(units, ["gunjol", "jeongbyeong", "gungwan", "jangsu"]):
     print(n, bb)
