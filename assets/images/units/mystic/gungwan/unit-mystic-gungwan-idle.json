@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-mystic-gungwan-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4527,
+    "y": 0.9253
+   }
+  },
+  "unit-mystic-gungwan-idle-1": {
+   "frame": {
+    "x": 88,
+    "y": 0,
+    "w": 88,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4527,
+    "y": 0.9253
+   }
+  },
+  "unit-mystic-gungwan-idle-2": {
+   "frame": {
+    "x": 176,
+    "y": 0,
+    "w": 88,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4527,
+    "y": 0.9253
+   }
+  },
+  "unit-mystic-gungwan-idle-3": {
+   "frame": {
+    "x": 264,
+    "y": 0,
+    "w": 88,
+    "h": 132
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.4527,
+    "y": 0.9253
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-mystic-gungwan-idle-0",
+   "unit-mystic-gungwan-idle-1",
+   "unit-mystic-gungwan-idle-2",
+   "unit-mystic-gungwan-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-gungwan-idle.png",
+  "size": {
+   "w": 352,
+   "h": 132
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 44,
+   "h": 66
+  },
+  "body_height": 60,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

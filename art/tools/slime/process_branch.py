@@ -12,6 +12,7 @@ from scipy import ndimage
 from keying import key_out as _key_out
 import os as _os
 SHADOW_BRANCHES = {"navy", "mystic"}
+SAME_SCALE_ATTACK = {"mystic"}   # 공격 그림이 입력과 같은 크기로 그려졌는데 붓·먹 때문에 투구 폭 감지가 틀리는 병과
 _CUR = {"b": None}
 def key_out(p, *a, **k):
     k.setdefault("drop_shadow", _CUR["b"] in SHADOW_BRANCHES)
@@ -254,7 +255,7 @@ def main(branch):
             hb, ha = helmet_width(J_base), helmet_width(J_attack)
             hh = J_base.getbbox(); ha_h = J_attack.height
             same_height = abs((hh[3] - hh[1]) / ha_h - 1) < .12      # 그림 전체 높이가 비슷하면 같은 크기로 그린 것
-            if hb and ha and abs(ha / hb - 1) > .06:      # 공격 그림이 다른 크기로 그려졌으면 투구 폭으로 맞춤
+            if _CUR["b"] not in SAME_SCALE_ATTACK and hb and ha and abs(ha / hb - 1) > .06:      # 공격 그림이 다른 크기로 그려졌으면 투구 폭으로 맞춤
                 class _L: pass
                 ref = _L(); ref.k = sp["base"].k * hb / ha; ref.foot = None
                 sp["attack"] = Sprite(J_attack, TGT[t], like=ref)

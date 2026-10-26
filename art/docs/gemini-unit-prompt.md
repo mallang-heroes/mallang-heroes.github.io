@@ -77,7 +77,7 @@ Only this one character, centered with plenty of empty space on every side; the 
 | 포수 | `gunners` | `royal purple` | `a short bronze hand cannon on a wooden pole with three gold bands, held at the side` | `A small gunpowder pouch at its waist.` | `aiming the hand cannon straight forward, bracing for the recoil` |
 | 기병 | `cavalry` | `ochre gold` | `a flail with a long wooden handle, a short iron chain and a short wooden striker` | `Each slime rides a cute chubby dark-brown chibi pony with a small saddle (the pony is the same size for all ranks; only the slime grows).` | `rearing the pony slightly and swinging the flail down forward` |
 | 수군 | `navy sailors` | `ocean blue` | `a single-edged curved Korean hwando sword, not a katana, held blade-up` | `A small wooden oar carried on its back.` | `slashing the sword forward in a wide arc` |
-| 술사 | `mystics` | `slate grey` | `a wooden staff topped with a gold ring and two small bells` | `A string of brown prayer beads around its body and a yellow paper talisman with red brush marks (no readable letters).` | `raising the staff high and holding the talisman forward, casting a spell` |
+| 술사 | `mystics (Taoist sorcerers)` | `slate grey` | `a large Korean calligraphy brush (long wooden handle, a big soft black ink-dipped tip), held up like a magic wand — NOT a sword, NOT an oar` | `A small yellow paper talisman with red brush strokes (no readable letters) tucked in the belt, and a small ink pot at the waist.` | `swinging the big brush forward through the air as if painting a spell, ink splashing from the tip` |
 
 > **기병은 말끼리 겹쳐 나와서 자를 수 없으니, 등급마다 한 장씩(총 4장)** 받으세요. 라인업을 한 번 뽑은 뒤 그 그림을 첨부해 "draw ONLY the rank N rider ... alone"으로 요청하면 그림체가 유지됩니다.
 

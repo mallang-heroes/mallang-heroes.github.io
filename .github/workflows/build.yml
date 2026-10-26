@@ -47,16 +47,19 @@ jobs:
       - name: Build web
         run: |
           set -o pipefail
-          flutter build web --release --base-href / 2>&1 | tee web.txt || {
+          flutter build web --release --base-href / --dart-define=BUILD=${GITHUB_SHA::7} 2>&1 | tee web.txt || {
             grep -E "Error|error:" web.txt | head -40 | while read -r line; do echo "::error::$line"; done
             exit 1
           }
+          # 새 버전이 브라우저 캐시에 막히지 않게 파일 주소에 빌드 번호를 붙인다
+          sed -i "s/__BUILD__/${GITHUB_SHA::7}/" build/web/index.html
+          sed -i "s/main\.dart\.js/main.dart.js?v=${GITHUB_SHA::7}/g" build/web/flutter_bootstrap.js
 
       - name: Build Android APK
         continue-on-error: true
         run: |
           set -o pipefail
-          flutter build apk --release 2>&1 | tee apk.txt || {
+          flutter build apk --release --dart-define=BUILD=${GITHUB_SHA::7} 2>&1 | tee apk.txt || {
             grep -E "Error|error:|FAILURE|What went wrong" -A2 apk.txt | head -40 | while read -r line; do echo "::error::$line"; done
             exit 1
           }

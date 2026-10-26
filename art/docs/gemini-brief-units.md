@@ -32,7 +32,7 @@ You are the illustrator for a cute mobile tower-defense game. Read this whole br
 | gunner | gunners | royal purple | a short bronze hand cannon on a wooden pole with three gold bands | a small gunpowder pouch at the waist | aiming the hand cannon straight forward, bracing for recoil |
 | cavalry | cavalry | ochre gold | a flail with a long wooden handle, a short iron chain and a short wooden striker | rides a cute chubby dark-brown chibi pony with a small saddle; the pony is the same size for every rank, only the slime grows | rearing the pony slightly and swinging the flail down forward |
 | navy | navy sailors | ocean blue | a single-edged curved Korean hwando sword (not a katana), held blade-up | a small wooden oar carried on its back | slashing the sword forward in a wide arc |
-| mystic | mystics | slate grey | a wooden staff topped with a gold ring and two small bells | brown prayer beads around the body and a yellow paper talisman with red brush marks (no readable letters) | raising the staff high and holding the talisman forward, casting a spell |
+| mystic | mystics (Taoist sorcerers) | slate grey | a large Korean calligraphy brush (long wooden handle, a big soft black ink-dipped tip), held up like a magic wand — NOT a sword, NOT an oar | a small yellow paper talisman with red brush strokes (no readable letters) tucked in the belt, and a small ink pot at the waist | swinging the big brush forward through the air as if painting a spell, ink splashing from the tip |
 
 ## Steps
 ### Step A — growth line-up  (message: "Generate the image for step A <unit> now")

@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-mystic-gungwan-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 92,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4547,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-gungwan-walk-1": {
+   "frame": {
+    "x": 92,
+    "y": 0,
+    "w": 92,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4547,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-gungwan-walk-2": {
+   "frame": {
+    "x": 184,
+    "y": 0,
+    "w": 92,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4547,
+    "y": 0.9359
+   }
+  },
+  "unit-mystic-gungwan-walk-3": {
+   "frame": {
+    "x": 276,
+    "y": 0,
+    "w": 92,
+    "h": 154
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4547,
+    "y": 0.9359
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-mystic-gungwan-walk-0",
+   "unit-mystic-gungwan-walk-1",
+   "unit-mystic-gungwan-walk-2",
+   "unit-mystic-gungwan-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-mystic-gungwan-walk.png",
+  "size": {
+   "w": 368,
+   "h": 154
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 46,
+   "h": 77
+  },
+  "body_height": 60,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

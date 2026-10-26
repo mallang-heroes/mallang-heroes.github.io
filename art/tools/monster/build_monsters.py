@@ -69,8 +69,12 @@ MONSTERS = {
                            ("front_near", [(490, 705), (612, 705), (612, 874), (490, 874)], 0.5, "near")],
                      tail=("poly", [(22, 398), (170, 398), (166, 512), (22, 512)], (165, 468)),
                      head=(460, 195, 936, 612), swing=13),
-    "boss-boar": dict(code="m2", file="m2-boss-boar", key="magenta", boss=True, base="assemble", legs_behind=True,
-                      head=(600, 112, 976, 472), swing=11),
+    "boss-boar": dict(code="m2", file="m2-boss-boar", key="magenta", boss=True, base="ref",
+                      legs=[("hind_far",  [(330, 700), (450, 700), (450, 828), (330, 828)], 0.5, "far"),
+                            ("front_far", [(655, 700), (758, 700), (758, 836), (655, 836)], 0.0, "far"),
+                            ("hind_near", [(140, 706), (262, 706), (262, 852), (140, 852)], 0.0, "near"),
+                            ("front_near", [(492, 712), (612, 712), (612, 874), (492, 874)], 0.5, "near")],
+                      tail=None, head=(596, 214, 992, 692), head_scale=1.14, erase=[(760, 330, 1000, 700), (640, 360, 760, 700)], erase_gold=True, swing=11),
     "mob-tiger": dict(code="m3", file="m3-tiger", key="magenta", boss=False, base="ref",
                       legs=TIGER_LEGS, tail=("poly", TIGER_TAIL, (166, 492)),
                       head=(555, 200, 956, 594), swing=15),
@@ -217,10 +221,10 @@ def paste(dst, src, x, y):
     return np.asarray(d).copy()
 
 
-def fit_head(head, box):
+def fit_head(head, box, k=1.03):
     """표정 머리를 시안 머리 상자에 맞춤: 가로폭으로 크기, 오른쪽·아래로 정렬."""
     x0, y0, x1, y1 = box
-    s = (x1 - x0) / head.shape[1] * 1.03
+    s = (x1 - x0) / head.shape[1] * k
     im = Image.fromarray(head, "RGBA")
     im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
     return np.asarray(im), x1 - im.width + 4, y1 - im.height + 4
@@ -409,7 +413,7 @@ def build_rig(name, cfg):
                 f[..., :3] = np.clip(f[..., :3] * (1 + (gain - 1) * w), 0, 255)
                 fc[k] = f.astype(np.uint8)
     for k in ("ouch", "dizzy", "roar"):
-        h, x, y = fit_head(fc[k], cfg["head"])
+        h, x, y = fit_head(fc[k], cfg["head"], cfg.get("head_scale", 1.03))
         cover = np.zeros(body.shape[:2], bool)
         x, y = int(round(x)), int(round(y))
         cover[y:y + h.shape[0], x:x + h.shape[1]] = h[..., 3] > 60
@@ -422,6 +426,13 @@ def build_rig(name, cfg):
         else:
             zone[hy0:hy1 + 10, (hx0 + hx1) // 2:hx1 + 60] = True
             zone[max(0, hy0 - 20):hy0 + (hy1 - hy0) // 3, hx0 + (hx1 - hx0) // 4:hx1 + 60] = True   # 금관·귀 위쪽
+        if cfg.get("erase_gold"):
+            g = body.astype(int)
+            gold = (g[..., 3] > 0) & (g[..., 0] > 150) & (g[..., 1] > 100) & (g[..., 2] < 120) & (g[..., 0] - g[..., 2] > 80)
+            gold = ndimage.binary_dilation(ndimage.binary_closing(gold, iterations=3), iterations=6)
+            gz = np.zeros_like(zone)
+            gz[hy0 - 40:hy1, hx0:hx1 + 40] = True
+            zone |= gold & gz
         b = body.copy()
         b[..., 3] = np.where(zone & ~cover, 0, b[..., 3])
         bodies[k] = paste(b, h, x, y)
