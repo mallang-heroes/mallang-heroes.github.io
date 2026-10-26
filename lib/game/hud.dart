@@ -138,6 +138,9 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
     _text(canvas, '속도 ×${g.gameSpeed.toInt()}', Offset(_speedBtn.center.dx, _speedBtn.top + 15),
         size: 18, bold: true, center: true, color: g.gameSpeed > 1 ? const Color(0xFFFFFFFF) : const Color(0xFF2E5E8C));
 
+    _text(canvas, '빌드 ${const String.fromEnvironment('BUILD', defaultValue: 'dev')}', const Offset(12, 703),
+        size: 11, color: const Color(0x992A211C));
+
     final t = g.toastText;
     if (t != null) {
       final tp = TextPainter(

@@ -17,6 +17,15 @@
   <style>html, body { margin: 0; height: 100%; background: #3E4A2E; overscroll-behavior: none; }</style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // 예전 버전이 등록한 서비스 워커·캐시 정리 (새 버전이 바로 보이게)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); });
+    }
+    if (window.caches) {
+      caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); });
+    }
+  </script>
+  <script src="flutter_bootstrap.js?v=__BUILD__" async></script>
 </body>
 </html>
