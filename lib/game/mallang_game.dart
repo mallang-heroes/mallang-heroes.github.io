@@ -53,6 +53,11 @@ class MallangGame extends FlameGame {
   FieldUnit? detailUnit;
   FieldUnit? heldUnit;
 
+  /// 집결지: 새로 나온 유닛이 그 주변 빈자리로 간다 (궁 창에서 바꿈). 기본은 동굴 아래 안쪽.
+  static const Offset defaultRally = Offset(1248, 312);
+  Offset rally = defaultRally;
+  bool pickingRally = false;
+
   /// 화면(오버레이)이 다시 그려져야 할 때 올린다.
   final changes = ValueNotifier<int>(0);
   void _changed() => changes.value++;
@@ -60,6 +65,7 @@ class MallangGame extends FlameGame {
   int round = 0;
   double roundTime = 0;
   int _spawnLeft = 0;
+  int _spawnIndex = 0;
   double _spawnTimer = 0;
   Monster? boss;
   Phase phase = Phase.playing;
@@ -132,6 +138,7 @@ class MallangGame extends FlameGame {
       await world.add(c);
     }
     await world.add(PlaceCatcher());
+    await world.add(RallyFlag());
     await world.add(Hud());
     _startRound();
   }
@@ -150,10 +157,13 @@ class MallangGame extends FlameGame {
     }
     walkers.clear();
     for (final b in barracks.values) {
-      b.counts.setAll(0, [0, 0, 0, 0]);
+      b.counts.setAll(0, [0, 0, 0]);
     }
     detailUnit = null;
     heldUnit = null;
+    pickingRally = false;
+    rally = defaultRally;
+    _spawnIndex = 0;
     overlays.removeAll(['detail', 'held', 'palace', 'barracks']);
     round = 0;
     kills = 0;
@@ -183,7 +193,8 @@ class MallangGame extends FlameGame {
     if (_spawnLeft > 0) {
       _spawnTimer -= dt;
       if (_spawnTimer <= 0) {
-        _spawn(false);
+        _spawn(false, lane: _spawnIndex.isEven ? -Rules.laneOffset : Rules.laneOffset);
+        _spawnIndex++;
         _spawnLeft--;
         _spawnTimer = Rules.spawnGap;
       }
@@ -219,8 +230,8 @@ class MallangGame extends FlameGame {
     _changed();
   }
 
-  Monster _spawn(bool isBoss) {
-    final m = Monster(round: round, speed: Board.speedForRound(round), boss: isBoss);
+  Monster _spawn(bool isBoss, {double lane = 0}) {
+    final m = Monster(round: round, speed: Board.speedForRound(round), boss: isBoss, lane: lane);
     monsters.add(m);
     world.add(m);
     return m;
@@ -259,12 +270,14 @@ class MallangGame extends FlameGame {
     _changed();
   }
 
-  /// [from]에서 나타나 해당 막사 앞 빈자리로 걸어가는 유닛을 만든다.
+  /// [from]에서 나타나 집결지 주변 빈자리로 걸어가는 유닛을 만든다.
   FieldUnit? _spawnUnit(String branch, int tier, Offset from, {double delay = 0}) {
-    final b = barracks[branch]!;
-    // 막사 아래쪽 길가(사거리가 길에 닿는 자리)부터 찾는다.
-    final spot = _nearestFree(Offset(b.position.x, b.position.y + 160), spacing: tier >= 3 ? 33 : 24);
+    final spot = _nearestFree(rally, spacing: tier >= 3 ? 33 : 24);
     if (spot == null) {
+      if (tier >= 3) {
+        toast('맵에 자리가 없어요');
+        return null;
+      }
       toast('맵에 자리가 없어서 $branch ${Rules.tierNames[tier]}이(가) 막사로 들어갔어요');
       _enterBarracks(branch, tier);
       return null;
@@ -297,6 +310,7 @@ class MallangGame extends FlameGame {
   void _end(Phase p, String reason) {
     phase = p;
     endReason = reason;
+    pickingRally = false;
     overlays.removeAll(['barracks', 'detail', 'held', 'palace']);
     overlays.add('result');
     _changed();
@@ -317,7 +331,7 @@ class MallangGame extends FlameGame {
   }
 
   /// 배치 가능: 길 · 궁 · 막사 · 포탈 · 다른 유닛 위가 아니어야 한다.
-  bool canPlace(Offset p, {FieldUnit? except, double? spacing}) {
+  bool canPlace(Offset p, {FieldUnit? except, double? spacing, bool ignoreUnits = false}) {
     final me = spacing ?? except?.spacing ?? 33;
     if (p.dx < 44 || p.dx > Board.playWidth - 44 || p.dy < 48 || p.dy > Board.height - 40) return false;
     if (track.distanceToRoad(p) < map.roadWidth / 2 + 28) return false;
@@ -330,6 +344,7 @@ class MallangGame extends FlameGame {
       if (d.blocks && (d.foot - p).distance < 36) return false;
     }
     if ((p.dx - map.cave.dx).abs() < 80 && p.dy < map.cave.dy + 40) return false;
+    if (ignoreUnits) return true;
     for (final u in units) {
       if (u == except || u.returning) continue;
       if ((u.restSpot.toOffset() - p).distance < me + u.spacing) return false;
@@ -369,9 +384,9 @@ class MallangGame extends FlameGame {
     selectedBranch = null;
   }
 
-  /// 막사 + 맵에 있는 해당 병과·등급 수.
+  /// 막사 + 맵에 있는 해당 병과·등급 수 (장수는 맵에만 있음).
   int countOf(String branch, int tier) =>
-      barracks[branch]!.counts[tier] +
+      (tier < 3 ? barracks[branch]!.counts[tier] : 0) +
       units.where((u) => u.branch == branch && u.tier == tier && !u.returning).length;
 
   int fieldCount(String branch, int tier) =>
@@ -382,7 +397,7 @@ class MallangGame extends FlameGame {
   /// 재료 1명 쓰기: 막사에 있으면 막사에서, 없으면 맵에서.
   void _take(String branch, int tier) {
     final b = barracks[branch]!;
-    if (b.counts[tier] > 0) {
+    if (tier < 3 && b.counts[tier] > 0) {
       b.counts[tier]--;
       return;
     }
@@ -395,7 +410,7 @@ class MallangGame extends FlameGame {
 
   /// 새로 생긴 유닛: 그 병과 보급 설정이 '막사로'면 막사로, 아니면 막사 문에서 나와 맵으로.
   void _deliver(String branch, int tier) {
-    if (supplyToBarracks[branch]!) {
+    if (supplyToBarracks[branch]! && tier < 3) {
       _enterBarracks(branch, tier);
     } else {
       final b = barracks[branch]!;
@@ -432,7 +447,7 @@ class MallangGame extends FlameGame {
   /// 막사에서 1명 꺼내 맵으로.
   void takeOut(String branch, int tier) {
     final b = barracks[branch]!;
-    if (b.counts[tier] <= 0) return;
+    if (tier > 2 || b.counts[tier] <= 0) return;
     b.counts[tier]--;
     b.bounce();
     _spawnUnit(branch, tier, b.door);
@@ -483,15 +498,19 @@ class MallangGame extends FlameGame {
   }
 
   void cancelHeld() {
+    if (pickingRally) {
+      cancelRally();
+      return;
+    }
     heldUnit = null;
     overlays.remove('held');
     _changed();
   }
 
-  /// 상세 창 '막사로 보내기'.
+  /// 상세 창 '막사로 보내기' (장수는 막사에 들어가지 않음).
   void sendHome() {
     final u = detailUnit;
-    if (u == null) return;
+    if (u == null || u.tier >= 3) return;
     closeDetail();
     u.sendHome();
     _changed();
@@ -509,10 +528,37 @@ class MallangGame extends FlameGame {
     u.moveTo(Vector2(snapped.dx, snapped.dy));
   }
 
-  /// 빈 땅을 눌렀을 때 (집기 중이면 그 자리로 옮김).
+  /// 빈 땅을 눌렀을 때 (집기 중이면 그 자리로 옮기고, 집결지 고르는 중이면 집결지로).
   void tapGround(Offset p) {
+    if (pickingRally) {
+      if (!canPlace(p, ignoreUnits: true)) {
+        toast('길 · 궁 · 막사 위는 집결지로 쓸 수 없어요');
+        return;
+      }
+      rally = p;
+      pickingRally = false;
+      overlays.remove('held');
+      toast('집결지를 옮겼어요. 새로 나오는 유닛이 여기로 모여요');
+      _changed();
+      return;
+    }
     final u = heldUnit;
     if (u != null) placeUnit(u, p);
+  }
+
+  /// 궁 창 '집결지 바꾸기': 맵을 눌러 고른다.
+  void startPickRally() {
+    overlays.remove('palace');
+    if (heldUnit != null) cancelHeld();
+    pickingRally = true;
+    overlays.add('held');
+    _changed();
+  }
+
+  void cancelRally() {
+    pickingRally = false;
+    overlays.remove('held');
+    _changed();
   }
 
   void openPalace() {

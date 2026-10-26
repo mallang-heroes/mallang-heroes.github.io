@@ -49,7 +49,7 @@ class MonsterArt {
 }
 
 class Monster extends PositionComponent with HasGameReference<MallangGame> {
-  Monster({required this.round, required this.speed, this.boss = false})
+  Monster({required this.round, required this.speed, this.boss = false, this.lane = 0})
       : maxHp = boss ? Rules.bossHp[Rules.stage(round)] : Rules.normalHp(round),
         defense = boss ? Rules.bossDefense[Rules.stage(round)] : Rules.normalDefense[Rules.stage(round)],
         super(
@@ -64,6 +64,9 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
 
   final int round;
   final double speed;
+
+  /// 길 가운데에서 옆으로 비켜 걷는 거리 (2줄 걷기).
+  final double lane;
   final bool boss;
   final double maxHp;
   final double defense;
@@ -106,8 +109,10 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
 
   void _place() {
     final p = game.track.positionAt(traveled);
-    position.setValues(p.dx, p.dy + 12);
-    final dx = game.track.directionAt(traveled).dx;
+    final dir = game.track.directionAt(traveled);
+    // 길 진행 방향의 옆으로 lane만큼 비켜 걷는다 (2줄)
+    position.setValues(p.dx - dir.dy * lane, p.dy + dir.dx * lane + 12);
+    final dx = dir.dx;
     if (dx.abs() > 0.2) _facing = dx > 0 ? 1 : -1;
   }
 

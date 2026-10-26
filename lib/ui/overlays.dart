@@ -50,9 +50,9 @@ class BarracksDialog extends StatelessWidget {
         ),
         BoardSpace(children: [
           Positioned(
-            left: 302,
-            top: 96,
-            width: 800,
+            left: 352,
+            top: 100,
+            width: 700,
             child: ValueListenableBuilder<int>(
               valueListenable: game.changes,
               builder: (context, _, __) {
@@ -79,7 +79,7 @@ class _BarracksPanel extends StatelessWidget {
     final color = branchColor(branch);
     final k = b.counts;
     // 승진·장수 재료는 막사 + 맵 모두
-    final all = [for (var t = 0; t < 4; t++) game.countOf(branch, t)];
+    final all = [for (var t = 0; t < 3; t++) game.countOf(branch, t)];
     final have = [0, 1, 2].where((t) => all[t] > 0).length;
     final sheets = game.tierIdle[branch];
     const disabled = Color(0xFF9AA08A);
@@ -89,7 +89,6 @@ class _BarracksPanel extends StatelessWidget {
       ('정병 승진 ${all[0].clamp(0, 3)} / 3', all[0] >= 3 ? dark : disabled, () => game.promote(branch, 0)),
       ('군관 승진 ${all[1].clamp(0, 3)} / 3', all[1] >= 3 ? dark : disabled, () => game.promote(branch, 1)),
       ('장수 소환 $have / 3', have == 3 ? color : disabled, () => game.summonGeneral(branch)),
-      (null, disabled, () {}),
     ];
 
     return Material(
@@ -119,7 +118,7 @@ class _BarracksPanel extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (var t = 0; t < 4; t++) ...[
+                for (var t = 0; t < 3; t++) ...[
                   if (t > 0) const SizedBox(width: 12),
                   Expanded(
                     child: _TierCard(
@@ -131,7 +130,7 @@ class _BarracksPanel extends StatelessWidget {
                       actionLabel: actions[t].$1,
                       actionColor: actions[t].$2,
                       onAction: actions[t].$3,
-                      sellPrice: t < 3 ? Rules.sellPrice[t] : null,
+                      sellPrice: Rules.sellPrice[t],
                       onSell: () => game.sell(branch, t),
                       onTakeOut: () => game.takeOut(branch, t),
                     ),
@@ -141,7 +140,7 @@ class _BarracksPanel extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Text(
-              '막사 안 유닛은 공격하지 않아요 · 꺼내기로 맵에 내보내기 · 승진·장수 재료는 막사와 맵의 유닛 모두 사용 (결과 병과는 랜덤) · 판매하면 은냥 획득',
+              '막사 안 유닛은 공격하지 않아요 · 꺼내기로 집결지에 내보내기 · 승진·장수 재료는 막사와 맵의 유닛 모두 사용 (결과 병과는 랜덤) · 판매하면 은냥 획득',
               style: TextStyle(fontSize: 14, height: 1.5, color: Color(0xFF3E4248)),
             ),
           ],
@@ -528,19 +527,28 @@ class _DetailDialogState extends State<DetailDialog> {
                         bigButton('✋ 집기', game.pickUp, dark: true),
                       ]),
                       const SizedBox(height: 10),
-                      SizedBox(
-                        height: 48,
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: color,
-                            side: BorderSide(color: color, width: 2),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                      if (!isGeneral)
+                        SizedBox(
+                          height: 48,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: color,
+                              side: BorderSide(color: color, width: 2),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                            ),
+                            onPressed: game.sendHome,
+                            child: Text('막사로 보내기 (${u.branch} 막사)'),
                           ),
-                          onPressed: game.sendHome,
-                          child: Text('막사로 보내기 (${u.branch} 막사)'),
+                        )
+                      else
+                        const SizedBox(
+                          height: 48,
+                          child: Center(
+                            child: Text('장수는 막사에 들어가지 않고 맵에서 싸워요',
+                                style: TextStyle(fontSize: 14, color: Color(0xFF5C6066))),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   if (combo && isGeneral) Positioned.fill(child: _comboPanel(game, u)),
@@ -633,7 +641,8 @@ class HeldBanner extends StatelessWidget {
           valueListenable: game.changes,
           builder: (context, _, __) {
             final u = game.heldUnit;
-            if (u == null) return const SizedBox.shrink();
+            final picking = game.pickingRally;
+            if (u == null && !picking) return const SizedBox.shrink();
             return Container(
               padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
               decoration: BoxDecoration(
@@ -642,7 +651,7 @@ class HeldBanner extends StatelessWidget {
               ),
               child: Row(children: [
                 Expanded(
-                  child: Text('${u.title}: 놓을 곳을 누르세요',
+                  child: Text(picking ? '집결지로 쓸 곳을 누르세요' : '${u!.title}: 놓을 곳을 누르세요',
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
                 ),
                 SizedBox(
@@ -735,8 +744,23 @@ class PalaceDialog extends StatelessWidget {
                           _RoundClose(onTap: game.closePalace),
                         ]),
                         const SizedBox(height: 6),
-                        const Text('라운드마다 궁에서 나오는 보급병이 어디로 갈지 병과별로 정해요. 막사 안 유닛은 공격하지 않아요.',
+                        const Text('라운드마다 궁에서 나오는 보급병이 어디로 갈지 병과별로 정해요. 소환된 유닛은 집결지(깃발) 주변으로 모이고, 막사 안 유닛은 공격하지 않아요.',
                             style: TextStyle(fontSize: 14, height: 1.5, color: Color(0xFF3E4248))),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 48,
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF8C2F2B),
+                              side: const BorderSide(color: Color(0xFF8C2F2B), width: 2),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                            ),
+                            onPressed: game.startPickRally,
+                            icon: const Icon(Icons.flag),
+                            label: const Text('집결지 바꾸기 (소환된 유닛이 모이는 곳)'),
+                          ),
+                        ),
                         const SizedBox(height: 10),
                         Row(children: [
                           seg('전체 소환', Rules.branches.every((b) => !game.supplyToBarracks[b]!),

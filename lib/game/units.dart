@@ -54,7 +54,7 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
         );
 
   final String branch;
-  final List<int> counts = [0, 0, 0, 0]; // 군졸, 정병, 군관, 장수
+  final List<int> counts = [0, 0, 0]; // 군졸, 정병, 군관 (장수는 막사에 들어가지 않음)
   late Still _still;
   late Sheet _enter;
   double _enterT = -1;
@@ -89,15 +89,15 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
   @override
   void onTapDown(TapDownEvent event) => game.openBarracks(branch);
 
-  /// 막사 아래 등급별 인원: 군졸(흰 옷) · 정병(병과색) · 군관(어두운 갑주·은 테) · 장수(금 테).
+  /// 막사 아래 등급별 인원: 군졸(흰 옷) · 정병(병과색) · 군관(어두운 갑주·은 테).
   void _tierCounts(Canvas canvas, Offset center) {
-    const r = 10.5;
-    const gap = 24.0;
-    final fills = [const Color(0xFFFFFFFF), branchColor(branch), const Color(0xFF4A4E54), branchColor(branch)];
-    final rims = [_ink, _ink, const Color(0xFFC9CED6), const Color(0xFFF2C14E)];
-    final inks = [_ink, const Color(0xFFFFFFFF), const Color(0xFFFFFFFF), const Color(0xFFFFFFFF)];
-    for (var t = 0; t < 4; t++) {
-      final c = center + Offset((t - 1.5) * gap, 0);
+    const r = 11.0;
+    const gap = 26.0;
+    final fills = [const Color(0xFFFFFFFF), branchColor(branch), const Color(0xFF4A4E54)];
+    final rims = [_ink, _ink, const Color(0xFFC9CED6)];
+    final inks = [_ink, const Color(0xFFFFFFFF), const Color(0xFFFFFFFF)];
+    for (var t = 0; t < 3; t++) {
+      final c = center + Offset((t - 1) * gap, 0);
       final empty = counts[t] == 0;
       canvas.drawCircle(c, r, Paint()..color = fills[t].withValues(alpha: empty ? 0.45 : 1));
       canvas.drawCircle(
@@ -486,10 +486,46 @@ class PlaceCatcher extends PositionComponent with TapCallbacks, HasGameReference
   PlaceCatcher() : super(size: Vector2(Board.playWidth, Board.height), priority: 1);
 
   @override
-  bool containsLocalPoint(Vector2 point) => game.heldUnit != null && super.containsLocalPoint(point);
+  bool containsLocalPoint(Vector2 point) =>
+      (game.heldUnit != null || game.pickingRally) && super.containsLocalPoint(point);
 
   @override
   void onTapUp(TapUpEvent event) => game.tapGround(event.localPosition.toOffset());
+}
+
+/// 집결지 깃발 (새로 나온 유닛이 모이는 곳).
+class RallyFlag extends PositionComponent with HasGameReference<MallangGame> {
+  RallyFlag() : super(priority: 2);
+  double _t = 0;
+
+  @override
+  void update(double dt) => _t += dt;
+
+  @override
+  void render(Canvas canvas) {
+    final p = game.rally;
+    final picking = game.pickingRally;
+    canvas.drawOval(Rect.fromCenter(center: p, width: 30, height: 10),
+        Paint()..color = const Color(0x40000000));
+    canvas.drawLine(p, p.translate(0, -40),
+        Paint()
+          ..strokeWidth = 3
+          ..color = const Color(0xFF6B4A2A));
+    final wave = math.sin(_t * 4) * 2;
+    final flag = Path()
+      ..moveTo(p.dx, p.dy - 40)
+      ..quadraticBezierTo(p.dx + 12, p.dy - 44 + wave, p.dx + 24, p.dy - 38)
+      ..lineTo(p.dx + 24, p.dy - 26)
+      ..quadraticBezierTo(p.dx + 12, p.dy - 32 + wave, p.dx, p.dy - 28)
+      ..close();
+    canvas.drawPath(flag, Paint()..color = picking ? const Color(0xFFF2C14E) : const Color(0xFF8C2F2B));
+    canvas.drawPath(
+        flag,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4
+          ..color = _ink);
+  }
 }
 
 /// 투사체. [target]이 있으면 날아가는 동안 몬스터를 따라가고, 닿을 때 [onImpact]로 피해가 들어간다.

@@ -4,9 +4,12 @@ import 'dart:math' as math;
 class Rules {
   static const double roundSeconds = 10;
   static const int lastRound = 60;
-  static const int mobsPerRound = 20;
-  static const double spawnGap = 0.4; // 20마리를 8초에 걸쳐 내보냄
-  static const int loseCount = 100;
+  /// 라운드당 10마리를 0.8초 간격으로, 길을 2줄로 나눠 걷는다 (몬스터가 겹치지 않게).
+  static const int mobsPerRound = 10;
+  static const double spawnGap = 0.8;
+  static const double laneOffset = 11; // 길 가운데에서 좌우로
+  /// 필드 몬스터가 이 수를 넘으면 패배 (라운드 5개 분량).
+  static const int loseCount = 50;
 
   /// 병과 순서 (막사 왼쪽부터).
   static const List<String> branches = ['창병', '궁병', '포수', '기병', '수군', '술사'];
@@ -37,11 +40,13 @@ class Rules {
 
   static const List<double> normalDefense = [0, 10, 30, 80, 130, 200];
   static const List<double> bossDefense = [20, 40, 80, 150, 220, 300];
-  /// 보스 체력 (임시): 새 규칙에 맞춰 다시 맞출 예정.
-  static const List<double> bossHp = [1260, 1600, 4000, 6800, 10000, 14000];
+  /// 보스 체력. 10R 800: 집결지 그대로 두는 판 약 70% 통과.
+  /// 20R 2,600: 10R을 넘긴 판 중 장수 없음 9% · 장수 1명 62% · 장수 계속 89% 통과.
+  /// 30R 이후는 명장이 들어간 뒤 다시 맞출 임시값.
+  static const List<double> bossHp = [800, 2600, 6500, 11000, 16000, 22000];
 
   // ── 은냥 · 강화 (기획표 '은냥·강화' 탭) ──
-  static const List<int> silverPerKill = [2, 3, 4, 6, 8, 10]; // 스테이지별 1마리당
+  static const List<int> silverPerKill = [4, 6, 8, 12, 16, 20]; // 스테이지별 1마리당 (마릿수 절반이라 2배)
   static const List<String> upgradeNames = ['군졸~군관', '장수', '명장', '천명', '공신'];
   static const List<int> upgradeBase = [10, 20, 30, 40, 50];
   static const List<int> upgradeStep = [3, 5, 8, 10, 12];
@@ -52,20 +57,20 @@ class Rules {
   static const double speedPerLv = 0.02;
   static const List<int> sellPrice = [5, 15, 45]; // 군졸, 정병, 군관
 
-  /// 일반 몬스터 체력 (임시): 막사 안 유닛은 공격하지 않고 맵에 나온 유닛만 싸우는 규칙에 맞춘 임시값.
-  /// 소환 위치 · 몬스터 간격을 정한 뒤 시뮬레이터로 다시 맞춘다.
+  /// 일반 몬스터 체력 (라운드당 10마리, 맵에 나온 유닛만 공격하는 규칙 기준. 시뮬레이터로 맞춤).
+  /// 1–3R 정리, 4–5R 조금 쌓임, 6R 회복. 11–30R은 기존 곡선 × 0.8.
   static const List<double> normalHpTable = [
-    5, 10, 20, 50, 60, 30, 35, 40, 50, 55,
-    85, 100, 115, 135, 155, 175, 195, 215, 235, 250,
-    260, 285, 315, 350, 380, 415, 455, 495, 540, 580,
-    450, 485, 515, 545, 575, 610, 650, 690, 745, 795,
-    665, 710, 755, 795, 840, 885, 925, 980, 1040, 1100,
+    10, 25, 40, 100, 115, 55, 70, 85, 100, 110,
+    230, 270, 310, 360, 415, 465, 520, 575, 625, 670,
+    690, 760, 840, 930, 1015, 1110, 1215, 1320, 1440, 1550,
+    1200, 1290, 1370, 1450, 1530, 1625, 1730, 1840, 1985, 2120,
+    1775, 1890, 2010, 2120, 2240, 2360, 2470, 2610, 2770, 2935,
   ];
 
   /// 51–60R은 기획표에 아직 없어서 50R 값에서 늘려 둔 임시값.
   static double normalHp(int r) {
     if (r <= normalHpTable.length) return normalHpTable[r - 1];
-    return 1100 + (1500 - 1100) * (r - 50) / 10;
+    return 2935 + (4000 - 2935) * (r - 50) / 10;
   }
 
   /// 피해 = 공격력 × 100 / (100 + 방어력)
