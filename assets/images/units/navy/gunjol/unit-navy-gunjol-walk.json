@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-navy-gunjol-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 126,
+    "h": 132
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5397,
+    "y": 0.9298
+   }
+  },
+  "unit-navy-gunjol-walk-1": {
+   "frame": {
+    "x": 126,
+    "y": 0,
+    "w": 126,
+    "h": 132
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5397,
+    "y": 0.9298
+   }
+  },
+  "unit-navy-gunjol-walk-2": {
+   "frame": {
+    "x": 252,
+    "y": 0,
+    "w": 126,
+    "h": 132
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5397,
+    "y": 0.9298
+   }
+  },
+  "unit-navy-gunjol-walk-3": {
+   "frame": {
+    "x": 378,
+    "y": 0,
+    "w": 126,
+    "h": 132
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5397,
+    "y": 0.9298
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-navy-gunjol-walk-0",
+   "unit-navy-gunjol-walk-1",
+   "unit-navy-gunjol-walk-2",
+   "unit-navy-gunjol-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-navy-gunjol-walk.png",
+  "size": {
+   "w": 504,
+   "h": 132
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 63,
+   "h": 66
+  },
+  "body_height": 46,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

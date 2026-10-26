@@ -1,0 +1,113 @@
+{
+ "frames": {
+  "unit-navy-jangsu-attack-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 144
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3578,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-attack-1": {
+   "frame": {
+    "x": 204,
+    "y": 0,
+    "w": 204,
+    "h": 144
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3578,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-attack-2": {
+   "frame": {
+    "x": 408,
+    "y": 0,
+    "w": 204,
+    "h": 144
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3578,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-attack-3": {
+   "frame": {
+    "x": 612,
+    "y": 0,
+    "w": 204,
+    "h": 144
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3578,
+    "y": 0.937
+   },
+   "events": {
+    "hit": {
+     "x": 195.8,
+     "y": 72.8
+    }
+   }
+  },
+  "unit-navy-jangsu-attack-4": {
+   "frame": {
+    "x": 816,
+    "y": 0,
+    "w": 204,
+    "h": 144
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3578,
+    "y": 0.937
+   }
+  },
+  "unit-navy-jangsu-attack-5": {
+   "frame": {
+    "x": 1020,
+    "y": 0,
+    "w": 204,
+    "h": 144
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.3578,
+    "y": 0.937
+   }
+  }
+ },
+ "animations": {
+  "attack": [
+   "unit-navy-jangsu-attack-0",
+   "unit-navy-jangsu-attack-1",
+   "unit-navy-jangsu-attack-2",
+   "unit-navy-jangsu-attack-3",
+   "unit-navy-jangsu-attack-4",
+   "unit-navy-jangsu-attack-5"
+  ]
+ },
+ "meta": {
+  "image": "unit-navy-jangsu-attack.png",
+  "size": {
+   "w": 1224,
+   "h": 144
+  },
+  "scale": "2",
+  "fps": 12,
+  "board_frame": {
+   "w": 102,
+   "h": 72
+  },
+  "body_height": 66,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

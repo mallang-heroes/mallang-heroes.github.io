@@ -32,6 +32,10 @@ flutter:
     - assets/images/units/cavalry/jeongbyeong/
     - assets/images/units/cavalry/gungwan/
     - assets/images/units/cavalry/jangsu/
+    - assets/images/units/navy/gunjol/
+    - assets/images/units/navy/jeongbyeong/
+    - assets/images/units/navy/gungwan/
+    - assets/images/units/navy/jangsu/
   fonts:
     - family: Pretendard
       fonts:

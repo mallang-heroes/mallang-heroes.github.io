@@ -4,7 +4,7 @@ from PIL import Image
 from scipy import ndimage
 
 
-def key_out(path, key="magenta"):
+def key_out(path, key="magenta", drop_shadow=False):
     a = np.asarray(Image.open(path).convert("RGB")).astype(np.float32)
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     if key == "magenta":
@@ -13,6 +13,8 @@ def key_out(path, key="magenta"):
         alpha = np.clip((180.0 - m) / (180.0 - 60.0), 0, 1)
         # 워터마크 반짝이처럼 밝아진 마젠타(분홍빛 흰색)도 배경으로
         alpha[(r > 225) & (b > 215) & (g < 135) & (np.abs(r - b) < 30)] = 0
+        if drop_shadow:   # 제미나이가 발밑에 그린 보랏빛 그림자 (게임에서 따로 그림)
+            alpha[(r - g > 60) & (b - g > 60) & (np.abs(r - b) < 45) & (g < 120)] = 0
     else:  # green
         m = g - np.maximum(r, b)
         K = np.array([10.0, 245.0, 20.0])

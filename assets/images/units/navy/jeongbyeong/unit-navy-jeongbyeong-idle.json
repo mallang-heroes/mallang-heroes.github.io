@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-navy-jeongbyeong-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 122
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5181,
+    "y": 0.9202
+   }
+  },
+  "unit-navy-jeongbyeong-idle-1": {
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 120,
+    "h": 122
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5181,
+    "y": 0.9202
+   }
+  },
+  "unit-navy-jeongbyeong-idle-2": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 120,
+    "h": 122
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5181,
+    "y": 0.9202
+   }
+  },
+  "unit-navy-jeongbyeong-idle-3": {
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 120,
+    "h": 122
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5181,
+    "y": 0.9202
+   }
+  }
+ },
+ "animations": {
+  "idle": [
+   "unit-navy-jeongbyeong-idle-0",
+   "unit-navy-jeongbyeong-idle-1",
+   "unit-navy-jeongbyeong-idle-2",
+   "unit-navy-jeongbyeong-idle-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-navy-jeongbyeong-idle.png",
+  "size": {
+   "w": 480,
+   "h": 122
+  },
+  "scale": "2",
+  "fps": 6,
+  "board_frame": {
+   "w": 60,
+   "h": 61
+  },
+  "body_height": 54,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}
