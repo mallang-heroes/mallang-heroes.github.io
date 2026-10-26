@@ -97,7 +97,7 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
     final targets = game.leadMonsters(Rules.stats[branch]!.aoe ? Rules.aoeTargets : 1);
     if (targets.isEmpty) return;
     _cool = 1 / (Rules.stats[branch]!.speed * game.speedMul(0));
-    fireAt(game, branch, power * game.atkMul(0), position + Vector2(0, -size.y * 0.6), targets);
+    fireAt(game, branch, power * Rules.barracksDamage * game.atkMul(0), position + Vector2(0, -size.y * 0.6), targets);
   }
 
   @override
