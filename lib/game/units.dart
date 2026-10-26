@@ -167,21 +167,35 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
   }
 }
 
-/// 맵에 놓인 장수. 끌어서 옮기고, 누르면 사거리가 보인다.
+/// 맵에 놓인 장수. 끌어서 놓으면 그 자리까지 걸어가고(처음) / 뛰어가고(이후), 누르면 사거리가 보인다.
 class General extends PositionComponent
     with TapCallbacks, DragCallbacks, HasGameReference<MallangGame> {
   General(this.branch, Vector2 at)
       : super(position: at, size: Vector2(72, 84), anchor: const Anchor(0.5, 0.85), priority: 8);
 
+  static const double walkSpeed = 100; // 소환 후 첫 자리로 걸어갈 때 (px/초)
+  static const double runSpeed = 170; // 자리를 옮길 때
+
   final String branch;
   bool showRange = false;
-  double readyIn = 1.5;
   double _cool = 0;
   double _t = 0;
-  Vector2? _home;
-  bool _dragOk = true;
   double _attackT = -1;
   bool _flip = false;
+  bool _placedOnce = false;
+
+  /// 이동 중이면 목적지 (이동 중에는 공격하지 않음).
+  Vector2? _target;
+  double _speed = walkSpeed;
+
+  /// 끄는 중인 놓을 자리 미리보기.
+  Vector2? _ghost;
+  bool _ghostOk = true;
+
+  bool get moving => _target != null;
+
+  /// 다른 장수와 겹침을 판단할 자리 (이동 중이면 목적지).
+  Vector2 get restSpot => _target ?? position;
 
   /// 그림 리소스가 있는 병과는 시트로, 없으면 코드로 그린다.
   UnitArt? get _art => game.unitArt[branch];
@@ -196,11 +210,20 @@ class General extends PositionComponent
       _attackT += dt;
       if (art == null || _attackT > art.attack.duration) _attackT = -1;
     }
-    if (_home != null) return;
-    if (readyIn > 0) {
-      readyIn -= dt;
+    final target = _target;
+    if (target != null) {
+      final d = target - position;
+      final step = _speed * dt;
+      if (d.length <= step) {
+        position.setFrom(target);
+        _target = null;
+      } else {
+        if (d.x.abs() > 1) _flip = d.x < 0;
+        position += d.normalized() * step;
+      }
       return;
     }
+    if (_ghost != null) return;
     _cool -= dt;
     if (_cool > 0) return;
     final targets = game.monstersInRange(
@@ -221,32 +244,62 @@ class General extends PositionComponent
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    _home = position.clone();
-    showRange = true;
+    _ghost = restSpot.clone();
+    _ghostOk = true;
     priority = 20;
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    position += event.localDelta;
-    _dragOk = game.canPlace(position.toOffset(), except: this);
+    final g = _ghost;
+    if (g == null) return;
+    g.add(event.localDelta);
+    _ghostOk = game.canPlace(g.toOffset(), except: this);
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    final snapped = Vector2((position.x / 12).roundToDouble() * 12, (position.y / 12).roundToDouble() * 12);
-    if (game.canPlace(snapped.toOffset(), except: this)) {
-      position = snapped;
-      readyIn = 1.5;
-    } else {
-      position = _home!;
-      game.toast('길 · 궁 · 막사 · 다른 장수 위에는 놓을 수 없어요');
-    }
-    _home = null;
-    _dragOk = true;
-    showRange = false;
+    final g = _ghost;
+    _ghost = null;
     priority = 8;
+    if (g == null) return;
+    final snapped = Vector2((g.x / 12).roundToDouble() * 12, (g.y / 12).roundToDouble() * 12);
+    if (!game.canPlace(snapped.toOffset(), except: this)) {
+      game.toast('길 · 궁 · 막사 · 다른 장수 위에는 놓을 수 없어요');
+      return;
+    }
+    if ((snapped - position).length < 2) return;
+    _speed = _placedOnce ? runSpeed : walkSpeed;
+    _placedOnce = true;
+    _target = snapped;
+    _attackT = -1;
+  }
+
+  @override
+  void onDragCancel(DragCancelEvent event) {
+    super.onDragCancel(event);
+    _ghost = null;
+    priority = 8;
+  }
+
+  /// 이동 중 통통 뛰는 높이.
+  double get _hop {
+    if (!moving) return 0;
+    final run = _speed >= runSpeed;
+    return (math.sin(_t * (run ? 18 : 12))).abs() * (run ? 7 : 5);
+  }
+
+  void _drawRange(Canvas canvas, Offset c, bool ok, Color color) {
+    final col = ok ? color : const Color(0xFFE0483E);
+    canvas.drawCircle(c, radius, Paint()..color = col.withValues(alpha: 0.16));
+    canvas.drawCircle(
+        c,
+        radius,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = col.withValues(alpha: 0.7));
   }
 
   @override
@@ -254,32 +307,53 @@ class General extends PositionComponent
     final ax = size.x / 2;
     final ay = size.y * 0.85;
     final color = branchColor(branch);
+    final foot = Offset(ax, ay);
 
-    if (showRange) {
-      final ok = _dragOk;
-      canvas.drawCircle(Offset(ax, ay), radius,
-          Paint()..color = (ok ? color : const Color(0xFFE0483E)).withValues(alpha: 0.16));
-      canvas.drawCircle(
-          Offset(ax, ay),
-          radius,
+    // 끄는 중: 놓을 자리에 사거리와 흐린 모습
+    final ghost = _ghost;
+    if (ghost != null) {
+      final gf = foot + (ghost - position).toOffset();
+      _drawRange(canvas, gf, _ghostOk, color);
+      final art = _art;
+      if (art != null) {
+        canvas.saveLayer(null, Paint()..color = const Color.fromRGBO(255, 255, 255, 0.45));
+        art.idle.draw(canvas, 0, gf, flip: _flip);
+        canvas.restore();
+      } else {
+        canvas.drawCircle(gf.translate(0, -20), 18, Paint()..color = color.withValues(alpha: 0.4));
+      }
+    } else if (showRange && !moving) {
+      _drawRange(canvas, foot, true, color);
+    }
+
+    // 이동 중: 목적지 표시
+    final target = _target;
+    if (target != null) {
+      final tf = foot + (target - position).toOffset();
+      canvas.drawOval(Rect.fromCenter(center: tf, width: 34, height: 12),
           Paint()
             ..style = PaintingStyle.stroke
             ..strokeWidth = 2
-            ..color = (ok ? color : const Color(0xFFE0483E)).withValues(alpha: 0.7));
+            ..color = color.withValues(alpha: 0.8));
     }
 
-    final notReady = readyIn > 0 || _home != null;
+    final hop = _hop;
     final art = _art;
     if (art != null) {
-      if (notReady) canvas.saveLayer(null, Paint()..color = const Color.fromRGBO(255, 255, 255, 0.55));
-      if (_attackT >= 0) {
-        art.attack.draw(canvas, art.attack.frameAt(_attackT, loop: false), Offset(ax, ay), flip: _flip);
+      final walk = art.walk;
+      final run = _speed >= runSpeed;
+      if (moving && walk != null) {
+        walk.draw(canvas, walk.frameAt(_t * (run ? 1.6 : 1)), foot, flip: _flip);
+      } else if (_attackT >= 0) {
+        art.attack.draw(canvas, art.attack.frameAt(_attackT, loop: false), foot, flip: _flip);
       } else {
-        art.idle.draw(canvas, art.idle.frameAt(_t), Offset(ax, ay), flip: _flip);
+        art.idle.draw(canvas, art.idle.frameAt(_t), foot.translate(0, -hop), flip: _flip);
       }
-      if (notReady) canvas.restore();
       return;
     }
+    const notReady = false;
+    canvas.save();
+    canvas.translate(0, -hop);
     canvas.saveLayer(null, Paint()..color = Color.fromRGBO(255, 255, 255, notReady ? 0.55 : 1));
     // 받침
     canvas.drawOval(Rect.fromCenter(center: Offset(ax, ay), width: 56, height: 14),
@@ -316,6 +390,7 @@ class General extends PositionComponent
         Paint()
           ..strokeWidth = 3
           ..color = const Color(0xFFC2483F));
+    canvas.restore();
     canvas.restore();
 
     // 병과 이름
@@ -409,9 +484,12 @@ class FloatText extends PositionComponent {
 
 /// 병과 장수 그림 (대기·공격 시트).
 class UnitArt {
-  UnitArt(this.idle, this.attack);
+  UnitArt(this.idle, this.attack, [this.walk]);
   final Sheet idle;
   final Sheet attack;
+
+  /// 걷기 시트가 있으면 이동할 때 사용 (없으면 대기 그림으로 통통 뛰며 이동).
+  final Sheet? walk;
 }
 
 /// 보급병: 궁에서 나와 자기 막사까지 걸어간 뒤 막사 인원이 된다.

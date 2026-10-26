@@ -75,9 +75,16 @@ class MallangGame extends FlameGame {
     for (final b in Board.branches) {
       if (!slimeBranches.contains(b.key)) continue;
       final dir = 'units/${b.key}/jangsu/unit-${b.key}-jangsu';
+      Sheet? walk;
+      try {
+        walk = await Sheet.load(images, '$dir-walk.json');
+      } catch (_) {
+        walk = null; // 장수 걷기 그림은 아직 없음
+      }
       unitArt[b.name] = UnitArt(
         await Sheet.load(images, '$dir-idle.json'),
         await Sheet.load(images, '$dir-attack.json'),
+        walk,
       );
     }
     // 막사 창에 보이는 군졸·정병·군관 대기 동작
@@ -260,7 +267,7 @@ class MallangGame extends FlameGame {
     }
     if ((p.dx - map.cave.dx).abs() < 80 && p.dy < map.cave.dy + 40) return false;
     for (final g in generals) {
-      if (g != except && (g.position.toOffset() - p).distance < 66) return false;
+      if (g != except && (g.restSpot.toOffset() - p).distance < 66) return false;
     }
     return true;
   }
@@ -310,7 +317,8 @@ class MallangGame extends FlameGame {
   void summonGeneral(String branch) {
     final b = barracks[branch]!;
     if (!b.canSummonGeneral) return;
-    final spot = _nearestFree(Offset(b.position.x, b.position.y - b.size.y - 70));
+    // 막사 바로 앞(아래)에 나타난다. 끌어서 놓으면 그 자리까지 걸어간다.
+    final spot = _nearestFree(Offset(b.position.x, b.position.y + 84));
     if (spot == null) {
       toast('장수를 놓을 자리가 없어요');
       return;
@@ -321,7 +329,7 @@ class MallangGame extends FlameGame {
     final g = General(branch, Vector2(spot.dx, spot.dy));
     generals.add(g);
     world.add(g);
-    toast('$branch 장수 소환! 끌어서 옮길 수 있어요');
+    toast('$branch 장수 소환! 끌어서 놓으면 그 자리로 걸어가요');
     _changed();
   }
 
