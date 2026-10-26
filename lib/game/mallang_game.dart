@@ -262,7 +262,8 @@ class MallangGame extends FlameGame {
   /// [from]에서 나타나 해당 막사 앞 빈자리로 걸어가는 유닛을 만든다.
   FieldUnit? _spawnUnit(String branch, int tier, Offset from, {double delay = 0}) {
     final b = barracks[branch]!;
-    final spot = _nearestFree(Offset(b.position.x, b.position.y + 84), spacing: tier >= 3 ? 33 : 24);
+    // 막사 아래쪽 길가(사거리가 길에 닿는 자리)부터 찾는다.
+    final spot = _nearestFree(Offset(b.position.x, b.position.y + 160), spacing: tier >= 3 ? 33 : 24);
     if (spot == null) {
       toast('맵에 자리가 없어서 $branch ${Rules.tierNames[tier]}이(가) 막사로 들어갔어요');
       _enterBarracks(branch, tier);
