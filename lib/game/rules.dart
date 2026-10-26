@@ -38,17 +38,20 @@ class Rules {
   static const List<double> bossDefense = [20, 40, 80, 150, 220, 300];
   static const List<double> bossHp = [2000, 8000, 20000, 34000, 50000, 70000];
 
-  /// 1–10R 일반 몬스터 체력: 1–3R은 군졸만으로 정리, 4–5R은 조금 쌓임, 6R부터 다시 정리.
-  static const List<double> earlyHp = [15, 35, 55, 140, 165, 80, 100, 120, 140, 160];
+  /// 일반 몬스터 체력 (기획표 '몬스터' 탭 1–50R).
+  /// 1–3R은 군졸만으로 정리, 4–5R은 조금 쌓임, 6R부터 다시 정리.
+  static const List<double> normalHpTable = [
+    15, 35, 55, 140, 165, 80, 100, 120, 140, 160,
+    290, 340, 390, 450, 520, 580, 650, 720, 780, 840,
+    860, 950, 1050, 1160, 1270, 1390, 1520, 1650, 1800, 1940,
+    1500, 1610, 1710, 1810, 1910, 2030, 2160, 2300, 2480, 2650,
+    2220, 2360, 2510, 2650, 2800, 2950, 3090, 3260, 3460, 3670,
+  ];
 
+  /// 51–60R은 기획표에 아직 없어서 50R 값에서 늘려 둔 임시값.
   static double normalHp(int r) {
-    double lerp(double a, double b, double t) => a + (b - a) * t;
-    if (r <= 10) return earlyHp[r - 1];
-    if (r <= 20) return lerp(290, 840, (r - 11) / 9);
-    if (r <= 30) return lerp(860, 1940, (r - 21) / 9);
-    if (r <= 40) return lerp(1500, 2480, (r - 31) / 8);
-    if (r <= 50) return lerp(2220, 3460, (r - 41) / 8);
-    return lerp(3670, 5000, (r - 50) / 10);
+    if (r <= normalHpTable.length) return normalHpTable[r - 1];
+    return 3670 + (5000 - 3670) * (r - 50) / 10;
   }
 
   /// 피해 = 공격력 × 100 / (100 + 방어력)
