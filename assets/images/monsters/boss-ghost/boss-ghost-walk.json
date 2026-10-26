@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-ghost-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 171,
+    "h": 123
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5802,
+    "y": 0.9658
+   }
+  },
+  "boss-ghost-walk-1": {
+   "frame": {
+    "x": 171,
+    "y": 0,
+    "w": 171,
+    "h": 123
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5802,
+    "y": 0.9658
+   }
+  },
+  "boss-ghost-walk-2": {
+   "frame": {
+    "x": 342,
+    "y": 0,
+    "w": 171,
+    "h": 123
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5802,
+    "y": 0.9658
+   }
+  },
+  "boss-ghost-walk-3": {
+   "frame": {
+    "x": 513,
+    "y": 0,
+    "w": 171,
+    "h": 123
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5802,
+    "y": 0.9658
+   }
+  },
+  "boss-ghost-walk-4": {
+   "frame": {
+    "x": 684,
+    "y": 0,
+    "w": 171,
+    "h": 123
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5802,
+    "y": 0.9658
+   }
+  },
+  "boss-ghost-walk-5": {
+   "frame": {
+    "x": 855,
+    "y": 0,
+    "w": 171,
+    "h": 123
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5802,
+    "y": 0.9658
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "boss-ghost-walk-0",
+   "boss-ghost-walk-1",
+   "boss-ghost-walk-2",
+   "boss-ghost-walk-3",
+   "boss-ghost-walk-4",
+   "boss-ghost-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-ghost-walk.png",
+  "size": {
+   "w": 1026,
+   "h": 123
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

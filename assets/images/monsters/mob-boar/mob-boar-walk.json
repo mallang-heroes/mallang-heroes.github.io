@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "mob-boar-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 87,
+    "h": 70
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5555,
+    "y": 0.9286
+   }
+  },
+  "mob-boar-walk-1": {
+   "frame": {
+    "x": 87,
+    "y": 0,
+    "w": 87,
+    "h": 70
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5555,
+    "y": 0.9286
+   }
+  },
+  "mob-boar-walk-2": {
+   "frame": {
+    "x": 174,
+    "y": 0,
+    "w": 87,
+    "h": 70
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5555,
+    "y": 0.9286
+   }
+  },
+  "mob-boar-walk-3": {
+   "frame": {
+    "x": 261,
+    "y": 0,
+    "w": 87,
+    "h": 70
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5555,
+    "y": 0.9286
+   }
+  },
+  "mob-boar-walk-4": {
+   "frame": {
+    "x": 348,
+    "y": 0,
+    "w": 87,
+    "h": 70
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5555,
+    "y": 0.9286
+   }
+  },
+  "mob-boar-walk-5": {
+   "frame": {
+    "x": 435,
+    "y": 0,
+    "w": 87,
+    "h": 70
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5555,
+    "y": 0.9286
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "mob-boar-walk-0",
+   "mob-boar-walk-1",
+   "mob-boar-walk-2",
+   "mob-boar-walk-3",
+   "mob-boar-walk-4",
+   "mob-boar-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "mob-boar-walk.png",
+  "size": {
+   "w": 522,
+   "h": 70
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

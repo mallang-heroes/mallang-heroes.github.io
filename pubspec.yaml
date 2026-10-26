@@ -40,6 +40,18 @@ flutter:
     - assets/images/units/mystic/jeongbyeong/
     - assets/images/units/mystic/gungwan/
     - assets/images/units/mystic/jangsu/
+    - assets/images/monsters/mob-boar/
+    - assets/images/monsters/boss-boar/
+    - assets/images/monsters/mob-tiger/
+    - assets/images/monsters/boss-tiger/
+    - assets/images/monsters/mob-gumiho/
+    - assets/images/monsters/boss-gumiho/
+    - assets/images/monsters/mob-dokkaebi/
+    - assets/images/monsters/boss-dokkaebi/
+    - assets/images/monsters/mob-ghost/
+    - assets/images/monsters/boss-ghost/
+    - assets/images/monsters/mob-zombie/
+    - assets/images/monsters/boss-zombie-king/
   fonts:
     - family: Pretendard
       fonts:

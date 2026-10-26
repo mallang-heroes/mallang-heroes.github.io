@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-gumiho-appear-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 239,
+    "h": 320
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5937,
+    "y": 0.9353
+   }
+  },
+  "boss-gumiho-appear-1": {
+   "frame": {
+    "x": 239,
+    "y": 0,
+    "w": 239,
+    "h": 320
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5937,
+    "y": 0.9353
+   }
+  },
+  "boss-gumiho-appear-2": {
+   "frame": {
+    "x": 478,
+    "y": 0,
+    "w": 239,
+    "h": 320
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5937,
+    "y": 0.9353
+   }
+  },
+  "boss-gumiho-appear-3": {
+   "frame": {
+    "x": 717,
+    "y": 0,
+    "w": 239,
+    "h": 320
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5937,
+    "y": 0.9353
+   }
+  },
+  "boss-gumiho-appear-4": {
+   "frame": {
+    "x": 956,
+    "y": 0,
+    "w": 239,
+    "h": 320
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5937,
+    "y": 0.9353
+   }
+  },
+  "boss-gumiho-appear-5": {
+   "frame": {
+    "x": 1195,
+    "y": 0,
+    "w": 239,
+    "h": 320
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.5937,
+    "y": 0.9353
+   }
+  }
+ },
+ "animations": {
+  "appear": [
+   "boss-gumiho-appear-0",
+   "boss-gumiho-appear-1",
+   "boss-gumiho-appear-2",
+   "boss-gumiho-appear-3",
+   "boss-gumiho-appear-4",
+   "boss-gumiho-appear-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-gumiho-appear.png",
+  "size": {
+   "w": 1434,
+   "h": 320
+  },
+  "scale": "2",
+  "fps": 12,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

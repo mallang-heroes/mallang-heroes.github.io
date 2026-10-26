@@ -1,0 +1,37 @@
+{
+ "frames": {
+  "mob-tiger-hit-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 91,
+    "h": 66
+   },
+   "duration": 120,
+   "anchor": {
+    "x": 0.4823,
+    "y": 0.929
+   }
+  }
+ },
+ "animations": {
+  "hit": [
+   "mob-tiger-hit-0"
+  ]
+ },
+ "meta": {
+  "image": "mob-tiger-hit.png",
+  "size": {
+   "w": 91,
+   "h": 66
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

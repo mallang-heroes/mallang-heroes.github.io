@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "mob-tiger-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 69
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4796,
+    "y": 0.9329
+   }
+  },
+  "mob-tiger-walk-1": {
+   "frame": {
+    "x": 88,
+    "y": 0,
+    "w": 88,
+    "h": 69
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4796,
+    "y": 0.9329
+   }
+  },
+  "mob-tiger-walk-2": {
+   "frame": {
+    "x": 176,
+    "y": 0,
+    "w": 88,
+    "h": 69
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4796,
+    "y": 0.9329
+   }
+  },
+  "mob-tiger-walk-3": {
+   "frame": {
+    "x": 264,
+    "y": 0,
+    "w": 88,
+    "h": 69
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4796,
+    "y": 0.9329
+   }
+  },
+  "mob-tiger-walk-4": {
+   "frame": {
+    "x": 352,
+    "y": 0,
+    "w": 88,
+    "h": 69
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4796,
+    "y": 0.9329
+   }
+  },
+  "mob-tiger-walk-5": {
+   "frame": {
+    "x": 440,
+    "y": 0,
+    "w": 88,
+    "h": 69
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4796,
+    "y": 0.9329
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "mob-tiger-walk-0",
+   "mob-tiger-walk-1",
+   "mob-tiger-walk-2",
+   "mob-tiger-walk-3",
+   "mob-tiger-walk-4",
+   "mob-tiger-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "mob-tiger-walk.png",
+  "size": {
+   "w": 528,
+   "h": 69
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

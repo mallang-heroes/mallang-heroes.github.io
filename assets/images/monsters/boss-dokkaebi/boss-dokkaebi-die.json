@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-dokkaebi-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 173
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5197,
+    "y": 0.9368
+   }
+  },
+  "boss-dokkaebi-die-1": {
+   "frame": {
+    "x": 168,
+    "y": 0,
+    "w": 168,
+    "h": 173
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5197,
+    "y": 0.9368
+   }
+  },
+  "boss-dokkaebi-die-2": {
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 168,
+    "h": 173
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5197,
+    "y": 0.9368
+   }
+  },
+  "boss-dokkaebi-die-3": {
+   "frame": {
+    "x": 504,
+    "y": 0,
+    "w": 168,
+    "h": 173
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5197,
+    "y": 0.9368
+   }
+  },
+  "boss-dokkaebi-die-4": {
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 168,
+    "h": 173
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5197,
+    "y": 0.9368
+   }
+  },
+  "boss-dokkaebi-die-5": {
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 168,
+    "h": 173
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5197,
+    "y": 0.9368
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "boss-dokkaebi-die-0",
+   "boss-dokkaebi-die-1",
+   "boss-dokkaebi-die-2",
+   "boss-dokkaebi-die-3",
+   "boss-dokkaebi-die-4",
+   "boss-dokkaebi-die-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-dokkaebi-die.png",
+  "size": {
+   "w": 1008,
+   "h": 173
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

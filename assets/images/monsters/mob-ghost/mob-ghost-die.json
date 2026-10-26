@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "mob-ghost-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 86,
+    "h": 102
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4687,
+    "y": 0.9294
+   }
+  },
+  "mob-ghost-die-1": {
+   "frame": {
+    "x": 86,
+    "y": 0,
+    "w": 86,
+    "h": 102
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4687,
+    "y": 0.9294
+   }
+  },
+  "mob-ghost-die-2": {
+   "frame": {
+    "x": 172,
+    "y": 0,
+    "w": 86,
+    "h": 102
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4687,
+    "y": 0.9294
+   }
+  },
+  "mob-ghost-die-3": {
+   "frame": {
+    "x": 258,
+    "y": 0,
+    "w": 86,
+    "h": 102
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4687,
+    "y": 0.9294
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "mob-ghost-die-0",
+   "mob-ghost-die-1",
+   "mob-ghost-die-2",
+   "mob-ghost-die-3"
+  ]
+ },
+ "meta": {
+  "image": "mob-ghost-die.png",
+  "size": {
+   "w": 344,
+   "h": 102
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

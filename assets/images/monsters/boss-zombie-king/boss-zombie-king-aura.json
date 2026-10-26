@@ -1,0 +1,75 @@
+{
+ "frames": {
+  "boss-zombie-king-aura-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 260
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5,
+    "y": 0.9077
+   }
+  },
+  "boss-zombie-king-aura-1": {
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 300,
+    "h": 260
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5,
+    "y": 0.9077
+   }
+  },
+  "boss-zombie-king-aura-2": {
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 300,
+    "h": 260
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5,
+    "y": 0.9077
+   }
+  },
+  "boss-zombie-king-aura-3": {
+   "frame": {
+    "x": 900,
+    "y": 0,
+    "w": 300,
+    "h": 260
+   },
+   "duration": 167,
+   "anchor": {
+    "x": 0.5,
+    "y": 0.9077
+   }
+  }
+ },
+ "animations": {
+  "aura": [
+   "boss-zombie-king-aura-0",
+   "boss-zombie-king-aura-1",
+   "boss-zombie-king-aura-2",
+   "boss-zombie-king-aura-3"
+  ]
+ },
+ "meta": {
+  "image": "boss-zombie-king-aura.png",
+  "size": {
+   "w": 1200,
+   "h": 260
+  },
+  "scale": "2",
+  "fps": 6,
+  "loop": true,
+  "note": "왕 뒤에 깔아 그리는 기운. anchor = 왕 발밑과 같은 점"
+ }
+}
