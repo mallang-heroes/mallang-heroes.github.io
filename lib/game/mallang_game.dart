@@ -366,7 +366,7 @@ class MallangGame extends FlameGame {
   /// 성공 50%, 실패해도 비용은 사라진다.
   void tryUpgrade(int group) {
     if (phase != Phase.playing) return;
-    if (upgradeLv[group] >= Rules.upgradeMax) {
+    if (upgradeLv[group] >= Rules.upgradeMax[group]) {
       toast('${Rules.upgradeNames[group]} 최대 강화예요');
       return;
     }

@@ -106,7 +106,7 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
       final r = _upBtn(gi);
       final locked = gi >= 2;
       final cost = g.upgradeCost(gi);
-      final maxed = g.upgradeLv[gi] >= Rules.upgradeMax;
+      final maxed = g.upgradeLv[gi] >= Rules.upgradeMax[gi];
       final afford = !locked && !maxed && g.silver >= cost;
       final rr = RRect.fromRectAndRadius(r, const Radius.circular(10));
       canvas.drawRRect(rr, Paint()..color = locked ? const Color(0x40FFFFFF) : const Color(0xFFFFFFFF));

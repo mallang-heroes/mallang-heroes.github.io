@@ -44,7 +44,8 @@ class Rules {
   static const List<String> upgradeNames = ['군졸~군관', '장수', '명장', '천명', '공신'];
   static const List<int> upgradeBase = [10, 20, 30, 40, 50];
   static const List<int> upgradeStep = [3, 5, 8, 10, 12];
-  static const int upgradeMax = 20;
+  /// 등급별 최대 강화 (군졸~군관은 10강까지, 나머지 20강).
+  static const List<int> upgradeMax = [10, 20, 20, 20, 20];
   static const double upgradeChance = 0.5;
   static const double atkPerLv = 0.05;
   static const double speedPerLv = 0.02;
