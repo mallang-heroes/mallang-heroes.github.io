@@ -15,7 +15,7 @@ const _ink = Color(0xFF2A211C);
 Color branchColor(String branch) => Board.branch(branch).color;
 
 /// 슬라임 그림이 준비된 병과 (assets/images/units/<key>/<tier>/).
-const slimeBranches = {'spear', 'archer', 'gunner'};
+const slimeBranches = {'spear', 'archer', 'gunner', 'cavalry'};
 
 /// 막사 등급 그림 경로 (없으면 null).
 String? tierImagePath(String branch, int tier) {

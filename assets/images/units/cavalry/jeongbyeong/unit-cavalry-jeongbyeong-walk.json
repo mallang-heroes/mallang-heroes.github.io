@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-cavalry-jeongbyeong-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 176
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4331,
+    "y": 0.9455
+   }
+  },
+  "unit-cavalry-jeongbyeong-walk-1": {
+   "frame": {
+    "x": 152,
+    "y": 0,
+    "w": 152,
+    "h": 176
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4331,
+    "y": 0.9455
+   }
+  },
+  "unit-cavalry-jeongbyeong-walk-2": {
+   "frame": {
+    "x": 304,
+    "y": 0,
+    "w": 152,
+    "h": 176
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4331,
+    "y": 0.9455
+   }
+  },
+  "unit-cavalry-jeongbyeong-walk-3": {
+   "frame": {
+    "x": 456,
+    "y": 0,
+    "w": 152,
+    "h": 176
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4331,
+    "y": 0.9455
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-cavalry-jeongbyeong-walk-0",
+   "unit-cavalry-jeongbyeong-walk-1",
+   "unit-cavalry-jeongbyeong-walk-2",
+   "unit-cavalry-jeongbyeong-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-cavalry-jeongbyeong-walk.png",
+  "size": {
+   "w": 608,
+   "h": 176
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 76,
+   "h": 88
+  },
+  "body_height": 70,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}
