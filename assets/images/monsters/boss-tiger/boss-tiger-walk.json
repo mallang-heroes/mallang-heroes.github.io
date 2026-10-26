@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-tiger-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 154,
+    "h": 121
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4901,
+    "y": 0.9552
+   }
+  },
+  "boss-tiger-walk-1": {
+   "frame": {
+    "x": 154,
+    "y": 0,
+    "w": 154,
+    "h": 121
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4901,
+    "y": 0.9552
+   }
+  },
+  "boss-tiger-walk-2": {
+   "frame": {
+    "x": 308,
+    "y": 0,
+    "w": 154,
+    "h": 121
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4901,
+    "y": 0.9552
+   }
+  },
+  "boss-tiger-walk-3": {
+   "frame": {
+    "x": 462,
+    "y": 0,
+    "w": 154,
+    "h": 121
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4901,
+    "y": 0.9552
+   }
+  },
+  "boss-tiger-walk-4": {
+   "frame": {
+    "x": 616,
+    "y": 0,
+    "w": 154,
+    "h": 121
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4901,
+    "y": 0.9552
+   }
+  },
+  "boss-tiger-walk-5": {
+   "frame": {
+    "x": 770,
+    "y": 0,
+    "w": 154,
+    "h": 121
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4901,
+    "y": 0.9552
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "boss-tiger-walk-0",
+   "boss-tiger-walk-1",
+   "boss-tiger-walk-2",
+   "boss-tiger-walk-3",
+   "boss-tiger-walk-4",
+   "boss-tiger-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-tiger-walk.png",
+  "size": {
+   "w": 924,
+   "h": 121
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

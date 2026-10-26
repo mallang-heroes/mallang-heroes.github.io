@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "mob-gumiho-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 121,
+    "h": 117
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5961,
+    "y": 0.9583
+   }
+  },
+  "mob-gumiho-walk-1": {
+   "frame": {
+    "x": 121,
+    "y": 0,
+    "w": 121,
+    "h": 117
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5961,
+    "y": 0.9583
+   }
+  },
+  "mob-gumiho-walk-2": {
+   "frame": {
+    "x": 242,
+    "y": 0,
+    "w": 121,
+    "h": 117
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5961,
+    "y": 0.9583
+   }
+  },
+  "mob-gumiho-walk-3": {
+   "frame": {
+    "x": 363,
+    "y": 0,
+    "w": 121,
+    "h": 117
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5961,
+    "y": 0.9583
+   }
+  },
+  "mob-gumiho-walk-4": {
+   "frame": {
+    "x": 484,
+    "y": 0,
+    "w": 121,
+    "h": 117
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5961,
+    "y": 0.9583
+   }
+  },
+  "mob-gumiho-walk-5": {
+   "frame": {
+    "x": 605,
+    "y": 0,
+    "w": 121,
+    "h": 117
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5961,
+    "y": 0.9583
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "mob-gumiho-walk-0",
+   "mob-gumiho-walk-1",
+   "mob-gumiho-walk-2",
+   "mob-gumiho-walk-3",
+   "mob-gumiho-walk-4",
+   "mob-gumiho-walk-5"
+  ]
+ },
+ "meta": {
+  "image": "mob-gumiho-walk.png",
+  "size": {
+   "w": 726,
+   "h": 117
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": true,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

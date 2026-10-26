@@ -1,0 +1,37 @@
+{
+ "frames": {
+  "boss-tiger-hit-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 114
+   },
+   "duration": 120,
+   "anchor": {
+    "x": 0.4906,
+    "y": 0.9572
+   }
+  }
+ },
+ "animations": {
+  "hit": [
+   "boss-tiger-hit-0"
+  ]
+ },
+ "meta": {
+  "image": "boss-tiger-hit.png",
+  "size": {
+   "w": 160,
+   "h": 114
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

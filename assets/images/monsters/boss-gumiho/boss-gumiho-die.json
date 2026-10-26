@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-gumiho-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 264,
+    "h": 212
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.516,
+    "y": 0.9391
+   }
+  },
+  "boss-gumiho-die-1": {
+   "frame": {
+    "x": 264,
+    "y": 0,
+    "w": 264,
+    "h": 212
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.516,
+    "y": 0.9391
+   }
+  },
+  "boss-gumiho-die-2": {
+   "frame": {
+    "x": 528,
+    "y": 0,
+    "w": 264,
+    "h": 212
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.516,
+    "y": 0.9391
+   }
+  },
+  "boss-gumiho-die-3": {
+   "frame": {
+    "x": 792,
+    "y": 0,
+    "w": 264,
+    "h": 212
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.516,
+    "y": 0.9391
+   }
+  },
+  "boss-gumiho-die-4": {
+   "frame": {
+    "x": 1056,
+    "y": 0,
+    "w": 264,
+    "h": 212
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.516,
+    "y": 0.9391
+   }
+  },
+  "boss-gumiho-die-5": {
+   "frame": {
+    "x": 1320,
+    "y": 0,
+    "w": 264,
+    "h": 212
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.516,
+    "y": 0.9391
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "boss-gumiho-die-0",
+   "boss-gumiho-die-1",
+   "boss-gumiho-die-2",
+   "boss-gumiho-die-3",
+   "boss-gumiho-die-4",
+   "boss-gumiho-die-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-gumiho-die.png",
+  "size": {
+   "w": 1584,
+   "h": 212
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

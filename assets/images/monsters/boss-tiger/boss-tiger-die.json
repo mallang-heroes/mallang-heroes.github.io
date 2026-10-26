@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-tiger-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 177,
+    "h": 146
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.438,
+    "y": 0.8705
+   }
+  },
+  "boss-tiger-die-1": {
+   "frame": {
+    "x": 177,
+    "y": 0,
+    "w": 177,
+    "h": 146
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.438,
+    "y": 0.8705
+   }
+  },
+  "boss-tiger-die-2": {
+   "frame": {
+    "x": 354,
+    "y": 0,
+    "w": 177,
+    "h": 146
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.438,
+    "y": 0.8705
+   }
+  },
+  "boss-tiger-die-3": {
+   "frame": {
+    "x": 531,
+    "y": 0,
+    "w": 177,
+    "h": 146
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.438,
+    "y": 0.8705
+   }
+  },
+  "boss-tiger-die-4": {
+   "frame": {
+    "x": 708,
+    "y": 0,
+    "w": 177,
+    "h": 146
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.438,
+    "y": 0.8705
+   }
+  },
+  "boss-tiger-die-5": {
+   "frame": {
+    "x": 885,
+    "y": 0,
+    "w": 177,
+    "h": 146
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.438,
+    "y": 0.8705
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "boss-tiger-die-0",
+   "boss-tiger-die-1",
+   "boss-tiger-die-2",
+   "boss-tiger-die-3",
+   "boss-tiger-die-4",
+   "boss-tiger-die-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-tiger-die.png",
+  "size": {
+   "w": 1062,
+   "h": 146
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

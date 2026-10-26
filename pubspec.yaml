@@ -28,6 +28,12 @@ flutter:
     - assets/images/units/gunner/jeongbyeong/
     - assets/images/units/gunner/gungwan/
     - assets/images/units/gunner/jangsu/
+    - assets/images/monsters/mob-boar/
+    - assets/images/monsters/boss-boar/
+    - assets/images/monsters/mob-tiger/
+    - assets/images/monsters/boss-tiger/
+    - assets/images/monsters/mob-gumiho/
+    - assets/images/monsters/boss-gumiho/
   fonts:
     - family: Pretendard
       fonts:

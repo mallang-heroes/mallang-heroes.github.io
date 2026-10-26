@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "mob-boar-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 100,
+    "h": 79
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5013,
+    "y": 0.8846
+   }
+  },
+  "mob-boar-die-1": {
+   "frame": {
+    "x": 100,
+    "y": 0,
+    "w": 100,
+    "h": 79
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5013,
+    "y": 0.8846
+   }
+  },
+  "mob-boar-die-2": {
+   "frame": {
+    "x": 200,
+    "y": 0,
+    "w": 100,
+    "h": 79
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5013,
+    "y": 0.8846
+   }
+  },
+  "mob-boar-die-3": {
+   "frame": {
+    "x": 300,
+    "y": 0,
+    "w": 100,
+    "h": 79
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5013,
+    "y": 0.8846
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "mob-boar-die-0",
+   "mob-boar-die-1",
+   "mob-boar-die-2",
+   "mob-boar-die-3"
+  ]
+ },
+ "meta": {
+  "image": "mob-boar-die.png",
+  "size": {
+   "w": 400,
+   "h": 79
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

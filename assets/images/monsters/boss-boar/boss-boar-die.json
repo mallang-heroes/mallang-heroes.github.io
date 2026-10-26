@@ -1,0 +1,107 @@
+{
+ "frames": {
+  "boss-boar-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 188,
+    "h": 136
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4389,
+    "y": 0.8228
+   }
+  },
+  "boss-boar-die-1": {
+   "frame": {
+    "x": 188,
+    "y": 0,
+    "w": 188,
+    "h": 136
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4389,
+    "y": 0.8228
+   }
+  },
+  "boss-boar-die-2": {
+   "frame": {
+    "x": 376,
+    "y": 0,
+    "w": 188,
+    "h": 136
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4389,
+    "y": 0.8228
+   }
+  },
+  "boss-boar-die-3": {
+   "frame": {
+    "x": 564,
+    "y": 0,
+    "w": 188,
+    "h": 136
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4389,
+    "y": 0.8228
+   }
+  },
+  "boss-boar-die-4": {
+   "frame": {
+    "x": 752,
+    "y": 0,
+    "w": 188,
+    "h": 136
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4389,
+    "y": 0.8228
+   }
+  },
+  "boss-boar-die-5": {
+   "frame": {
+    "x": 940,
+    "y": 0,
+    "w": 188,
+    "h": 136
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4389,
+    "y": 0.8228
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "boss-boar-die-0",
+   "boss-boar-die-1",
+   "boss-boar-die-2",
+   "boss-boar-die-3",
+   "boss-boar-die-4",
+   "boss-boar-die-5"
+  ]
+ },
+ "meta": {
+  "image": "boss-boar-die.png",
+  "size": {
+   "w": 1128,
+   "h": 136
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 72,
+   "h": 76
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}

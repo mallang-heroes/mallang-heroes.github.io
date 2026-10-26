@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "mob-gumiho-die-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5358,
+    "y": 0.9383
+   }
+  },
+  "mob-gumiho-die-1": {
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 144,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5358,
+    "y": 0.9383
+   }
+  },
+  "mob-gumiho-die-2": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 144,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5358,
+    "y": 0.9383
+   }
+  },
+  "mob-gumiho-die-3": {
+   "frame": {
+    "x": 432,
+    "y": 0,
+    "w": 144,
+    "h": 122
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.5358,
+    "y": 0.9383
+   }
+  }
+ },
+ "animations": {
+  "die": [
+   "mob-gumiho-die-0",
+   "mob-gumiho-die-1",
+   "mob-gumiho-die-2",
+   "mob-gumiho-die-3"
+  ]
+ },
+ "meta": {
+  "image": "mob-gumiho-die.png",
+  "size": {
+   "w": 576,
+   "h": 122
+  },
+  "scale": "2",
+  "fps": 10,
+  "loop": false,
+  "body": {
+   "w": 40,
+   "h": 44
+  },
+  "note": "anchor = 발밑(앞뒤 발 가운데). body = 판정용 보드 크기(px). 좌우 반전 시 x' = w - x"
+ }
+}
