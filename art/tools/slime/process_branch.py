@@ -15,6 +15,7 @@ from split_units import split_characters
 H = os.path.dirname(os.path.abspath(__file__))
 SCALE = 2
 TARGET = {"gunjol": 46, "jeongbyeong": 54, "gungwan": 60, "jangsu": 66}   # 몸+머리쓰개 높이 (보드 px)
+TARGET_RIDER = {"gunjol": 64, "jeongbyeong": 70, "gungwan": 76, "jangsu": 82}  # 기병: 말+기수 전체 높이
 BRANCH_COL = {"spear": (154, 59, 46), "archer": (63, 107, 58), "gunner": (94, 78, 140),
               "cavalry": (138, 100, 24), "navy": (46, 94, 140), "mystic": (74, 78, 84)}
 
@@ -185,7 +186,7 @@ def export(branch, tier, sprites, anims, out, pad=None):
         sheet.save(os.path.join(out, f"{name}-{anim}.png"))
         json.dump({"frames": fr, "animations": {anim: list(fr)},
                    "meta": {"image": f"{name}-{anim}.png", "size": {"w": sheet.width, "h": Hp}, "scale": str(SCALE), "fps": fps,
-                            "board_frame": {"w": Wb, "h": Hb}, "body_height": TARGET[tier],
+                            "board_frame": {"w": Wb, "h": Hb}, "body_height": (TARGET_RIDER if branch == "cavalry" else TARGET)[tier],
                             "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."}},
                   open(os.path.join(out, f"{name}-{anim}.json"), "w"), ensure_ascii=False, indent=1)
         if anim == "idle":
@@ -198,10 +199,16 @@ def main(branch):
     src = os.path.join(H, "src2")
     out = os.path.join(H, "out2", branch)
     os.makedirs(out, exist_ok=True)
-    A = clean_edges(remove_sparkle(key_out(os.path.join(src, f"{branch}-A.png")), None))
-    a = split_characters(A, 4)
     tiers = ["gunjol", "jeongbyeong", "gungwan", "jangsu"]
-    imgs = {t: im for t, (_, im) in zip(tiers, a)}
+    per_tier = [os.path.join(src, f"{branch}-T{i}.png") for i in range(1, 5)]
+    if all(os.path.exists(p) for p in per_tier):          # 등급마다 한 장씩 받은 경우 (기병)
+        imgs = {t: split_characters(clean_edges(key_out(p)), 1)[0][1] for t, p in zip(tiers, per_tier)}
+        a = None
+    else:
+        A = clean_edges(remove_sparkle(key_out(os.path.join(src, f"{branch}-A.png")), None))
+        a = split_characters(A, 4)
+        imgs = {t: im for t, (_, im) in zip(tiers, a)}
+    TGT = TARGET_RIDER if branch == "cavalry" else TARGET
     combined = os.path.join(src, f"{branch}-B.png")      # 예전 방식(세 포즈 한 장)이 있으면 씀
     b = None
     if os.path.exists(combined):
@@ -211,6 +218,8 @@ def main(branch):
         imgs["jangsu"] = b_base
     # 장수 한 마리 입력 그림으로 따로 받은 눈 감음(B1)·공격(B2)이 있으면 그것을 씀
     inp, b1, b2 = (os.path.join(src, f"{branch}-{n}.png") for n in ("jangsu-input", "B1", "B2"))
+    if not os.path.exists(inp) and os.path.exists(os.path.join(src, f"{branch}-T4.png")):
+        inp = os.path.join(src, f"{branch}-T4.png")
     single = os.path.exists(inp) and os.path.exists(b1) and os.path.exists(b2)
     if single:
         J_base = keep_main(clean_edges(key_out(inp)))
@@ -218,7 +227,7 @@ def main(branch):
         J_attack = split_characters(clean_edges(remove_sparkle(key_out(b2), None)), 1)[0][1]
     # B 2번이 장수인지 군관인지 판단: 크기·위치가 A 군관과 거의 같으면 군관 깜빡임으로 씀
     blink_for = {}
-    if b is not None:
+    if b is not None and a is not None:
         ga = a[2][0]; gb = b[1][0]
         if abs(ga[0] - gb[0]) < 12 and abs(ga[1] - gb[1]) < 12 and abs(ga[2] - gb[2]) < 12:
             blink_for["gungwan"] = b_blink
@@ -226,23 +235,27 @@ def main(branch):
             blink_for["jangsu"] = b_blink
     res = {}
     for t in tiers:
-        sp = {"base": Sprite(imgs[t], TARGET[t])}
+        sp = {"base": Sprite(imgs[t], TGT[t])}
         if t in blink_for:
-            sp["blink"] = Sprite(blink_for[t], TARGET[t])
+            sp["blink"] = Sprite(blink_for[t], TGT[t])
         if t == "jangsu" and single:
-            sp = {"base": Sprite(J_base, TARGET[t])}
-            sp["blink"] = Sprite(J_blink, TARGET[t], like=sp["base"], same_pos=True)
-            sp["attack"] = Sprite(J_attack, TARGET[t], like=sp["base"])
+            sp = {"base": Sprite(J_base, TGT[t])}
+            sp["blink"] = Sprite(J_blink, TGT[t], like=sp["base"], same_pos=True)
+            sp["attack"] = Sprite(J_attack, TGT[t], like=sp["base"])
             hb, ha = helmet_width(J_base), helmet_width(J_attack)
-            if hb and ha and abs(ha / hb - 1) > .06:      # 공격 그림이 다른 크기로 그려졌으면 투구 폭으로 맞춤
+            hh = J_base.getbbox(); ha_h = J_attack.height
+            same_height = abs((hh[3] - hh[1]) / ha_h - 1) < .12      # 그림 전체 높이가 비슷하면 같은 크기로 그린 것
+            if hb and ha and abs(ha / hb - 1) > .06 and not same_height:      # 공격 그림이 다른 크기로 그려졌으면 투구 폭으로 맞춤
                 class _L: pass
                 ref = _L(); ref.k = sp["base"].k * hb / ha; ref.foot = None
-                sp["attack"] = Sprite(J_attack, TARGET[t], like=ref)
+                sp["attack"] = Sprite(J_attack, TGT[t], like=ref)
                 print("attack rescale", round(hb / ha, 3))
             sp["attack"].core_w = sp["base"].core_w           # 그림자 크기는 기본 자세 기준
             blink_for["jangsu"] = J_blink
-        elif t == "jangsu":
-            sp["attack"] = Sprite(b_attack, TARGET[t])
+        elif t == "jangsu" and b is not None:
+            sp["attack"] = Sprite(b_attack, TGT[t])
+        elif t == "jangsu":                                  # 공격 그림이 아직 없으면 기본 그림으로 임시 공격
+            sp["attack"] = sp["base"]
         if t == "jangsu":
             anims = {"idle": (IDLE, 6), "attack": (ATTACK, 12)}
             res[t] = export(branch, t, sp, anims, out, pad=BRANCH_COL[branch])

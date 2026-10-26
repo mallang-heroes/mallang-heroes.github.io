@@ -1,0 +1,79 @@
+{
+ "frames": {
+  "unit-cavalry-gungwan-walk-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 188
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4123,
+    "y": 0.955
+   }
+  },
+  "unit-cavalry-gungwan-walk-1": {
+   "frame": {
+    "x": 152,
+    "y": 0,
+    "w": 152,
+    "h": 188
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4123,
+    "y": 0.955
+   }
+  },
+  "unit-cavalry-gungwan-walk-2": {
+   "frame": {
+    "x": 304,
+    "y": 0,
+    "w": 152,
+    "h": 188
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4123,
+    "y": 0.955
+   }
+  },
+  "unit-cavalry-gungwan-walk-3": {
+   "frame": {
+    "x": 456,
+    "y": 0,
+    "w": 152,
+    "h": 188
+   },
+   "duration": 100,
+   "anchor": {
+    "x": 0.4123,
+    "y": 0.955
+   }
+  }
+ },
+ "animations": {
+  "walk": [
+   "unit-cavalry-gungwan-walk-0",
+   "unit-cavalry-gungwan-walk-1",
+   "unit-cavalry-gungwan-walk-2",
+   "unit-cavalry-gungwan-walk-3"
+  ]
+ },
+ "meta": {
+  "image": "unit-cavalry-gungwan-walk.png",
+  "size": {
+   "w": 608,
+   "h": 188
+  },
+  "scale": "2",
+  "fps": 10,
+  "board_frame": {
+   "w": 76,
+   "h": 94
+  },
+  "body_height": 76,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}

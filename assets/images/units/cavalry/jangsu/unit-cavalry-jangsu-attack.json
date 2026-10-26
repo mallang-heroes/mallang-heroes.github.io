@@ -1,0 +1,113 @@
+{
+ "frames": {
+  "unit-cavalry-jangsu-attack-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 178
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.45,
+    "y": 0.9461
+   }
+  },
+  "unit-cavalry-jangsu-attack-1": {
+   "frame": {
+    "x": 170,
+    "y": 0,
+    "w": 170,
+    "h": 178
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.45,
+    "y": 0.9461
+   }
+  },
+  "unit-cavalry-jangsu-attack-2": {
+   "frame": {
+    "x": 340,
+    "y": 0,
+    "w": 170,
+    "h": 178
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.45,
+    "y": 0.9461
+   }
+  },
+  "unit-cavalry-jangsu-attack-3": {
+   "frame": {
+    "x": 510,
+    "y": 0,
+    "w": 170,
+    "h": 178
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.45,
+    "y": 0.9461
+   },
+   "events": {
+    "hit": {
+     "x": 160.9,
+     "y": 126.4
+    }
+   }
+  },
+  "unit-cavalry-jangsu-attack-4": {
+   "frame": {
+    "x": 680,
+    "y": 0,
+    "w": 170,
+    "h": 178
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.45,
+    "y": 0.9461
+   }
+  },
+  "unit-cavalry-jangsu-attack-5": {
+   "frame": {
+    "x": 850,
+    "y": 0,
+    "w": 170,
+    "h": 178
+   },
+   "duration": 83,
+   "anchor": {
+    "x": 0.45,
+    "y": 0.9461
+   }
+  }
+ },
+ "animations": {
+  "attack": [
+   "unit-cavalry-jangsu-attack-0",
+   "unit-cavalry-jangsu-attack-1",
+   "unit-cavalry-jangsu-attack-2",
+   "unit-cavalry-jangsu-attack-3",
+   "unit-cavalry-jangsu-attack-4",
+   "unit-cavalry-jangsu-attack-5"
+  ]
+ },
+ "meta": {
+  "image": "unit-cavalry-jangsu-attack.png",
+  "size": {
+   "w": 1020,
+   "h": 178
+  },
+  "scale": "2",
+  "fps": 12,
+  "board_frame": {
+   "w": 85,
+   "h": 89
+  },
+  "body_height": 82,
+  "note": "그림 한 장 전체 변형. anchor = 몸 바닥 가운데. 좌우 반전 시 x' = w - x."
+ }
+}
