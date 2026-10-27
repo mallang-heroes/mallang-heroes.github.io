@@ -22,12 +22,12 @@ def sprite(path, k):
     w, h = f0['frame']['w'], f0['frame']['h']
     n = len(fr)
     fps = d['meta'].get('fps', 10)
-    return dict(url=f'assets/{IMG}{path}.png', w=round(w * k, 1), h=round(h * k, 1), n=n,
+    return dict(url=f'assets/{IMG}{path}.webp', w=round(w * k, 1), h=round(h * k, 1), n=n,
                 ax=round(f0['anchor']['x'] * w * k, 1), ay=round(f0['anchor']['y'] * h * k, 1),
                 dur=round(n / fps, 3))
 
 # 흐린 맵 배경 (작게 줄여 web/loader-bg.jpg)
-bg = Image.open(f'{ROOT}/{IMG}map/map-bg.png').convert('RGB').resize((520, 240), Image.LANCZOS)
+bg = Image.open(f'{ROOT}/{IMG}map/map-bg.webp').convert('RGB').resize((520, 240), Image.LANCZOS)
 bg = bg.filter(ImageFilter.GaussianBlur(3))
 bg = Image.blend(bg, Image.new('RGB', bg.size, (30, 36, 22)), 0.45)
 bg.save(f'{ROOT}/web/loader-bg.jpg', quality=78)

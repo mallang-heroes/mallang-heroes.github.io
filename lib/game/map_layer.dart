@@ -20,8 +20,8 @@ class MapLayer extends PositionComponent with HasGameReference<MallangGame> {
     // 배경과 장식 그림을 한꺼번에 받는다
     final kinds = {for (final d in game.map.decorations) d.kind}.toList();
     final r = await Future.wait([
-      game.images.load('map/map-bg.png'),
-      for (final k in kinds) Still.load(game.images, 'map/map-prop-$k.png'),
+      game.images.load('map/map-bg.webp'),
+      for (final k in kinds) Still.load(game.images, 'map/map-prop-$k.webp'),
     ]);
     final bg = r[0] as ui.Image;
     final props = <String, Still>{for (var i = 0; i < kinds.length; i++) kinds[i]: r[i + 1] as Still};
@@ -96,7 +96,7 @@ class Palace extends PositionComponent with TapCallbacks, HasGameReference<Malla
   @override
   Future<void> onLoad() async {
     final r = await Future.wait([
-      Still.load(game.images, 'map/map-bld-palace.png'),
+      Still.load(game.images, 'map/map-bld-palace.webp'),
       Sheet.load(game.images, 'map/map-bld-palace-enter.json'),
     ]);
     _still = r[0] as Still;
