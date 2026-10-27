@@ -18,7 +18,7 @@
 | `assets/data/map-path.json` | 순환로·출현 갈림길 점 목록, 건물 자리·크기, 장식 위치(blocks: 유닛 배치를 막는지) |
 
 ## 수치
-- 보드 1560×720 (오른쪽 156px 패널). 이미지 파일은 모두 @2x.
+- 보드 1560×720 (오른쪽 156px 패널). 이미지 파일은 모두 @2x, 게임 에셋은 WebP(원본·미리보기는 PNG).
 - 몬스터 경로: 제미나이 그림에서 추출한 둥근 직사각형 순환로 (길이 약 3055px, 폭 약 58px). 출현 갈림길은 x=1282, 동굴 입구 (1282,104) → 합류 (1282,209), 합류점부터 시계 방향.
 - 스프라이트 JSON: TexturePacker Hash 호환 + `anchor`(발밑 비율), `events.hit` / `events.projectile`(@2x 프레임 픽셀). 좌우 반전 시 x' = w − x.
 - 몬스터 JSON은 `meta.body`(판정용 보드 크기: 일반 40×44, 보스 72×76)와 `meta.loop`(걷기만 true)을 더 갖는다. 구미호 꼬리는 body 밖으로 넘친다. 피격 프레임은 하얀 번쩍임이 그려져 있다.
@@ -29,5 +29,6 @@
 ## 새 소스 추가 흐름
 1. `art/docs/gemini-source-prompt.md`(캐릭터) / `gemini-map-prompt.md`(맵)로 제미나이에서 뽑기
 2. `art/source/gemini/<이름>/`에 저장
-3. 스크립트 실행 → `assets/images`에 결과, `art/preview`에 확인용
+3. 스크립트 실행 → `assets/images`에 결과(PNG), `art/preview`에 확인용
+4. **`python3 art/tools/web/to_webp.py`** — `assets/images`의 PNG를 WebP(품질 90)로 바꾸고 JSON의 `meta.image`도 고친다. 게임은 WebP만 읽는다 (로딩 시간 단축, 전체 약 16MB → 5MB).
 (스크립트 안의 일부 경로는 작업 환경 기준이라 실행 위치에 맞게 고쳐 써야 할 수 있다.)

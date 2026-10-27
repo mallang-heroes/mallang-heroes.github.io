@@ -23,7 +23,7 @@ String? tierImagePath(String branch, int tier) {
   final key = Board.branch(branch).key;
   if (!slimeBranches.contains(key)) return null;
   const tiers = ['gunjol', 'jeongbyeong', 'gungwan', 'jangsu'];
-  return 'assets/images/units/$key/${tiers[tier]}/unit-$key-${tiers[tier]}.png';
+  return 'assets/images/units/$key/${tiers[tier]}/unit-$key-${tiers[tier]}.webp';
 }
 
 /// 한 번 공격: 대상 고르기 → 피해 → 투사체 그림.
@@ -75,7 +75,7 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
   Future<void> onLoad() async {
     final key = Board.branch(branch).key;
     final r = await Future.wait([
-      Still.load(game.images, 'map/map-bld-barracks-$key.png'),
+      Still.load(game.images, 'map/map-bld-barracks-$key.webp'),
       Sheet.load(game.images, 'map/map-bld-barracks-$key-enter.json'),
     ]);
     _still = r[0] as Still;
