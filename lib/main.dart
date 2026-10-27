@@ -1,4 +1,5 @@
-import 'package:flame/game.dart';
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,8 +11,7 @@ import 'ui/overlays.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
-    await SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
   runApp(const MallangApp());
@@ -51,24 +51,17 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF3E4A2E),
+      backgroundColor: const Color(0xFF1E1814),
       body: LayoutBuilder(
         builder: (context, box) {
-          final portrait = box.maxHeight > box.maxWidth;
-          return Stack(
-            children: [
-              GameWidget<MallangGame>(
-                game: game,
-                overlayBuilderMap: {
-                  'barracks': (context, g) => BarracksDialog(game: g),
-                  'detail': (context, g) => DetailDialog(game: g),
-                  'held': (context, g) => HeldBanner(game: g),
-                  'palace': (context, g) => PalaceDialog(game: g),
-                  'result': (context, g) => ResultDialog(game: g),
-                },
-              ),
-              if (portrait) const RotateHint(),
-            ],
+          // 세로 화면 게임. 가로로 넓은 화면(PC·태블릿 가로)에서는 가운데에 폰 비율로 보여 준다.
+          final width = math.min(box.maxWidth, box.maxHeight * 0.6);
+          return Center(
+            child: SizedBox(
+              width: width,
+              height: box.maxHeight,
+              child: ClipRect(child: GameShell(game: game)),
+            ),
           );
         },
       ),
