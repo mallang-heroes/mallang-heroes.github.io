@@ -383,6 +383,36 @@ class FieldUnit extends PositionComponent
     return (math.sin(_t * (run ? 18 : 12))).abs() * (run ? 7 : 5);
   }
 
+  /// 승진(군졸·정병 3명) 또는 장수 소환(군관·정병·군졸)이 가능한지.
+  bool _canAdvance() {
+    if (tier < 2) return game.cachedCount(branch, tier) >= 3;
+    return game.cachedCount(branch, 0) > 0 && game.cachedCount(branch, 1) > 0 && game.cachedCount(branch, 2) > 0;
+  }
+
+  /// 머리 위 금색 위쪽 화살표 (눌러서 상세 창에서 승진할 수 있다는 표시).
+  void _drawUpBadge(Canvas canvas, Offset c) {
+    final bob = math.sin(_t * 5) * 1.5;
+    final p = c.translate(0, bob);
+    canvas.drawCircle(p, 8, Paint()..color = const Color(0xFFF2C14E));
+    canvas.drawCircle(
+        p,
+        8,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4
+          ..color = _ink);
+    final arrow = Path()
+      ..moveTo(p.dx, p.dy - 4.5)
+      ..lineTo(p.dx + 4, p.dy + 0.5)
+      ..lineTo(p.dx + 1.5, p.dy + 0.5)
+      ..lineTo(p.dx + 1.5, p.dy + 4)
+      ..lineTo(p.dx - 1.5, p.dy + 4)
+      ..lineTo(p.dx - 1.5, p.dy + 0.5)
+      ..lineTo(p.dx - 4, p.dy + 0.5)
+      ..close();
+    canvas.drawPath(arrow, Paint()..color = _ink);
+  }
+
   void _drawRange(Canvas canvas, Offset c, bool ok, Color color) {
     final col = ok ? color : const Color(0xFFE0483E);
     canvas.drawCircle(c, radius, Paint()..color = col.withValues(alpha: 0.16));
@@ -449,6 +479,7 @@ class FieldUnit extends PositionComponent
     }
 
     final hop = _hop;
+    if (!returning && tier < 3 && _canAdvance()) _drawUpBadge(canvas, Offset(ax, ay - (tier == 0 ? 46 : 52) - hop));
     if (a != null) {
       final walk = a.walk;
       final run = _speed >= runSpeed;

@@ -448,6 +448,18 @@ class _DetailDialogState extends State<DetailDialog> {
         : '같은 병과 ${Rules.tierNames[u.tier]} 3명이 모이면 막사 창에서 승진할 수 있어요';
     final sheet = game.fieldArt[u.branch]?[u.tier]?.idle;
 
+    // 승진 / 장수 소환 (군졸·정병: 같은 병과 같은 등급 3명, 군관: 같은 병과 군관·정병·군졸)
+    final int have;
+    final String nextLabel;
+    if (u.tier < 2) {
+      have = game.countOf(u.branch, u.tier).clamp(0, 3);
+      nextLabel = '${Rules.tierNames[u.tier + 1]} 승진 ($have/3)';
+    } else {
+      have = [0, 1, 2].where((t) => game.countOf(u.branch, t) > 0).length;
+      nextLabel = '장수 소환 ($have/3)';
+    }
+    final canNext = have >= 3;
+
     Widget bigButton(String label, VoidCallback onTap, {required bool dark}) => Expanded(
           child: SizedBox(
             height: 60,
@@ -522,6 +534,29 @@ class _DetailDialogState extends State<DetailDialog> {
                       Row(children: [
                         if (isGeneral) ...[
                           bigButton('⚒ 조합하기', () => setState(() => combo = true), dark: false),
+                          const SizedBox(width: 10),
+                        ] else ...[
+                          Expanded(
+                            child: SizedBox(
+                              height: 60,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFFFFF4D6),
+                                  foregroundColor: const Color(0xFF7A5A10),
+                                  disabledBackgroundColor: const Color(0xFFE6E2D8),
+                                  disabledForegroundColor: const Color(0xFF9AA08A),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                        color: canNext ? const Color(0xFFB8891E) : const Color(0xFFC9C3B3), width: 3),
+                                  ),
+                                  textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                                ),
+                                onPressed: canNext ? () => game.promoteFrom(u) : null,
+                                child: Text(nextLabel),
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 10),
                         ],
                         bigButton('✋ 집기', game.pickUp, dark: true),

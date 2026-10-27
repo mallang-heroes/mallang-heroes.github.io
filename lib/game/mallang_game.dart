@@ -225,6 +225,7 @@ class MallangGame extends FlameGame {
   }
 
   void _tick(double dt) {
+    _refreshCounts();
     if (_toastTime > 0) {
       _toastTime -= dt / gameSpeed;
       if (_toastTime <= 0) toastText = null;
@@ -483,6 +484,52 @@ class MallangGame extends FlameGame {
     _spawnUnit(branch, 3, b.door);
     toast('$branch 장수 소환! 끌어서 놓으면 그 자리로 걸어가요');
     _changed();
+  }
+
+  /// 상세 창의 승진 버튼: 누른 유닛을 재료로 먼저 쓰고, 모자라는 재료는 막사 → 맵 순서로.
+  /// 군졸·정병은 같은 병과 같은 등급 3명 → 다음 등급, 군관은 같은 병과 군관·정병·군졸 → 장수.
+  void promoteFrom(FieldUnit u) {
+    if (u.tier >= 3 || u.returning) return;
+    final br = u.branch;
+    if (u.tier < 2) {
+      if (countOf(br, u.tier) < 3) return;
+      _removeUnit(u);
+      for (var k = 0; k < 2; k++) {
+        _take(br, u.tier);
+      }
+      final to = Rules.branches[rng.nextInt(Rules.branches.length)];
+      _deliver(to, u.tier + 1);
+      toast('$br ${Rules.tierNames[u.tier]} 3명 → $to ${Rules.tierNames[u.tier + 1]}');
+    } else {
+      if (!canSummonGeneral(br)) return;
+      _removeUnit(u);
+      _take(br, 0);
+      _take(br, 1);
+      final b = barracks[br]!;
+      b.bounce();
+      _spawnUnit(br, 3, b.door);
+      toast('$br 장수 소환! 끌어서 놓으면 그 자리로 걸어가요');
+    }
+    _changed();
+  }
+
+  void _removeUnit(FieldUnit u) {
+    units.remove(u);
+    u.removeFromParent();
+    if (detailUnit == u) closeDetail();
+    if (heldUnit == u) cancelHeld();
+  }
+
+  /// 맵 유닛 머리 위 승진 표시: 같은 병과·등급 수 (프레임마다 한 번 계산).
+  final Map<(String, int), int> _countCache = {};
+  int cachedCount(String branch, int tier) => _countCache[(branch, tier)] ?? 0;
+  void _refreshCounts() {
+    _countCache.clear();
+    for (final b in Rules.branches) {
+      for (var t = 0; t < 3; t++) {
+        _countCache[(b, t)] = countOf(b, t);
+      }
+    }
   }
 
   /// 막사에서 1명 꺼내 맵으로.
