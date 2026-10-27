@@ -122,7 +122,8 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
   static const _speedBtn = Rect.fromLTWH(12, 648, 132, 52);
   static const _silverBox = Rect.fromLTWH(8, 286, 140, 42);
   static const coinCenter = Offset(28, 307);
-  static Rect _upBtn(int g) => Rect.fromLTWH(10, 338.0 + g * 60, 136, 54);
+  static const _drawBtn = Rect.fromLTWH(10, 336, 136, 56);
+  static Rect _upBtn(int g) => Rect.fromLTWH(10, 400.0 + g * 48, 136, 44);
 
   double _t = 0;
   double _shownSilver = 0;
@@ -132,6 +133,7 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
   final List<double> _press = List.filled(5, 0);
   final List<double> _flash = List.filled(5, 0);
   final List<bool> _flashOk = List.filled(5, true);
+  double _drawPress = 0;
 
   void coinArrived(int amount) {
     _bump = 1;
@@ -156,6 +158,7 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
       _recentT -= real;
       if (_recentT <= 0) _recent = 0;
     }
+    if (_drawPress > 0) _drawPress = math.max(0, _drawPress - real * 6);
     for (var i = 0; i < 5; i++) {
       if (_press[i] > 0) _press[i] = math.max(0, _press[i] - real * 6);
       if (_flash[i] > 0) _flash[i] = math.max(0, _flash[i] - real * 1.4);
@@ -166,6 +169,10 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
   void onTapDown(TapDownEvent event) {
     final p = event.localPosition.toOffset();
     if (_speedBtn.contains(p)) game.toggleSpeed();
+    if (_drawBtn.contains(p)) {
+      if (game.draw()) _drawPress = 1;
+      return;
+    }
     for (var g = 0; g < Rules.upgradeNames.length; g++) {
       if (!_upBtn(g).contains(p)) continue;
       if (!game.canUpgrade(g)) return; // 비활성: 아무 일도 안 함
@@ -290,12 +297,12 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
         : afford
             ? _ink
             : const Color(0x992A211C);
-    _text(canvas, Rules.upgradeNames[gi], Offset(base.left + 10, base.top + 5), size: 14, bold: true, color: fg);
-    _text(canvas, locked ? '' : 'Lv $lv', Offset(base.right - 10, base.top + 5), size: 14, bold: true, color: fg, right: true);
+    _text(canvas, Rules.upgradeNames[gi], Offset(base.left + 10, base.top + 3), size: 13, bold: true, color: fg);
+    _text(canvas, locked ? '' : 'Lv $lv', Offset(base.right - 10, base.top + 3), size: 13, bold: true, color: fg, right: true);
 
     // 레벨 진행 막대
     if (!locked) {
-      final bar = Rect.fromLTWH(base.left + 10, base.top + 25, base.width - 20, 4);
+      final bar = Rect.fromLTWH(base.left + 10, base.top + 21, base.width - 20, 4);
       canvas.drawRRect(RRect.fromRectAndRadius(bar, const Radius.circular(2)), Paint()..color = const Color(0x262A211C));
       canvas.drawRRect(
           RRect.fromRectAndRadius(
@@ -304,7 +311,7 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
     }
 
     // 아랫줄: 비용 · 확률 / 준비 중 / 최대
-    final y = base.top + 33;
+    final y = base.top + 27;
     if (locked) {
       _drawLock(canvas, Offset(base.left + 16, y + 8));
       _text(canvas, '준비 중', Offset(base.left + 28, y), size: 13, color: fg);
@@ -338,6 +345,64 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
     }
   }
 
+  /// 뽑기 버튼: 무료권이 있으면 빨간 '무료 n' 배지 + 금빛 테두리, 없으면 비용, 못 뽑으면 회색.
+  void _drawDrawButton(Canvas canvas) {
+    final g = game;
+    final base = _drawBtn;
+    final free = g.freeDraws;
+    final can = g.canDraw;
+    final press = math.sin(_drawPress * math.pi) * 0.05;
+    canvas.save();
+    canvas.translate(base.center.dx, base.center.dy);
+    canvas.scale(1 - press);
+    canvas.translate(-base.center.dx, -base.center.dy);
+    final rr = RRect.fromRectAndRadius(base, const Radius.circular(14));
+    if (can) canvas.drawRRect(rr.shift(const Offset(0, 3)), Paint()..color = const Color(0x40000000));
+    canvas.drawRRect(
+        rr,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: can
+                ? const [Color(0xFFFFE08A), Color(0xFFF2C14E)]
+                : const [Color(0xFFEDEAE3), Color(0xFFDCD7CD)],
+          ).createShader(base));
+    final glow = free > 0 ? 0.5 + 0.5 * math.sin(_t * 4) : 0.0;
+    canvas.drawRRect(
+        rr,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = free > 0 ? 3 : 2
+          ..color = free > 0 ? Color.lerp(_goldDark, const Color(0xFFFFF4D6), glow)! : (can ? _goldDark : const Color(0x332A211C)));
+    final fg = can ? _ink : const Color(0x992A211C);
+    _text(canvas, '뽑기', Offset(base.left + 14, base.top + 8), size: 20, bold: true, color: fg);
+    if (free > 0) {
+      _text(canvas, '무료', Offset(base.left + 14, base.top + 33), size: 13, bold: true, color: const Color(0xFF8C2F2B));
+    } else if (can) {
+      drawYeopjeon(canvas, Offset(base.left + 21, base.top + 41), 6.5);
+      _text(canvas, '${Rules.drawCost}', Offset(base.left + 31, base.top + 33), size: 13, bold: true,
+          color: const Color(0xFF6B4A10));
+    } else {
+      _text(canvas, '은냥 부족', Offset(base.left + 14, base.top + 33), size: 13, color: fg);
+    }
+    _text(canvas, '군졸 1명', Offset(base.right - 12, base.top + 34), size: 12, color: fg, right: true);
+    canvas.restore();
+    if (free > 0) {
+      final tp = _tp('무료 $free', size: 13, bold: true, color: const Color(0xFFFFFFFF));
+      final r = Rect.fromLTWH(base.right - tp.width - 18, base.top - 9, tp.width + 14, 22);
+      final rb = RRect.fromRectAndRadius(r, const Radius.circular(11));
+      canvas.drawRRect(rb, Paint()..color = const Color(0xFFE0483E));
+      canvas.drawRRect(
+          rb,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2
+            ..color = _ink);
+      tp.paint(canvas, Offset(r.left + 7, r.center.dy - tp.height / 2));
+    }
+  }
+
   void _drawLock(Canvas c, Offset p) {
     final paint = Paint()..color = const Color(0x802A211C);
     c.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: p.translate(0, 2), width: 10, height: 8), const Radius.circular(2)), paint);
@@ -357,11 +422,18 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
           ..strokeWidth = 2
           ..color = const Color(0x402A211C));
 
-    _text(canvas, '라운드', const Offset(12, 14), size: 14);
-    _text(canvas, '${g.round} / ${Rules.lastRound}', const Offset(12, 32), size: 30, bold: true);
     final left = (Rules.roundSeconds - g.roundTime).clamp(0, Rules.roundSeconds);
-    _text(canvas, '다음 라운드 ${left.toStringAsFixed(1)}초', const Offset(12, 74), size: 13);
-    _bar(canvas, 94, g.roundTime / Rules.roundSeconds, const Color(0xFF2E5E8C));
+    if (g.preparing) {
+      _text(canvas, '준비 라운드', const Offset(12, 14), size: 14, bold: true, color: const Color(0xFF2E5E8C));
+      _text(canvas, '준비', const Offset(12, 32), size: 30, bold: true, color: const Color(0xFF2E5E8C));
+      _text(canvas, '전투 시작까지 ${g.prepLeft.toStringAsFixed(1)}초', const Offset(12, 74), size: 13);
+      _bar(canvas, 94, g.prepLeft / Rules.prepSeconds, const Color(0xFF8EC7F0));
+    } else {
+      _text(canvas, '라운드', const Offset(12, 14), size: 14);
+      _text(canvas, '${g.round} / ${Rules.lastRound}', const Offset(12, 32), size: 30, bold: true);
+      _text(canvas, '다음 라운드 ${left.toStringAsFixed(1)}초', const Offset(12, 74), size: 13);
+      _bar(canvas, 94, g.roundTime / Rules.roundSeconds, const Color(0xFF2E5E8C));
+    }
 
     final n = g.monsters.length;
     final danger = n >= Rules.loseCount * 0.8;
@@ -380,6 +452,7 @@ class Hud extends PositionComponent with TapCallbacks, HasGameReference<MallangG
     }
 
     _drawSilver(canvas);
+    _drawDrawButton(canvas);
     for (var gi = 0; gi < Rules.upgradeNames.length; gi++) {
       _drawUpgrade(canvas, gi);
     }

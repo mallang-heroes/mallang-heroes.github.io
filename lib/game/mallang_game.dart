@@ -74,6 +74,13 @@ class MallangGame extends FlameGame {
   String endReason = '';
   int kills = 0;
   int silver = 0;
+
+  /// 무료 뽑기권 (시작 1장 + 라운드마다 1장, 최대 [Rules.maxFreeDraws]장).
+  int freeDraws = 0;
+
+  /// 1라운드 전 준비 시간 (남은 초). 0이면 준비 끝.
+  double prepLeft = 0;
+  bool get preparing => prepLeft > 0;
   final List<int> upgradeLv = [0, 0, 0, 0, 0];
   double gameSpeed = 1;
   String? selectedBranch;
@@ -115,7 +122,7 @@ class MallangGame extends FlameGame {
     hud = Hud();
     await world.add(hud);
     loadProgress.value = 1;
-    _startRound();
+    _startPrep();
     // 2) 나머지는 게임하면서 뒤에서 받는다 (다 받기 전에는 임시 그림으로 보임).
     _loadRest();
   }
@@ -215,7 +222,7 @@ class MallangGame extends FlameGame {
     boss = null;
     phase = Phase.playing;
     overlays.remove('result');
-    _startRound();
+    _startPrep();
     _changed();
   }
 
@@ -231,6 +238,14 @@ class MallangGame extends FlameGame {
     if (_toastTime > 0) {
       _toastTime -= dt / gameSpeed;
       if (_toastTime <= 0) toastText = null;
+    }
+    if (prepLeft > 0) {
+      prepLeft -= dt;
+      if (prepLeft <= 0) {
+        prepLeft = 0;
+        _startRound();
+      }
+      return;
     }
     roundTime += dt;
 
@@ -259,8 +274,27 @@ class MallangGame extends FlameGame {
         _end(Phase.won, '60라운드를 모두 막아냈어요!');
         return;
       }
+      _roundBonus();
       _startRound();
     }
+  }
+
+  /// 준비 라운드: 시작 은냥과 무료 뽑기권을 주고 [Rules.prepSeconds]초 뒤 1라운드.
+  void _startPrep() {
+    round = 0;
+    roundTime = 0;
+    prepLeft = Rules.prepSeconds;
+    silver = Rules.startSilver;
+    freeDraws = Rules.startFreeDraws;
+    _changed();
+  }
+
+  /// 라운드를 넘길 때 보너스 은냥 (궁에서 엽전이 날아간다).
+  void _roundBonus() {
+    final gain = Rules.roundClearBonus;
+    silver += gain;
+    world.add(CoinFly(Offset(map.palace.foot.dx, map.palace.foot.dy - 60), gain));
+    toast('$round라운드 통과 보너스 +$gain냥');
   }
 
   void _startRound() {
@@ -270,7 +304,7 @@ class MallangGame extends FlameGame {
     _spawnTimer = 0;
     boss = null;
     if (round % 10 == 0) boss = _spawn(true);
-    _supply();
+    freeDraws = math.min(Rules.maxFreeDraws, freeDraws + Rules.freeDrawsPerRound);
     _changed();
   }
 
@@ -281,23 +315,33 @@ class MallangGame extends FlameGame {
     return m;
   }
 
-  void _supply() {
-    final got = Rules.supply(round, rng);
-    // 궁 문 앞에서 나와, 막사로 가거나(막사로) 막사 앞 빈자리로 간다(소환).
+  bool get canDraw => phase == Phase.playing && (freeDraws > 0 || silver >= Rules.drawCost);
+
+  /// 뽑기: 무료권이 있으면 먼저 쓰고, 없으면 [Rules.drawCost]냥. 무작위 병과 군졸 1명이
+  /// 궁 문에서 나와 그 병과 설정대로 막사로 가거나 집결지로 간다.
+  bool draw() {
+    if (!canDraw) {
+      if (phase == Phase.playing) toast('은냥이 모자라요 (뽑기 ${Rules.drawCost}냥)');
+      return false;
+    }
+    if (freeDraws > 0) {
+      freeDraws--;
+    } else {
+      silver -= Rules.drawCost;
+    }
+    final br = Rules.branches[rng.nextInt(Rules.branches.length)];
     final door = Offset(map.palace.foot.dx, map.palace.foot.dy - 4);
     palace.bounce();
-    var i = 0;
-    for (final (br, tier) in got) {
-      final b = barracks[br]!;
-      if (supplyToBarracks[br]!) {
-        final w = SupplyWalker(br, tier, door, b.door, i * 0.18);
-        walkers.add(w);
-        world.add(w);
-      } else {
-        _spawnUnit(br, tier, door, delay: i * 0.18);
-      }
-      i++;
+    if (supplyToBarracks[br]!) {
+      final w = SupplyWalker(br, 0, door, barracks[br]!.door, 0);
+      walkers.add(w);
+      world.add(w);
+    } else {
+      _spawnUnit(br, 0, door);
     }
+    toast('뽑기: $br 군졸');
+    _changed();
+    return true;
   }
 
   void supplyArrived(SupplyWalker w) {
