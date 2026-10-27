@@ -206,10 +206,10 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
 
 /// 몬스터가 쓰러진 자리에서 쓰러짐 동작을 한 번 재생하고 사라진다.
 class MonsterDeath extends PositionComponent {
-  MonsterDeath(this.sheet, Vector2 at, this.flip, int layer, [this.scale = 1])
+  MonsterDeath(this.sheet, Vector2 at, this.flip, int layer, [this.artMul = 1])
       : super(position: at, anchor: Anchor.topLeft, priority: layer);
 
-  final double scale;
+  final double artMul; // 그림 크기 배율
 
   final Sheet sheet;
   final bool flip;
@@ -224,7 +224,7 @@ class MonsterDeath extends PositionComponent {
   @override
   void render(Canvas canvas) {
     canvas.save();
-    canvas.scale(scale);
+    canvas.scale(artMul);
     sheet.draw(canvas, sheet.frameAt(_t, loop: false), Offset.zero, flip: flip);
     canvas.restore();
   }
