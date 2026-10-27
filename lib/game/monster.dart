@@ -141,8 +141,8 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     final step = (_t / (walk.duration / 2)).floor();
     if (step != _step) {
       if (_step >= 0 && _dust.length < 4) {
-        final foot = Offset(position.x - _dir.dx * size.x * 0.15, position.y - _dir.dy * size.x * 0.15);
-        _dust.add(DustPuff(foot, -_dir, boss ? 1.6 : 1));
+        final foot = Offset(position.x - _dir.dx * size.x * 0.15, position.y - _dir.dy * size.x * 0.15); // size는 이미 배율 반영
+        _dust.add(DustPuff(foot, -_dir, boss ? 1.6 * Rules.bossScale : Rules.mobScale));
       }
       _step = step;
     }
@@ -213,10 +213,10 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     }
 
     // 맞았을 때: 길 반대쪽으로 밀리고 발밑 기준으로 눌림
-    final k = _knock;
+    final kb = _knock;
     final sq = _squash;
     canvas.save();
-    canvas.translate(foot.dx + _dir.dx * k, foot.dy + _dir.dy * k);
+    canvas.translate(foot.dx + _dir.dx * kb, foot.dy + _dir.dy * kb);
     canvas.scale(1 + sq, 1 - sq);
     canvas.translate(-foot.dx, -foot.dy);
     final art = _art;
