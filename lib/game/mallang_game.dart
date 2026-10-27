@@ -217,8 +217,37 @@ class MallangGame extends FlameGame {
     _changed();
   }
 
+  // 화면 흔들림 (보스 치명타·보스 처치 때만, 너무 자주 흔들리지 않게)
+  double _shakeT = 0;
+  double _shakeDur = 1;
+  double _shakeAmp = 0;
+  double _shakeCool = 0;
+
+  /// 화면을 [amp]px 만큼 [seconds]초 흔든다. 방금 흔들었으면 더 센 흔들림만 받는다.
+  void shake(double amp, double seconds) {
+    if (_shakeT > 0 && amp <= _shakeAmp) return;
+    if (_shakeCool > 0 && amp <= _shakeAmp) return;
+    _shakeAmp = amp;
+    _shakeDur = seconds;
+    _shakeT = seconds;
+    _shakeCool = 0.5;
+  }
+
+  void _updateShake(double dt) {
+    if (_shakeCool > 0) _shakeCool -= dt;
+    if (_shakeT <= 0) return;
+    _shakeT -= dt;
+    if (_shakeT <= 0) {
+      camera.viewfinder.position = Vector2.zero();
+      return;
+    }
+    final a = _shakeAmp * (_shakeT / _shakeDur);
+    camera.viewfinder.position = Vector2(math.sin(_shakeT * 90) * a, math.cos(_shakeT * 77) * a);
+  }
+
   @override
   void update(double dt) {
+    _updateShake(dt);
     if (phase != Phase.playing) return;
     super.update(dt * gameSpeed);
     _tick(dt * gameSpeed);

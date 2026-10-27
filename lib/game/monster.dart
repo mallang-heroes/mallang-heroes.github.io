@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/cache.dart';
 import 'package:flutter/painting.dart';
 
+import 'effects.dart';
 import 'mallang_game.dart';
 import 'rules.dart';
 import 'sheets.dart';
@@ -23,7 +24,7 @@ class MonsterArt {
   MonsterArt(this.walk, this.hit, this.die, this.appear, this.aura);
 
   final Sheet walk; // 걷기(귀신은 떠다니기) 반복
-  final Sheet hit; // 맞을 때 하얀 번쩍임 1프레임
+  final Sheet hit; // 맞을 때 아야 얼굴 1프레임 (번쩍임·밀림은 코드에서)
   final Sheet die; // 쓰러짐 한 번
   final Sheet? appear; // 보스 등장 한 번
   final Sheet? aura; // 좀비가 된 왕 뒤에 깔리는 기운
@@ -82,7 +83,19 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
   double _t = math.Random().nextDouble() * 3; // 걷기 박자가 모두 같지 않게
   double _age = 0;
   double _facing = 1;
-  double _hitFlash = 0;
+
+  // 맞을 때 연출: 하얗게 번쩍 → 아야 얼굴, 뒤로 밀렸다 돌아옴, 눌림, 걷기 잠깐 멈춤(히트스톱)
+  double _hitAge = 9; // 마지막으로 맞은 뒤 지난 시간
+  double _white = 0.05; // 완전히 하얀 시간
+  double _freeze = 0; // 걷기 그림을 멈춰 둘 남은 시간
+  double _knockAmp = 0; // 뒤로 밀리는 거리 (px)
+  double _squashAmp = 0;
+  Offset _dir = const Offset(1, 0); // 길 진행 방향
+  static const double _hurtTime = 0.22;
+
+  // 발 먼지
+  final List<DustPuff> _dust = [];
+  int _step = -1;
 
   String get artKey => monsterKey(Rules.stage(round), boss);
   MonsterArt? get _art => game.monsterArt[artKey];
@@ -106,15 +119,48 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
   @override
   void update(double dt) {
     _age += dt;
-    _t += dt;
-    if (_hitFlash > 0) _hitFlash -= dt;
+    if (_freeze > 0) {
+      _freeze -= dt;
+    } else {
+      _t += dt;
+    }
+    _hitAge += dt;
     if (!_appearing) traveled += speed * dt;
     _place();
+    _updateDust(dt);
   }
+
+  /// 발이 땅에 닿을 때(걷기 한 바퀴에 두 번) 작은 먼지. 떠다니는 귀신과 등장 중인 보스는 없음.
+  void _updateDust(double dt) {
+    for (final d in _dust) {
+      d.t += dt;
+    }
+    _dust.removeWhere((d) => d.t > DustPuff.life);
+    final walk = _art?.walk;
+    if (walk == null || _appearing || Rules.stage(round) == 4) return;
+    final step = (_t / (walk.duration / 2)).floor();
+    if (step != _step) {
+      if (_step >= 0 && _dust.length < 4) {
+        final foot = Offset(position.x - _dir.dx * size.x * 0.15, position.y - _dir.dy * size.x * 0.15); // size는 이미 배율 반영
+        _dust.add(DustPuff(foot, -_dir, boss ? 1.6 * Rules.bossScale : Rules.mobScale));
+      }
+      _step = step;
+    }
+  }
+
+  /// 뒤로 밀린 거리: 빠르게 밀렸다가 살짝 넘치며 돌아온다.
+  double get _knock {
+    if (_hitAge < 0.05) return -_knockAmp * _hitAge / 0.05;
+    final t = _hitAge - 0.05;
+    return -_knockAmp * math.exp(-12 * t) * math.cos(10 * t);
+  }
+
+  double get _squash => _squashAmp * math.exp(-14 * _hitAge) * math.cos(26 * _hitAge);
 
   void _place() {
     final p = game.track.positionAt(traveled);
     final dir = game.track.directionAt(traveled);
+    _dir = dir;
     // 길 진행 방향의 옆으로 lane만큼 비켜 걷는다 (2줄)
     position.setValues(p.dx - dir.dy * lane, p.dy + dir.dx * lane + 12);
     final dx = dir.dx;
@@ -122,13 +168,22 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
   }
 
   /// 방어력을 적용해 피해를 준다. 실제로 들어간 피해를 돌려준다.
-  double takeDamage(double raw) {
+  /// [crit]이면 번쩍임·밀림·숫자가 더 크다.
+  double takeDamage(double raw, {bool crit = false}) {
     if (dead) return 0;
     final dmg = Rules.mitigate(raw, defense);
     hp -= dmg;
-    _hitFlash = 0.1;
+    _hitAge = 0;
+    _white = crit ? 0.07 : 0.05;
+    _freeze = crit ? 0.09 : 0.06;
+    _knockAmp = (crit ? 6.0 : 4.0) * (boss ? 0.5 : 1.0);
+    _squashAmp = crit ? 0.14 : 0.1;
+    game.world.add(HitSpark(hitPoint, crit: crit, big: boss));
+    game.world.add(DamageText(math.max(1, dmg.round()), position - Vector2(0, size.y * 0.8), crit: crit));
+    if (crit && boss) game.shake(3, 0.14);
     if (hp <= 0) {
       dead = true;
+      if (boss) game.shake(5, 0.25);
       game.killMonster(this);
     }
     return dmg;
@@ -151,6 +206,19 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     canvas.drawOval(Rect.fromCenter(center: Offset(w / 2, h - 2), width: w * 0.75, height: h * 0.16),
         Paint()..color = Color(ghost ? 0x22000000 : 0x40000000));
 
+    // 발 먼지 (보드 좌표 → 이 컴포넌트 안 좌표)
+    final toLocal = foot - Offset(position.x, position.y);
+    for (final d in _dust) {
+      d.draw(canvas, toLocal);
+    }
+
+    // 맞았을 때: 길 반대쪽으로 밀리고 발밑 기준으로 눌림
+    final kb = _knock;
+    final sq = _squash;
+    canvas.save();
+    canvas.translate(foot.dx + _dir.dx * kb, foot.dy + _dir.dy * kb);
+    canvas.scale(1 + sq, 1 - sq);
+    canvas.translate(-foot.dx, -foot.dy);
     final art = _art;
     if (art == null) {
       _drawPlaceholder(canvas);
@@ -163,16 +231,18 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
       canvas.translate(-foot.dx, -foot.dy);
       final aura = art.aura;
       if (aura != null) aura.draw(canvas, aura.frameAt(_t), foot, flip: flipped);
+      final paint = _hitPaint();
       final appear = art.appear;
       if (appear != null && _appearing) {
-        appear.draw(canvas, appear.frameAt(_age, loop: false), foot, flip: flipped);
-      } else if (_hitFlash > 0) {
-        art.hit.draw(canvas, 0, foot, flip: flipped);
+        appear.draw(canvas, appear.frameAt(_age, loop: false), foot, flip: flipped, paint: paint);
+      } else if (_hitAge < _hurtTime) {
+        art.hit.draw(canvas, 0, foot, flip: flipped, paint: paint);
       } else {
         art.walk.draw(canvas, art.walk.frameAt(_t), foot, flip: flipped);
       }
       canvas.restore();
     }
+    canvas.restore();
 
     // 체력 막대 (보스는 항상, 일반은 맞았을 때만)
     if (boss || hp < maxHp) {
@@ -187,13 +257,27 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     }
   }
 
+  static final Paint _whitePaint = Paint()
+    ..filterQuality = FilterQuality.medium
+    ..colorFilter = const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn);
+
+  /// 맞은 직후: 완전히 하얀 실루엣 → 하얀 기가 서서히 빠짐. 평소에는 null.
+  Paint? _hitPaint() {
+    if (_hitAge < _white) return _whitePaint;
+    final a = 0.55 * (1 - (_hitAge - _white) / 0.15);
+    if (a <= 0) return null;
+    return Paint()
+      ..filterQuality = FilterQuality.medium
+      ..colorFilter = ColorFilter.mode(Color.fromRGBO(255, 255, 255, a), BlendMode.srcATop);
+  }
+
   /// 그림을 못 불러왔을 때만 쓰는 임시 말랑이.
   void _drawPlaceholder(Canvas canvas) {
     final w = size.x;
     final h = size.y;
     final r = math.min(w, h) * 0.4;
     final c = Offset(w / 2, h - r);
-    canvas.drawCircle(c, r, Paint()..color = _hitFlash > 0 ? const Color(0xFFFFFFFF) : const Color(0xFF8A6E4B));
+    canvas.drawCircle(c, r, Paint()..color = _hitAge < 0.1 ? const Color(0xFFFFFFFF) : const Color(0xFF8A6E4B));
     canvas.drawCircle(
         c,
         r,
