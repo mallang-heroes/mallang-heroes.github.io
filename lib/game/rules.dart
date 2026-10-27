@@ -9,11 +9,12 @@ class Rules {
   static const double spawnGap = 0.8;
   static const double laneOffset = 11; // 길 가운데에서 좌우로
 
-  /// 몬스터 그림 크기 배율 (일반 / 보스).
-  static const double mobScale = 1.35;
-  static const double bossScale = 1.2;
-  /// 필드 몬스터가 이 수를 넘으면 패배 (라운드 5개 분량).
-  static const int loseCount = 50;
+  /// 몬스터 그림 크기 배율 (일반 / 보스). 세로 화면에서 잘 보이게 키움.
+  static const double mobScale = 1.8;
+  static const double bossScale = 1.6;
+
+  /// 궁 체력: 일반 몬스터가 궁에 닿을 때마다 1씩 줄고 0이면 패배. 보스가 닿으면 바로 패배.
+  static const int palaceHp = 20;
 
   /// 병과 순서 (막사 왼쪽부터).
   static const List<String> branches = ['창병', '궁병', '포수', '기병', '수군', '술사'];

@@ -126,6 +126,10 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     }
     _hitAge += dt;
     if (!_appearing) traveled += speed * dt;
+    if (!dead && traveled >= game.track.length) {
+      game.monsterReachedPalace(this);
+      return;
+    }
     _place();
     _updateDust(dt);
   }

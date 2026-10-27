@@ -3,7 +3,7 @@
   "short_name": "말랑영웅전",
   "start_url": ".",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "orientation": "portrait",
   "background_color": "#3E4A2E",
   "theme_color": "#3E4A2E",
   "description": "한국 위인 랜덤 디펜스",
