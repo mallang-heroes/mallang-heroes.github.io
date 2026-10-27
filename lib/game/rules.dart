@@ -8,6 +8,10 @@ class Rules {
   static const int mobsPerRound = 10;
   static const double spawnGap = 0.8;
   static const double laneOffset = 11; // 길 가운데에서 좌우로
+
+  /// 몬스터 그림 크기 배율 (일반 / 보스).
+  static const double mobScale = 1.35;
+  static const double bossScale = 1.2;
   /// 필드 몬스터가 이 수를 넘으면 패배 (라운드 5개 분량).
   static const int loseCount = 50;
 

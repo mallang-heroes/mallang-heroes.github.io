@@ -57,9 +57,10 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
       : maxHp = boss ? Rules.bossHp[Rules.stage(round)] : Rules.normalHp(round),
         defense = boss ? Rules.bossDefense[Rules.stage(round)] : Rules.normalDefense[Rules.stage(round)],
         super(
-          size: boss
-              ? (Rules.stage(round) == monsterKinds.length - 1 ? Vector2(96, 100) : Vector2(72, 76))
-              : Vector2(40, 44),
+          size: (boss
+                  ? (Rules.stage(round) == monsterKinds.length - 1 ? Vector2(96, 100) : Vector2(72, 76))
+                  : Vector2(40, 44)) *
+              (boss ? Rules.bossScale : Rules.mobScale),
           anchor: Anchor.bottomCenter,
           priority: boss ? 6 : 5,
         ) {
@@ -137,7 +138,7 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
   Component? deathEffect() {
     final art = _art;
     if (art == null) return null;
-    return MonsterDeath(art.die, position.clone(), flipped, priority);
+    return MonsterDeath(art.die, position.clone(), flipped, priority, boss ? Rules.bossScale : Rules.mobScale);
   }
 
   @override
@@ -154,6 +155,12 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     if (art == null) {
       _drawPlaceholder(canvas);
     } else {
+      // 그림은 발밑을 기준으로 크기 배율만큼 키워 그린다
+      final k = boss ? Rules.bossScale : Rules.mobScale;
+      canvas.save();
+      canvas.translate(foot.dx, foot.dy);
+      canvas.scale(k);
+      canvas.translate(-foot.dx, -foot.dy);
       final aura = art.aura;
       if (aura != null) aura.draw(canvas, aura.frameAt(_t), foot, flip: flipped);
       final appear = art.appear;
@@ -164,6 +171,7 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
       } else {
         art.walk.draw(canvas, art.walk.frameAt(_t), foot, flip: flipped);
       }
+      canvas.restore();
     }
 
     // 체력 막대 (보스는 항상, 일반은 맞았을 때만)
@@ -198,8 +206,10 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
 
 /// 몬스터가 쓰러진 자리에서 쓰러짐 동작을 한 번 재생하고 사라진다.
 class MonsterDeath extends PositionComponent {
-  MonsterDeath(this.sheet, Vector2 at, this.flip, int layer)
+  MonsterDeath(this.sheet, Vector2 at, this.flip, int layer, [this.scale = 1])
       : super(position: at, anchor: Anchor.topLeft, priority: layer);
+
+  final double scale;
 
   final Sheet sheet;
   final bool flip;
@@ -213,6 +223,9 @@ class MonsterDeath extends PositionComponent {
 
   @override
   void render(Canvas canvas) {
+    canvas.save();
+    canvas.scale(scale);
     sheet.draw(canvas, sheet.frameAt(_t, loop: false), Offset.zero, flip: flip);
+    canvas.restore();
   }
 }
