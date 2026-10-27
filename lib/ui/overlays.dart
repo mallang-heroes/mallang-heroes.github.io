@@ -108,14 +108,14 @@ class StatusBar extends StatelessWidget {
           final String timer;
           final double ratio;
           if (prep) {
-            timer = '전투 시작까지 ${game.prepLeft.ceil()}초';
+            timer = '시작까지 ${game.prepLeft.ceil()}초';
             ratio = game.prepLeft / Rules.prepSeconds;
           } else if (game.round >= Rules.lastRound) {
             timer = bossAlive ? '마지막 보스!' : '남은 몬스터를 막아요';
             ratio = 1;
           } else {
             final left = (Rules.roundSeconds - game.roundTime).clamp(0, Rules.roundSeconds);
-            timer = bossAlive ? '보스 등장! · 다음 ${left.ceil()}초' : '다음 라운드 ${left.ceil()}초';
+            timer = bossAlive ? '보스! 다음 ${left.ceil()}초' : '다음 ${left.ceil()}초';
             ratio = game.roundTime / Rules.roundSeconds;
           }
           return SizedBox(
@@ -804,7 +804,11 @@ class _SmallButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: filled && enabled ? _ink : _panelLine, width: 1.5),
         ),
-        child: Text(label, style: _t(filled ? 13 : 12, enabled ? (filled ? _ink : _sub) : _dim)),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(label, maxLines: 1, style: _t(filled ? 13 : 12, enabled ? (filled ? _ink : _sub) : _dim)),
+        ),
       ),
     );
   }
