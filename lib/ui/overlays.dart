@@ -769,7 +769,7 @@ class PalaceDialog extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Row(children: [
-                          const Text('궁 · 보급 설정',
+                          const Text('궁 · 뽑기 설정',
                               style: TextStyle(
                                   fontFamily: 'GowunBatang',
                                   fontSize: 28,
@@ -779,7 +779,7 @@ class PalaceDialog extends StatelessWidget {
                           _RoundClose(onTap: game.closePalace),
                         ]),
                         const SizedBox(height: 6),
-                        const Text('라운드마다 궁에서 나오는 보급병이 어디로 갈지 병과별로 정해요. 소환된 유닛은 집결지(깃발) 주변으로 모이고, 막사 안 유닛은 공격하지 않아요.',
+                        const Text('뽑기로 나온 유닛이 어디로 갈지 병과별로 정해요. 소환된 유닛은 집결지(깃발) 주변으로 모이고, 막사 안 유닛은 공격하지 않아요.',
                             style: TextStyle(fontSize: 14, height: 1.5, color: Color(0xFF3E4248))),
                         const SizedBox(height: 10),
                         SizedBox(

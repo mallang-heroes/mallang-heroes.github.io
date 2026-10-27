@@ -59,7 +59,21 @@ class Rules {
   static const double upgradeChance = 0.5;
   static const double atkPerLv = 0.05;
   static const double speedPerLv = 0.02;
-  static const List<int> sellPrice = [5, 15, 45]; // 군졸, 정병, 군관
+  /// 판매가: 뽑기 20냥 기준 군졸 절반, 정병·군관은 재료 수(3배씩)에 맞춤.
+  static const List<int> sellPrice = [10, 30, 90]; // 군졸, 정병, 군관
+
+  // ── 준비 라운드 · 뽑기 · 라운드 보너스 ──
+  /// 1라운드 전에 주는 준비 시간(초). 이때 시작 은냥과 무료 뽑기권으로 첫 유닛을 뽑는다.
+  static const double prepSeconds = 10;
+  static const int startSilver = 100;
+  /// 뽑기 1회 비용. 무작위 병과 군졸 1명.
+  static const int drawCost = 20;
+  /// 무료 뽑기권: 시작할 때 1장, 라운드가 시작될 때마다 1장, 최대 3장까지 쌓인다.
+  static const int startFreeDraws = 1;
+  static const int freeDrawsPerRound = 1;
+  static const int maxFreeDraws = 3;
+  /// 라운드를 넘길 때 받는 보너스. 예전 무료 보급(라운드당 4명) 중 3명을 뽑기로 사는 몫(3 × 20냥).
+  static const int roundClearBonus = 60;
 
   /// 일반 몬스터 체력 (라운드당 10마리, 맵에 나온 유닛만 공격하는 규칙 기준. 시뮬레이터로 맞춤).
   /// 1–3R 정리, 4–5R 조금 쌓임, 6R 회복. 11–30R은 기존 곡선 × 0.8.
@@ -79,24 +93,6 @@ class Rules {
 
   /// 피해 = 공격력 × 100 / (100 + 방어력)
   static double mitigate(double dmg, double def) => dmg * 100 / (100 + math.max(0, def));
-
-  /// 보급: 군졸 3 + 보너스 1 (11–30R 10% 정병, 31–60R 10% 군관)
-  static List<(String, int)> supply(int round, math.Random rng) {
-    final out = <(String, int)>[];
-    for (var i = 0; i < 4; i++) {
-      final br = branches[rng.nextInt(branches.length)];
-      var tier = 0;
-      if (i == 3 && rng.nextDouble() < 0.1) {
-        if (round >= 31) {
-          tier = 2;
-        } else if (round >= 11) {
-          tier = 1;
-        }
-      }
-      out.add((br, tier));
-    }
-    return out;
-  }
 }
 
 class BranchStat {
