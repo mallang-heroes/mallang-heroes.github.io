@@ -88,12 +88,13 @@ class Sheet {
     return frames.length - 1;
   }
 
-  void draw(Canvas canvas, int index, Offset foot, {bool flip = false}) {
+  /// [paint]를 주면 그 페인트로 그린다 (하얀 번쩍임 같은 색 필터용).
+  void draw(Canvas canvas, int index, Offset foot, {bool flip = false, Paint? paint}) {
     final f = frames[index];
     final w = f.src.width / artScale;
     final h = f.src.height / artScale;
     final dst = Rect.fromLTWH(foot.dx - f.anchor.dx * w, foot.dy - f.anchor.dy * h, w, h);
-    _drawFlipped(canvas, image, f.src, dst, foot.dx, flip);
+    _drawFlipped(canvas, image, f.src, dst, foot.dx, flip, paint);
   }
 }
 
@@ -112,15 +113,17 @@ class SheetFrame {
   final Offset? projectile;
 }
 
-void _drawFlipped(Canvas canvas, ui.Image image, Rect src, Rect dst, double axisX, bool flip) {
+void _drawFlipped(Canvas canvas, ui.Image image, Rect src, Rect dst, double axisX, bool flip,
+    [Paint? paint]) {
+  final p = paint ?? _artPaint;
   if (!flip) {
-    canvas.drawImageRect(image, src, dst, _artPaint);
+    canvas.drawImageRect(image, src, dst, p);
     return;
   }
   canvas.save();
   canvas.translate(axisX, 0);
   canvas.scale(-1, 1);
   canvas.translate(-axisX, 0);
-  canvas.drawImageRect(image, src, dst, _artPaint);
+  canvas.drawImageRect(image, src, dst, p);
   canvas.restore();
 }

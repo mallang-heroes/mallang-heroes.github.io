@@ -27,6 +27,7 @@ SRC = os.path.join(ROOT, "art", "source", "gemini", "monsters")
 OUT = os.path.join(ROOT, "assets", "images", "monsters")
 PREV = os.path.join(ROOT, "art", "preview", "monsters")
 OV = 28            # 다리 윗부분을 몸통 뒤로 더 자르는 길이 (원본 px)
+KEEP = 46          # 다리 윗부분을 몸통에도 남기는 길이 (원본 px). 다리가 흔들려도 엉덩이·반바지 자리에 틈이 안 생김
 OUTLINE = (42, 33, 28)
 
 # ---------------------------------------------------------------- 몬스터 설정
@@ -336,10 +337,14 @@ def build_rig(name, cfg):
         alpha = whole[..., 3] > 0
         body_mask = alpha.copy()
         legs = []
+        keep_soft = np.zeros(alpha.shape, np.float32)      # 몸통에 남겨 둘 다리 윗부분 (위 1 → 아래 0)
+        yy = np.arange(alpha.shape[0], dtype=np.float32)[:, None]
         for lname, pts, phase, side in cfg["legs"]:
             pm = poly_mask(alpha.shape, pts)
             leg_px = pm & alpha
             body_mask &= ~leg_px
+            band = np.clip((min(p[1] for p in pts) + KEEP - yy) / (KEEP * 0.6), 0, 1)
+            keep_soft = np.where(leg_px, np.maximum(keep_soft, band), keep_soft)
             up = pm.copy()
             for k in range(1, OV + 1):
                 up |= np.roll(pm, -k, axis=0)
@@ -384,6 +389,8 @@ def build_rig(name, cfg):
         else:
             tail = dict(img=np.zeros_like(whole), pivot=(0, 0))
         body = with_alpha(whole, body_mask)
+        # 다리를 뗀 자리 윗부분은 몸통에도 남긴다 (흐리게 사라지도록). 다리가 흔들릴 때 배경이 비치지 않게.
+        body[..., 3] = np.maximum(body[..., 3], (whole[..., 3] * keep_soft).astype(np.uint8))
 
     # 표정별 몸통 (머리 덮어쓰기)
     bodies = {"normal": body}
@@ -576,8 +583,8 @@ def render_set(rig):
             tilt = 1.2 * math.sin(2 * math.pi * t)
         walk.append((finalize(pose(rig, t, bob=bob, tilt=tilt), rig), 100))
     sets["walk"] = walk
-    # 피격 1: 아야 얼굴 + 하얀 번쩍임 + 살짝 눌림
-    sets["hit"] = [(finalize(pose(rig, 0, face="ouch", swing=0), rig, sx=1.04, sy=0.96, white=0.45), 120)]
+    # 피격 1: 아야 얼굴 (번쩍임·눌림·밀림은 게임에서 그림)
+    sets["hit"] = [(finalize(pose(rig, 0, face="ouch", swing=0), rig), 120)]   # 하얀 번쩍임·눌림은 게임 코드에서 (monster.dart)
     # 쓰러짐 (일반 4 · 보스 6): 어지러운 눈 → 휘청 → 납작 → 연기
     n = 6 if boss else 4
     die = []

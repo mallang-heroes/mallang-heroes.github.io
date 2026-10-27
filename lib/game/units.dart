@@ -5,6 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flutter/painting.dart';
 
 import 'board.dart';
+import 'effects.dart';
 import 'mallang_game.dart';
 import 'monster.dart';
 import 'rules.dart';
@@ -35,11 +36,14 @@ void fireAt(MallangGame game, String branch, double power, Vector2 from, List<Mo
     final raw = st.atk * Rules.damageScale * power * (crit ? Rules.critMultiplier : 1);
     if (onImpact && shot && !melee) {
       game.world.add(Shot(from.clone(), m.hitPoint, branchColor(branch),
-          aoe: st.aoe, target: m, onImpact: () => m.takeDamage(raw)));
+          aoe: st.aoe, target: m, onImpact: () => m.takeDamage(raw, crit: crit)));
       continue;
     }
-    if (shot) game.world.add(Shot(melee ? m.hitPoint : from.clone(), m.hitPoint, branchColor(branch), aoe: st.aoe));
-    m.takeDamage(raw);
+    // 근접 단일 공격은 맞은 자리 불꽃(몬스터가 그림)만, 광역은 금빛 고리도 함께
+    if (shot && !(melee && !st.aoe)) {
+      game.world.add(Shot(melee ? m.hitPoint : from.clone(), m.hitPoint, branchColor(branch), aoe: st.aoe));
+    }
+    m.takeDamage(raw, crit: crit);
   }
 }
 
@@ -183,6 +187,7 @@ class FieldUnit extends PositionComponent
   double _cool = 0;
   double _t = 0;
   double _attackT = -1;
+  double _stop = 0; // 히트스톱: 근접 타격 순간 공격 동작을 잠깐 멈춤
   bool _flip = false;
   bool _placedOnce = false;
 
@@ -241,7 +246,11 @@ class FieldUnit extends PositionComponent
     _t += dt;
     final a = art;
     if (_attackT >= 0) {
-      _attackT += dt;
+      if (_stop > 0) {
+        _stop -= dt;
+      } else {
+        _attackT += dt;
+      }
       if (_pending != null && _attackT >= _releaseAt) _release();
       if (_attackT > (a?.attack?.duration ?? 0.18)) _attackT = -1;
     }
@@ -317,6 +326,14 @@ class FieldUnit extends PositionComponent
     var dx = p.dx / artScale - ev.anchor.dx * w;
     final dy = p.dy / artScale - ev.anchor.dy * h;
     if (_flip) dx = -dx;
+    if (melee) {
+      // 칼 궤적 + 맞는 순간 잠깐 멈춤
+      _stop = 0.06;
+      final facing = _flip ? -1.0 : 1.0;
+      final thrust = Board.branch(branch).key == 'spear';
+      final from = thrust ? position + Vector2(facing * 10, -30) : position + Vector2(facing * 6, -34);
+      game.world.add(SlashTrail(from, targets.first.hitPoint, thrust: thrust));
+    }
     fireAt(game, branch, power, position + Vector2(dx, dy), targets, melee: melee, onImpact: true);
   }
 
@@ -571,10 +588,11 @@ class Shot extends PositionComponent {
             ..strokeCap = StrokeCap.round
             ..color = color.withValues(alpha: 0.85));
       canvas.drawCircle(p.toOffset(), 3.5, Paint()..color = color);
-    } else {
+    } else if (aoe) {
+      // 광역은 금빛 고리가 퍼진다 (단일 공격은 몬스터 쪽 불꽃만)
       final k = (_t - _flight) / _burst;
-      canvas.drawCircle(to.toOffset(), (aoe ? 16 : 9) * (0.5 + k),
-          Paint()..color = (aoe ? const Color(0xFFF2C14E) : const Color(0xFFFFFFFF)).withValues(alpha: (1 - k) * 0.8));
+      canvas.drawCircle(to.toOffset(), 16 * (0.5 + k),
+          Paint()..color = const Color(0xFFF2C14E).withValues(alpha: (1 - k) * 0.8));
     }
   }
 }
