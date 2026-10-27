@@ -180,10 +180,8 @@ class Monster extends PositionComponent with HasGameReference<MallangGame> {
     _squashAmp = crit ? 0.14 : 0.1;
     game.world.add(HitSpark(hitPoint, crit: crit, big: boss));
     game.world.add(DamageText(math.max(1, dmg.round()), position - Vector2(0, size.y * 0.8), crit: crit));
-    if (crit && boss) game.shake(3, 0.14);
     if (hp <= 0) {
       dead = true;
-      if (boss) game.shake(5, 0.25);
       game.killMonster(this);
     }
     return dmg;
