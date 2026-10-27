@@ -29,6 +29,7 @@ class MallangGame extends FlameGame {
   late final MapData map;
   late final RoadTrack track;
   late final Palace palace;
+  late final Hud hud;
 
   /// 맵 유닛 그림: 병과 → [군졸, 정병, 군관, 장수] (그림이 없는 등급은 null).
   final Map<String, List<UnitArt?>> fieldArt = {};
@@ -111,7 +112,8 @@ class MallangGame extends FlameGame {
     ]);
     await world.add(PlaceCatcher());
     await world.add(RallyFlag());
-    await world.add(Hud());
+    hud = Hud();
+    await world.add(hud);
     loadProgress.value = 1;
     _startRound();
     // 2) 나머지는 게임하면서 뒤에서 받는다 (다 받기 전에는 임시 그림으로 보임).
@@ -346,7 +348,9 @@ class MallangGame extends FlameGame {
     final fx = m.deathEffect();
     if (fx != null) world.add(fx);
     kills++;
-    silver += Rules.silverPerKill[Rules.stage(m.round)];
+    final gain = Rules.silverPerKill[Rules.stage(m.round)];
+    silver += gain;
+    world.add(CoinFly(m.position.toOffset().translate(0, -m.size.y * 0.5), gain));
   }
 
   void _end(Phase p, String reason) {
@@ -680,25 +684,22 @@ class MallangGame extends FlameGame {
   int upgradeCost(int group) => Rules.upgradeBase[group] + Rules.upgradeStep[group] * upgradeLv[group];
 
   /// 성공 50%, 실패해도 비용은 사라진다.
-  void tryUpgrade(int group) {
-    if (phase != Phase.playing) return;
-    if (upgradeLv[group] >= Rules.upgradeMax[group]) {
-      toast('${Rules.upgradeNames[group]} 최대 강화예요');
-      return;
-    }
+  /// 강화할 수 있는 상태인지 (은냥이 모자라거나 최대면 버튼 비활성).
+  bool canUpgrade(int group) =>
+      phase == Phase.playing &&
+      group < 2 &&
+      upgradeLv[group] < Rules.upgradeMax[group] &&
+      silver >= upgradeCost(group);
+
+  /// 강화 시도. 성공 true / 실패 false / 못 함 null. 실패해도 비용은 사라진다.
+  bool? tryUpgrade(int group) {
+    if (!canUpgrade(group)) return null;
     final cost = upgradeCost(group);
-    if (silver < cost) {
-      toast('은냥이 부족해요 ($cost냥 필요)');
-      return;
-    }
     silver -= cost;
-    if (rng.nextDouble() < Rules.upgradeChance) {
-      upgradeLv[group]++;
-      toast('강화 성공! ${Rules.upgradeNames[group]} Lv${upgradeLv[group]}');
-    } else {
-      toast('강화 실패 (−$cost냥)');
-    }
+    final ok = rng.nextDouble() < Rules.upgradeChance;
+    if (ok) upgradeLv[group]++;
     _changed();
+    return ok;
   }
 
   void toggleSpeed() {
