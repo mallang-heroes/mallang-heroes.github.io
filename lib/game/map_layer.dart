@@ -17,11 +17,14 @@ class MapLayer extends PositionComponent with HasGameReference<MallangGame> {
 
   @override
   Future<void> onLoad() async {
-    final bg = await game.images.load('map/map-bg.png');
-    final props = <String, Still>{};
-    for (final d in game.map.decorations) {
-      props[d.kind] ??= await Still.load(game.images, 'map/map-prop-${d.kind}.png');
-    }
+    // 배경과 장식 그림을 한꺼번에 받는다
+    final kinds = {for (final d in game.map.decorations) d.kind}.toList();
+    final r = await Future.wait([
+      game.images.load('map/map-bg.png'),
+      for (final k in kinds) Still.load(game.images, 'map/map-prop-$k.png'),
+    ]);
+    final bg = r[0] as ui.Image;
+    final props = <String, Still>{for (var i = 0; i < kinds.length; i++) kinds[i]: r[i + 1] as Still};
 
     // 화면 배율과 상관없이 선명하도록 @2x로 합성한다.
     final recorder = ui.PictureRecorder();
@@ -92,8 +95,12 @@ class Palace extends PositionComponent with TapCallbacks, HasGameReference<Malla
 
   @override
   Future<void> onLoad() async {
-    _still = await Still.load(game.images, 'map/map-bld-palace.png');
-    _enter = await Sheet.load(game.images, 'map/map-bld-palace-enter.json');
+    final r = await Future.wait([
+      Still.load(game.images, 'map/map-bld-palace.png'),
+      Sheet.load(game.images, 'map/map-bld-palace-enter.json'),
+    ]);
+    _still = r[0] as Still;
+    _enter = r[1] as Sheet;
   }
 
   @override

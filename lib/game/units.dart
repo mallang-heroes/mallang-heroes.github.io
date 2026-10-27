@@ -70,8 +70,12 @@ class Barracks extends PositionComponent with TapCallbacks, HasGameReference<Mal
   @override
   Future<void> onLoad() async {
     final key = Board.branch(branch).key;
-    _still = await Still.load(game.images, 'map/map-bld-barracks-$key.png');
-    _enter = await Sheet.load(game.images, 'map/map-bld-barracks-$key-enter.json');
+    final r = await Future.wait([
+      Still.load(game.images, 'map/map-bld-barracks-$key.png'),
+      Sheet.load(game.images, 'map/map-bld-barracks-$key-enter.json'),
+    ]);
+    _still = r[0] as Still;
+    _enter = r[1] as Sheet;
   }
 
   @override

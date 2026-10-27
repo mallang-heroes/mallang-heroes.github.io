@@ -28,22 +28,26 @@ class MonsterArt {
   final Sheet? appear; // 보스 등장 한 번
   final Sheet? aura; // 좀비가 된 왕 뒤에 깔리는 기운
 
-  static Future<MonsterArt> load(Images images, String key) async {
+  /// 걷기·맞기·죽기(+보스 등장·오라)를 한꺼번에 받는다. [has]로 있는 파일만 요청.
+  static Future<MonsterArt> load(Images images, String key, {bool Function(String)? has}) async {
     final dir = 'monsters/$key/$key';
-    Future<Sheet?> maybe(String path) async {
-      try {
-        return await Sheet.load(images, path);
-      } catch (_) {
-        return null;
-      }
-    }
-
+    bool exists(String p) => has == null || has(p);
+    final wantAppear = key.startsWith('boss-') && exists('$dir-appear.json');
+    final wantAura = key == 'boss-zombie-king' && exists('$dir-aura.json');
+    final r = await Future.wait([
+      Sheet.load(images, '$dir-walk.json'),
+      Sheet.load(images, '$dir-hit.json'),
+      Sheet.load(images, '$dir-die.json'),
+      if (wantAppear) Sheet.load(images, '$dir-appear.json'),
+      if (wantAura) Sheet.load(images, '$dir-aura.json'),
+    ]);
+    var i = 3;
     return MonsterArt(
-      await Sheet.load(images, '$dir-walk.json'),
-      await Sheet.load(images, '$dir-hit.json'),
-      await Sheet.load(images, '$dir-die.json'),
-      key.startsWith('boss-') ? await maybe('$dir-appear.json') : null,
-      key == 'boss-zombie-king' ? await maybe('$dir-aura.json') : null,
+      r[0],
+      r[1],
+      r[2],
+      wantAppear ? r[i++] : null,
+      wantAura ? r[i++] : null,
     );
   }
 }

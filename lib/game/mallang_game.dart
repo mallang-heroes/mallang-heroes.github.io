@@ -5,6 +5,7 @@ import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import 'board.dart';
 import 'hud.dart';
@@ -32,11 +33,11 @@ class MallangGame extends FlameGame {
   /// 맵 유닛 그림: 병과 → [군졸, 정병, 군관, 장수] (그림이 없는 등급은 null).
   final Map<String, List<UnitArt?>> fieldArt = {};
 
-  /// 막사 창 등급별 대기 시트 (군졸·정병·군관·장수). 그림이 없는 병과는 없음.
-  final Map<String, List<Sheet>> tierIdle = {};
+  /// 막사 창 등급별 대기 시트 (군졸·정병·군관·장수). 아직 못 받았으면 null.
+  final Map<String, List<Sheet?>> tierIdle = {};
 
   /// 보급병 걷기 시트 (군졸·정병·군관).
-  final Map<String, List<Sheet>> tierWalk = {};
+  final Map<String, List<Sheet?>> tierWalk = {};
   final List<SupplyWalker> walkers = [];
   final rng = math.Random();
   final List<Monster> monsters = [];
@@ -87,60 +88,100 @@ class MallangGame extends FlameGame {
     camera.viewfinder.position = Vector2.zero();
     map = await MapData.load();
     track = RoadTrack(map);
-    // 맵 유닛 그림 (군졸·정병·군관: 대기·걷기 / 장수: 대기·공격, 걷기는 있으면)
+    _assets = (await AssetManifest.loadFromAssetBundle(rootBundle)).listAssets().toSet();
     for (final b in Board.branches) {
-      if (!slimeBranches.contains(b.key)) continue;
-      final arts = <UnitArt?>[];
-      final idles = <Sheet>[];
-      final walks = <Sheet>[];
-      for (final t in const ['gunjol', 'jeongbyeong', 'gungwan']) {
-        final dir = 'units/${b.key}/$t/unit-${b.key}-$t';
-        final idle = await Sheet.load(images, '$dir-idle.json');
-        final walk = await Sheet.load(images, '$dir-walk.json');
-        idles.add(idle);
-        walks.add(walk);
-        arts.add(UnitArt(idle, null, walk));
-      }
-      final dir = 'units/${b.key}/jangsu/unit-${b.key}-jangsu';
-      Sheet? walk;
-      try {
-        walk = await Sheet.load(images, '$dir-walk.json');
-      } catch (_) {
-        walk = null; // 장수 걷기 그림은 아직 없음
-      }
-      arts.add(UnitArt(
-        await Sheet.load(images, '$dir-idle.json'),
-        await Sheet.load(images, '$dir-attack.json'),
-        walk,
-      ));
-      fieldArt[b.name] = arts;
-      tierIdle[b.name] = [...idles, arts[3]!.idle];
-      tierWalk[b.name] = walks;
+      fieldArt[b.name] = List<UnitArt?>.filled(4, null);
+      tierIdle[b.name] = List<Sheet?>.filled(4, null);
+      tierWalk[b.name] = List<Sheet?>.filled(3, null);
     }
-    // 몬스터 12종 (스테이지별 일반·보스)
-    for (var st = 0; st < monsterKinds.length; st++) {
-      for (final isBoss in const [false, true]) {
-        final key = monsterKey(st, isBoss);
-        try {
-          monsterArt[key] = await MonsterArt.load(images, key);
-        } catch (e) {
-          debugPrint('몬스터 그림을 못 불러옴: $key ($e)');
-        }
-      }
-    }
-    await world.add(MapLayer());
-    await world.add(SpawnCave());
+    // 1) 첫 화면에 꼭 필요한 것만 한꺼번에(동시에) 받는다: 맵·건물·동굴, 군졸 그림, 1스테이지 몬스터.
     palace = Palace();
-    await world.add(palace);
     for (final b in Board.branches) {
-      final c = Barracks(b.name, map.buildings[b.key]!);
-      barracks[b.name] = c;
-      await world.add(c);
+      barracks[b.name] = Barracks(b.name, map.buildings[b.key]!);
     }
+    await Future.wait([
+      _addTracked(MapLayer()),
+      _addTracked(SpawnCave()),
+      _addTracked(palace),
+      for (final c in barracks.values) _addTracked(c),
+      for (final b in Board.branches)
+        if (slimeBranches.contains(b.key)) _track(_loadTier(b, 0)),
+      _track(_loadMonster(monsterKey(0, false))),
+      _track(_loadMonster(monsterKey(0, true))),
+    ]);
     await world.add(PlaceCatcher());
     await world.add(RallyFlag());
     await world.add(Hud());
+    loadProgress.value = 1;
     _startRound();
+    // 2) 나머지는 게임하면서 뒤에서 받는다 (다 받기 전에는 임시 그림으로 보임).
+    _loadRest();
+  }
+
+  /// 시작 화면 진행률 (0~1).
+  final loadProgress = ValueNotifier<double>(0);
+  int _loadTotal = 0;
+  int _loadDone = 0;
+  Set<String> _assets = {};
+
+  Future<T> _track<T>(Future<T> f) {
+    _loadTotal++;
+    return f.whenComplete(() {
+      _loadDone++;
+      loadProgress.value = math.min(0.99, _loadDone / _loadTotal);
+    });
+  }
+
+  Future<void> _addTracked(Component c) => _track(Future.sync(() => world.add(c)));
+
+  bool _has(String imagesPath) => _assets.contains('assets/images/$imagesPath');
+
+  /// 병과 [b]의 [tier] 등급 그림 (군졸~군관: 대기·걷기 / 장수: 대기·공격, 걷기는 파일이 있을 때만).
+  Future<void> _loadTier(Branch b, int tier) async {
+    const names = ['gunjol', 'jeongbyeong', 'gungwan', 'jangsu'];
+    final dir = 'units/${b.key}/${names[tier]}/unit-${b.key}-${names[tier]}';
+    if (tier < 3) {
+      final r = await Future.wait([
+        Sheet.load(images, '$dir-idle.json'),
+        Sheet.load(images, '$dir-walk.json'),
+      ]);
+      fieldArt[b.name]![tier] = UnitArt(r[0], null, r[1]);
+      tierIdle[b.name]![tier] = r[0];
+      tierWalk[b.name]![tier] = r[1];
+    } else {
+      final hasWalk = _has('$dir-walk.json');
+      final r = await Future.wait([
+        Sheet.load(images, '$dir-idle.json'),
+        Sheet.load(images, '$dir-attack.json'),
+        if (hasWalk) Sheet.load(images, '$dir-walk.json'),
+      ]);
+      fieldArt[b.name]![3] = UnitArt(r[0], r[1], hasWalk ? r[2] : null);
+      tierIdle[b.name]![3] = r[0];
+    }
+  }
+
+  Future<void> _loadMonster(String key) async {
+    try {
+      monsterArt[key] = await MonsterArt.load(images, key, has: _has);
+    } catch (e) {
+      debugPrint('몬스터 그림을 못 불러옴: $key ($e)');
+    }
+  }
+
+  Future<void> _loadRest() async {
+    try {
+      await Future.wait([
+        for (final b in Board.branches)
+          if (slimeBranches.contains(b.key))
+            for (var t = 1; t < 4; t++) _loadTier(b, t),
+      ]);
+      _changed();
+      for (var st = 1; st < monsterKinds.length; st++) {
+        await Future.wait([_loadMonster(monsterKey(st, false)), _loadMonster(monsterKey(st, true))]);
+      }
+    } catch (e) {
+      debugPrint('뒤에서 그림 받기 실패: $e');
+    }
   }
 
   void restart() {
