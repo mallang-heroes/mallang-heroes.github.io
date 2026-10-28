@@ -4,6 +4,8 @@
 >
 > **2026-10-27: 화면이 세로형 C안으로 바뀜.** 세로 화면용 리소스는 `art/docs/portrait-redesign.md`를 함께 붙여 넣고 **"세로 화면 리소스 1번부터 진행"**.
 
+> **2026-10-29: 그림체를 도트(픽셀아트)로 바꾸기로 함.** 세로 화면 확정 시안(Warm Storybook, 한글 UI)에서 유닛을 지운 빈 레이아웃을 `art/source/gemini/map-portrait/pixel-layout-empty.png`(원본 704×1524)·`pixel-layout-empty-1170.png`(폰 3x 너비)로 올림. 유닛이 있던 원래 시안은 `pixel-layout-with-units.png`. 캐릭터는 이 레이아웃 기준으로 새로 만들 예정 — 아직 게임 에셋(`assets/`)에는 반영 안 됨.
+
 | 단계 | 내용 | 상태 | 메모 |
 |---|---|---|---|
 | 0 | 스타일 확정: **B (2단 셀 셰이딩)** | 완료 | 등급 견본 `grade-samples-b.png` |
