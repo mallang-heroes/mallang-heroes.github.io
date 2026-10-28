@@ -4,9 +4,9 @@ import 'dart:math' as math;
 class Rules {
   static const double roundSeconds = 10;
   static const int lastRound = 60;
-  /// 라운드당 10마리를 0.8초 간격으로, 길을 2줄로 나눠 걷는다 (몬스터가 겹치지 않게).
+  /// 라운드당 10마리를 1초 간격으로(10마리가 라운드 10초를 꽉 채움), 길을 2줄로 나눠 걷는다.
   static const int mobsPerRound = 10;
-  static const double spawnGap = 0.8;
+  static const double spawnGap = 1.0;
   static const double laneOffset = 11; // 길 가운데에서 좌우로
 
   /// 몬스터 그림 크기 배율 (일반 / 보스). 세로 화면에서 잘 보이게 키움.

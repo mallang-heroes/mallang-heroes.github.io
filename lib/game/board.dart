@@ -19,7 +19,8 @@ class Board {
   static Branch branch(String name) => branches.firstWhere((b) => b.name == name);
 
   /// 단계별 몬스터 이동 속도 (px/s). 1–10R, 11–20R, ...
-  static const List<double> stageSpeed = [30, 33, 36, 40, 44, 48];
+  /// 몬스터 사이 거리 = 속도 × 나오는 간격(1초) → 60px 이상이라 겹치지 않음. (예전 30~48의 2배)
+  static const List<double> stageSpeed = [60, 66, 72, 80, 88, 96];
   static double speedForRound(int round) =>
       stageSpeed[math.min((math.max(round, 1) - 1) ~/ 10, stageSpeed.length - 1)];
 }
