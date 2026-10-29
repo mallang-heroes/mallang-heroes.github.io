@@ -48,12 +48,33 @@ The weapon may stick out above the head. Leave clear empty space between the fou
 Background: one solid flat cyan color (#00FFFF). No ground, no grass, no shadow on the background, no frame.
 ```
 
+## ①-b 진짜 도트로 다시 (첫 결과가 부드러운 그림처럼 나왔을 때)
+
+> 첫 결과(2026-10-29 `art/source/gemini/slime-pixel/spear-ranks.png`)는 "pixel-art style"을 넣었는데도 도트 격자가 없고 몸에 그라데이션이 들어갔다.
+> 동굴 픽셀 크기를 따라 하라고 한 것도 원인 — 동굴 자체가 잔 도트(약 167도트 폭)라서 슬라임도 잘게 그렸다.
+> 그래서 **도트 개수를 숫자로** 못 박는다. 장수 몸 폭 20도트 = 보드 약 50 (1도트 = @2x 5px), 칸 63 안에 들어간다.
+> Claude가 기계로 줄여서 도트를 만들어 보면 얼굴이 뭉개져서 쓸 수 없었다 → 제미나이가 처음부터 적은 도트로 그려야 한다.
+
+같은 대화에서 그대로 보낸다 (첨부 없이).
+
+```
+Redraw the same 4 slimes as REAL low-resolution pixel art sprites, like a 16-bit console game.
+Hard rules:
+- Count the art pixels: the General's body is only 20 art pixels wide, the Officer 18, the Soldier 16, the Recruit 14 (hats, plume, pedestal and spear are extra).
+- Draw every art pixel as one big square block of exactly the same size (about 12 by 12 screen pixels), all blocks aligned to one grid, so the pixels are clearly visible.
+- Flat colors only: every color area is one solid color, at most 3 tones per material (highlight, base, shadow). No gradients, no soft shading, no anti-aliasing, no blur.
+- A 1-art-pixel dark brown outline (#2A211C) around every shape.
+- Eyes are tiny black blocks (1 art pixel wide, 2 tall), cheeks are 2 pink art pixels, the mouth is 2-3 dark art pixels.
+Keep the same designs: white headband / black felt hat with red cord / felt hat with peacock feather and bead string and navy sash / gold-trimmed helmet with red plume on a round pedestal, no cape. Spear on the right side of the picture.
+Same order in one row, clear space between them, solid flat cyan background (#00FFFF), no ground, no shadow.
+```
+
 ## 다시 뽑을 때 덧붙일 말
 | 문제 | 덧붙일 영어 |
 |---|---|
 | 몸이 뾰족하거나 물방울 모양 | `Rounder jelly dome with a flat base, not pointy, not a teardrop.` |
 | 등급 차이가 작음 | `Make the size difference between ranks clearer, and the gear clearly richer at each rank.` |
-| 도트가 너무 잘거나 부드러움 | `Bigger, chunkier pixels like the cave, flat colors, fewer shades.` |
+| 도트가 너무 잘거나 부드러움 | ①-b 프롬프트를 쓴다 (도트 개수를 숫자로 지정) |
 | 팔다리가 생김 | `No arms and no legs, only two tiny round nub hands.` |
 | 4마리 얼굴이 다름 | `Keep exactly the same face and body color on all four.` |
 
