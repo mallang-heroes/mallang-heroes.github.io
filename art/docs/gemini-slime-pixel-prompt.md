@@ -16,7 +16,7 @@
 | 군졸 | 약 70% | 흰 천 머리띠 | 짧은 나무 창 | 가장 단순, 어리고 말랑 |
 | 정병 | 약 80% | 검은 전립(벙거지) + 빨간 끈 | 쇠 날 창 + 붉은 술 | |
 | 군관 | 약 90% | 전립 + 공작 깃털 + 구슬 끈(패영) | 같은 창, 더 길고 반짝임 | 남색 조끼 띠 |
-| 장수 | 100% | 금테 투구 + 붉은 깃털 | 금장식 긴 창 + 큰 붉은 술 | 붉은 망토, 둥근 받침 |
+| 장수 | 100% | 금테 투구 + 붉은 깃털 | 금장식 긴 창 + 큰 붉은 술 | 둥근 받침 (망토·갑옷 없음 — 위로 명장·천명·공신이 있으므로 절제) |
 
 - 팔다리 없음. 몸 옆의 작은 동그란 손(손 마디)으로 무기를 듦.
 - 무기는 **그림 오른쪽**에 든다(정면 대기 자세).
@@ -41,7 +41,7 @@ Each slime holds its spear upright with the nub hand on the RIGHT side of the pi
 1. Recruit (smallest, about 70% of the general's body size): a plain white cloth headband tied at the back, a short plain wooden spear. Very simple.
 2. Soldier (about 80%): a black Joseon felt soldier hat (jeollip) with a wide round brim and a red cord, an iron-tipped spear with a small red tassel.
 3. Officer (about 90%): the same black felt hat with a peacock feather on the side and a string of small beads hanging from the brim, a navy blue sash across the body, a longer shining iron spear.
-4. General (the biggest, 100%): a gold-trimmed Joseon steel helmet with a red plume, a short red cape behind the body, a long spear with gold fittings and a big red tassel, standing on a small flat round pedestal in a slightly darker red.
+4. General (the biggest, 100%): a gold-trimmed Joseon steel helmet with a red plume, a long spear with gold fittings and a big red tassel, standing on a small flat round pedestal in a slightly darker red. No cape, no cloak, no armor plates: keep it modest, because higher hero ranks come after the General.
 
 All four must clearly look like the same character growing up: same face, same body shape and color, only bigger with better gear.
 The weapon may stick out above the head. Leave clear empty space between the four slimes.
