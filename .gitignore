@@ -10,3 +10,4 @@ pubspec.lock
 android/
 ios/
 test/
+__pycache__/
