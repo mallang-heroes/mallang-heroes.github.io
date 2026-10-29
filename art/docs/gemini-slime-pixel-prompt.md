@@ -69,6 +69,28 @@ Keep the same designs: white headband / black felt hat with red cord / felt hat 
 Same order in one row, clear space between them, solid flat cyan background (#00FFFF), no ground, no shadow.
 ```
 
+## ①-c 도트 견본을 첨부해서 새 대화로 (①-b도 안 될 때 — 2026-10-29 실제로 안 됨)
+
+> ①-b를 같은 대화에 보냈더니 제미나이가 앞 그림을 거의 그대로 돌려줬다(바뀐 픽셀 0.3%, `spear-ranks-retry1.png`).
+> 같은 대화에서는 '앞 그림 고치기'로 받아들여서 새로 그리지 않는다 → **새 대화**를 열고,
+> Claude가 직접 찍은 **도트 견본** `art/source/pixel/slime-body-template.png`(장비 없는 몸 14·16·18·20도트, 1도트 = 12px)를 첨부해 도트 크기를 그림으로 보여 준다.
+> 첨부는 이 견본 1장만 (부드러운 첫 결과를 같이 넣으면 다시 부드럽게 그린다).
+
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The attached image is a pixel-art template I made: 4 plain slime bodies, 14, 16, 18 and 20 art pixels wide, each art pixel drawn as a 12 by 12 square block.
+Keep EXACTLY this pixel size, grid, outline, flat colors and these 4 body sizes. Only add headgear, a spear and small details on top of each body, drawn with the same big square pixels:
+
+1. Recruit (14 px body): a white cloth headband tied on the side, a short plain wooden spear held on the right side of the picture.
+2. Soldier (16 px body): a black Joseon felt soldier hat (jeollip) with a wide round brim and a red cord, an iron-tipped spear with a small red tassel.
+3. Officer (18 px body): the same black felt hat with a small peacock feather and a short string of beads from the brim, a navy blue sash across the body, a longer iron spear.
+4. General (20 px body): a gold-trimmed steel helmet with a red plume, a long spear with a gold fitting and a red tassel, the body standing on a flat round dark-red pedestal. No cape, no armor.
+
+Rules: true pixel art, every pixel a hard square of the same size on one grid, flat colors with at most 3 tones per material, a 1-pixel dark brown outline (#2A211C), no gradients, no anti-aliasing, no blur, do not redraw the bodies smoother or bigger.
+Same row layout, same solid flat cyan background (#00FFFF), no ground, no shadow.
+```
+
 ## 다시 뽑을 때 덧붙일 말
 | 문제 | 덧붙일 영어 |
 |---|---|
