@@ -3,7 +3,7 @@
 입력: art/source/gemini/slime-pixel/<병과>-ranks-pixel.png (하늘색 배경, 1도트 ≈ 9px)
 출력: art/source/gemini/slime-pixel/dots/<병과>-<등급>.png   1도트 = 1px 원본 (투명)
       art/preview/slime-pixel/<병과>-pixel-on-map.png, -pixel-ranks.png
-게임 크기: 1도트 = @2x 6px (보드 3, 궁 도트 크기와 비슷). 확대는 NEAREST만 쓴다(부드럽게 줄이지 않음).
+게임 크기: 1도트 = @2x 4px (보드 2). 확대는 NEAREST만 쓴다(부드럽게 줄이지 않음).
 실행: python3 art/tools/slime/snap_pixel_slime.py spear
 """
 import json
@@ -17,7 +17,7 @@ from scipy import ndimage
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 RANKS = ['gunjol', 'jeongbyeong', 'gungwan', 'jangsu']
 P, OX, OY = 9.0, 8.0, 0.0      # 도트 크기, 격자 시작점 (찾은 값)
-DOT2X = 6                      # 게임 @2x에서 1도트 픽셀 수 (보드 3 = 궁 도트와 비슷)
+DOT2X = 4                      # 게임 @2x에서 1도트 픽셀 수 (보드 2 — 장수 받침 30도트 = 보드 60, 칸 63 안)
 FOOT_DY = 14
 
 
