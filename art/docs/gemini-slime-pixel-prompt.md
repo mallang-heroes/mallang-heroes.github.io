@@ -100,18 +100,33 @@ Same row layout, same solid flat cyan background (#00FFFF), no ground, no shadow
 | 팔다리가 생김 | `No arms and no legs, only two tiny round nub hands.` |
 | 4마리 얼굴이 다름 | `Keep exactly the same face and body color on all four.` |
 
-## ② 나머지 병과 (창병이 마음에 든 뒤, 같은 대화에서)
+## ② 나머지 병과 — 견본 방식 (2026-10-29 창병 도트판 확정 후)
+
+> 창병은 ①-c(도트 견본 + 새 대화)로 뽑은 `art/source/gemini/slime-pixel/spear-ranks-pixel.png`를 기준으로 확정.
+> 게임 크기 1도트 = @2x 4px (보드 2). 장수 받침이 커서 칸을 넘으므로 받침 크기를 못 박는다.
+> 병과마다 **새 대화**, 첨부 2장: ① 그 병과 몸 견본 `art/source/pixel/slime-body-template-<병과>.png` ② 창병 도트판 `spear-ranks-pixel.png`(모자·투구 모양 기준).
+> 결과를 주면서 **"<병과> 슬라임 맵에 올려줘"** → `snap_pixel_slime.py`로 격자 정리·맵 미리보기.
 
 ```
-Great. Now draw the same 4 ranks again for a different unit type, with exactly the same body shape, face, size progression, headgear progression (headband, felt hat, felt hat with peacock feather and bead string, gold-trimmed helmet with plume) and pixel style as the spear slimes.
-Body color: [BODY COLOR]. Weapon for each rank: [WEAPONS]. Extra: [EXTRA]
-Background: one solid flat [BACKGROUND] color. No ground, no shadow, no frame.
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The first attached image is a pixel-art template I made: 4 plain slime bodies, 14, 16, 18 and 20 art pixels wide, each art pixel a 12 by 12 square block.
+The second attached image is the finished spear unit in the same style; use it as the exact reference for pixel size, outline, face, headgear and the size progression.
+Draw a new unit type the same way: keep EXACTLY the template bodies (same pixel size, grid, body sizes, colors, face), and only add headgear and a weapon drawn with the same big square pixels.
+
+Headgear (same as the spear unit): 1. white cloth headband, 2. black felt soldier hat with a red cord, 3. black felt hat with a small peacock feather and a short bead string plus a navy sash across the body, 4. gold-trimmed steel helmet with a red plume.
+Weapons, held on the right side of the picture: [WEAPONS]
+[EXTRA]
+The General stands on a flat round pedestal in a darker shade of the body color, only 2 art pixels wider than its body on each side and 3 art pixels tall. No cape, no armor.
+
+Rules: true pixel art, every pixel a hard square of the same size on one grid, flat colors with at most 3 tones per material, a 1-pixel dark brown outline (#2A211C), no gradients, no anti-aliasing, no blur. Keep everything fully inside the image.
+Same row layout, the same solid flat background color as the template, no ground, no shadow.
 ```
 
-| 병과 | BODY COLOR | WEAPONS (군졸 → 장수) | EXTRA | BACKGROUND |
-|---|---|---|---|---|
-| 궁병 | leaf green (#74C95E) | a small plain wooden bow → a curved Korean bow → a bigger curved bow with a quiver on the back → a gold-trimmed horn bow with a full quiver | — | magenta (#FF00FF) |
-| 포수 | lavender purple (#A486E0) | a short bamboo fire tube → a black matchlock musket → a longer musket with a powder pouch → a gold-banded hand cannon | — | cyan (#00FFFF) |
-| 기병 | amber orange (#F0B145) | a wooden club → a flail (handle, short chain, iron head) → a longer flail → a gold flail | the Soldier, Officer and General ride a small cute brown pony drawn in the same style; the Recruit has no pony | cyan (#00FFFF) |
-| 수군 | sky blue (#55A6EA) | a wooden oar → a Korean sword (hwando) held blade up → a longer sword with a small oar on the back → a gold-hilted sword | — | magenta (#FF00FF) |
-| 술사 | light grey (#B4BBC5) | a paper talisman → a big calligraphy brush → a brush and a prayer-bead necklace → a gold brush with a floating yellow talisman | — | magenta (#FF00FF) |
+| 병과 | 견본 | WEAPONS (군졸 → 장수) | EXTRA |
+|---|---|---|---|
+| 궁병 | `slime-body-template-archer.png` | 1. a small plain wooden bow, 2. a curved Korean bow, 3. a bigger curved bow and a small quiver on the back, 4. a gold-trimmed horn bow and a full quiver on the back. | (빈칸으로 지움) |
+| 포수 | `-gunner.png` | 1. a short bamboo fire tube, 2. a black matchlock musket, 3. a longer musket and a small powder pouch, 4. a gold-banded hand cannon. | (빈칸) |
+| 기병 | `-cavalry.png` | 1. a wooden club, 2. a flail (handle, short chain, iron head), 3. a longer flail, 4. a gold flail. | `The Soldier, Officer and General each ride a small cute brown pony drawn in the same big pixels (the slime sits on its back); the Recruit has no pony.` |
+| 수군 | `-navy.png` (마젠타 배경) | 1. a wooden oar, 2. a Korean sword (hwando) held blade up, 3. a longer sword and a small oar on the back, 4. a gold-hilted sword. | (빈칸) |
+| 술사 | `-mystic.png` | 1. a paper talisman, 2. a big calligraphy brush, 3. a brush and a prayer-bead necklace, 4. a gold brush and a floating yellow talisman. | (빈칸) |

@@ -1,6 +1,7 @@
 """제미나이에게 도트 크기를 알려 줄 견본: 장비 없는 기본 슬라임 몸 4개 (폭 14·16·18·20도트).
 
-출력: art/source/pixel/slime-body-template.png  (1도트 = 12px, 하늘색 배경)
+출력: art/source/pixel/slime-body-template.png (창병) + slime-body-template-<병과>.png  (1도트 = 12px)
+      배경은 하늘색, 수군(파랑 몸)만 마젠타
 제미나이는 '픽셀 아트'라고만 하면 잔 도트·그라데이션으로 그리므로, 이 그림을 첨부해 도트 크기를 그대로 따르게 한다.
 실행: python3 art/tools/slime/make_pixel_template.py
 """
@@ -10,11 +11,27 @@ import numpy as np
 from PIL import Image
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-OUT = os.path.join(ROOT, 'art/source/pixel/slime-body-template.png')
+OUT_DIR = os.path.join(ROOT, 'art/source/pixel')
 S = 12
+# 병과: (파일 이름, 몸 색, 배경)
+BRANCHES = {
+    'spear':   ('slime-body-template.png', (240, 106, 85), (0, 255, 255)),
+    'archer':  ('slime-body-template-archer.png', (116, 201, 94), (0, 255, 255)),
+    'gunner':  ('slime-body-template-gunner.png', (164, 134, 224), (0, 255, 255)),
+    'cavalry': ('slime-body-template-cavalry.png', (240, 177, 69), (0, 255, 255)),
+    'navy':    ('slime-body-template-navy.png', (85, 166, 234), (255, 0, 255)),
+    'mystic':  ('slime-body-template-mystic.png', (180, 187, 197), (0, 255, 255)),
+}
 BG = (0, 255, 255)
 OUTLINE = (42, 33, 28)
 HI, BASE, SHADE = (255, 143, 117), (240, 106, 85), (201, 74, 58)
+
+
+def tones(base):
+    b = np.array(base, float)
+    hi = tuple(int(v) for v in np.clip(b + (255 - b) * 0.35, 0, 255))
+    sh = tuple(int(v) for v in np.clip(b * 0.8, 0, 255))
+    return hi, tuple(base), sh
 WHITE, EYE, CHEEK = (255, 246, 224), (42, 33, 28), (255, 160, 165)
 
 
@@ -71,6 +88,17 @@ def slime(w):
 
 
 def main():
+    global HI, BASE, SHADE, BG
+    for name, (fname, base, bg) in BRANCHES.items():
+        if name == 'spear':
+            HI, BASE, SHADE = (255, 143, 117), (240, 106, 85), (201, 74, 58)
+        else:
+            HI, BASE, SHADE = tones(base)
+        BG = bg
+        render(os.path.join(OUT_DIR, fname))
+
+
+def render(OUT):
     sprites = [slime(w) for w in (14, 16, 18, 20)]
     gap = 6
     H = max(s.shape[0] for s in sprites) + 8
