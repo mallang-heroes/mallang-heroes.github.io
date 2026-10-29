@@ -10,7 +10,7 @@
 | 경로 | 내용 |
 |---|---|
 | `art/source/gemini/` | 제미나이 원본 (맵 4장 + 배치 가이드, 창병 장수 기준 그림·파츠 시트와 잘라 낸 파츠, `monsters/` 몬스터 시안·표정·조각) |
-| `art/tools/map/` | `build_portrait_bg.py` — 도트 세로 화면 시안에서 정보줄·배치 칸을 지운 세로 맵 배경, 궁·동굴 분리 / `cut_portrait_ui.py` — 같은 시안의 정보줄·배치 칸·트레이·카드·탭·뽑기 버튼 조각(`art/source/gemini/map-portrait/cut/`) / `build_map.py` — 배경 정리·길 중심선 추출, 장식·건물·동굴 추출과 배치 / `make_portrait_guide.py` — 세로 맵 레이아웃 가이드·화면 영역도 |
+| `art/tools/map/` | `build_portrait_bg.py` — 도트 세로 화면 시안에서 정보줄·배치 칸을 지운 세로 맵 배경, 궁·동굴 분리 / `build_portrait_cave.py` — 도트 동굴을 맵에 넣고 입구 반짝임 시트 / `cut_portrait_ui.py` — 같은 시안의 정보줄·배치 칸·트레이·카드·탭·뽑기 버튼 조각(`art/source/gemini/map-portrait/cut/`) / `build_map.py` — 배경 정리·길 중심선 추출, 장식·건물·동굴 추출과 배치 / `make_portrait_guide.py` — 세로 맵 레이아웃 가이드·화면 영역도 |
 | `art/tools/monster/` | `build_monsters.py`(몬스터 시안 → 다리·꼬리 리깅, 표정 교체, 걷기·피격·쓰러짐·보스 등장 시트), `preview_road.py`(길 위 걷기 GIF), `build_aura.py`(좀비가 된 왕 기운) |
 | `art/tools/rig/` | `extract.py`(배경 제거·파츠 분리), `rig_spear.py`(창병 장수 리깅·애니메이션), `preview.py`(미리보기) |
 | `art/docs/` | 제미나이 프롬프트(캐릭터·맵), 진행 현황, 이전 프롬프트 |
@@ -28,7 +28,7 @@
 
 ## 세로형으로 바뀌며 안 쓰게 된 것
 - `assets/images/map/map-bg.webp`(가로 배경), `map-bld-barracks-*-enter`(막사 들썩임), `assets/data/map-path.json`(가로 경로). 지우지는 않았다.
-- **도트 세로 맵 배경(2026-10-29):** `map/map-portrait-bg.webp`(1170×1668, 궁·동굴·나무 포함), `map-portrait-ground.webp`(궁·동굴 뺀 바닥) + `map-portrait-palace.webp`·`map-portrait-cave.webp`(투명). 위치·배치 칸 좌표는 `assets/data/map-portrait.json` — 배치 칸 25개 자리는 지금 코드(`MapData`)와 같다. 아직 게임 코드에 연결하지 않았다. 동굴은 궁과 그림체가 달라 도트로 다시 뽑는다 → `art/docs/gemini-cave-pixel-prompt.md`.
+- **도트 세로 맵 배경(2026-10-29):** `map/map-portrait-bg.webp`(1170×1668, 궁·동굴·나무 포함), `map-portrait-ground.webp`(궁·동굴 뺀 바닥) + `map-portrait-palace.webp`·`map-portrait-cave.webp`(투명). 위치·배치 칸 좌표는 `assets/data/map-portrait.json` — 배치 칸 25개 자리는 지금 코드(`MapData`)와 같다. 아직 게임 코드에 연결하지 않았다. 동굴은 궁과 그림체가 달라 도트로 다시 뽑아(`cave-pixel.png`, 프롬프트 `art/docs/gemini-cave-pixel-prompt.md`) `build_portrait_cave.py`로 바꿔 넣었다 — 정지 `map-portrait-cave.webp`, 입구 반짝임 4프레임 `map-portrait-cave-glow.webp/json`, 입구 자리 `map-portrait.json`의 `cave.mouth`.
 - 지금 세로 맵의 풀밭은 `map-grass.webp`(가로 배경의 풀밭을 잘라 이어 붙임), 길·배치 칸은 코드로 그린다 → `portrait-redesign.md` 1·2번으로 교체 예정.
 
 ## 새 소스 추가 흐름

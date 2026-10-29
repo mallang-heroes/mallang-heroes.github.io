@@ -5,7 +5,8 @@
   assets/images/map/map-portrait-bg.png        정보줄·배치 칸을 지운 맵 (궁·동굴·나무 포함)
   assets/images/map/map-portrait-ground.png    궁·동굴까지 뺀 바닥 (궁 자리 성벽·길, 동굴 자리 길을 이어 그림)
   assets/images/map/map-portrait-palace.png    궁만 (투명, 맵과 같은 캔버스에서 잘라 낸 최소 영역)
-  assets/images/map/map-portrait-cave.png      동굴만 (투명)
+  assets/images/map/map-portrait-cave.png      동굴만 (투명) — 도트 동굴(cave-pixel.png)이 있으면 build_portrait_cave.py가 그것으로 바꾸고
+                                               bg도 바닥+도트 동굴+궁으로 다시 합친다. 시안 동굴은 art/preview/map-portrait/cave-mockup.png
   assets/data/map-portrait.json                궁·동굴 그림 위치(보드 좌표), 배치 칸 자리
   art/preview/map-portrait/*.png               확인용 (위 4장의 PNG 사본, 다시 합친 그림, 마스크)
 실행: python3 art/tools/map/build_portrait_bg.py && python3 art/tools/web/to_webp.py (저장소 루트에서)
@@ -162,6 +163,7 @@ def cave_ground(clean, mask):
     # 동굴에 가린 오른쪽 길 모퉁이: 같은 길의 위 모퉁이(y 536~620)를 위아래로 뒤집어 붙임
     g[800:886, 560:704] = clean[536:622, 560:704][::-1]
     keep = grow(mask, 4) == 0
+    keep[875:, 540:] = False       # 아래 길 띠 오른쪽은 통째로 이어 그린 길 (예전 동굴 찌꺼기 제거)
     g[keep] = clean[keep]
     return g
 
@@ -241,9 +243,15 @@ def main():
     }
     with open(os.path.join(OUT_DATA, 'map-portrait.json'), 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
-    for n in ('bg', 'ground', 'palace', 'cave'):
+    for n in ('bg', 'ground', 'palace'):
         Image.open(os.path.join(OUT_IMG, f'map-portrait-{n}.png')).save(os.path.join(OUT_PREV, f'{n}.png'))
     print(json.dumps(data, ensure_ascii=False))
+
+    # 도트 동굴이 있으면 시안 동굴 대신 그것으로 바꿔 맵을 다시 합친다
+    if os.path.exists(os.path.join(ROOT, 'art/source/gemini/map-portrait/cave-pixel.png')):
+        os.replace(os.path.join(OUT_IMG, 'map-portrait-cave.png'), os.path.join(OUT_PREV, 'cave-mockup.png'))
+        import build_portrait_cave
+        build_portrait_cave.main()
 
 
 if __name__ == '__main__':

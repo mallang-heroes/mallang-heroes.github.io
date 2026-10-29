@@ -1,0 +1,65 @@
+{
+ "frames": {
+  "map-portrait-cave-glow-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 280,
+    "h": 262
+   },
+   "duration": 180,
+   "anchor": {
+    "x": 0.2857,
+    "y": 0.9733
+   }
+  },
+  "map-portrait-cave-glow-1": {
+   "frame": {
+    "x": 280,
+    "y": 0,
+    "w": 280,
+    "h": 262
+   },
+   "duration": 180,
+   "anchor": {
+    "x": 0.2857,
+    "y": 0.9733
+   }
+  },
+  "map-portrait-cave-glow-2": {
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 280,
+    "h": 262
+   },
+   "duration": 180,
+   "anchor": {
+    "x": 0.2857,
+    "y": 0.9733
+   }
+  },
+  "map-portrait-cave-glow-3": {
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 280,
+    "h": 262
+   },
+   "duration": 180,
+   "anchor": {
+    "x": 0.2857,
+    "y": 0.9733
+   }
+  }
+ },
+ "meta": {
+  "image": "map-portrait-cave-glow.webp",
+  "size": {
+   "w": 1120,
+   "h": 262
+  },
+  "scale": "2",
+  "note": "anchor = 입구 바닥 가운데. 보드 좌표 cave.mouth 에 그린다."
+ }
+}

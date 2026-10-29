@@ -20,12 +20,19 @@
  },
  "cave": {
   "image": "map/map-portrait-cave.webp",
+  "glow": "map/map-portrait-cave-glow.json",
   "rect": {
-   "x": 450.5,
-   "y": 643.0,
-   "w": 134.5,
-   "h": 191.0
-  }
+   "x": 472.0,
+   "y": 684.5,
+   "w": 140.0,
+   "h": 131.0
+  },
+  "mouth": [
+   512,
+   812
+  ],
+  "mouth_width": 53.3,
+  "note": "도트 동굴(cave-pixel.png). 오른쪽 일부는 화면 밖. 몬스터 출발점을 mouth 근처로 옮기면 입구에서 나오는 것처럼 보인다."
  },
  "tile": 64.0,
  "tiles": [
