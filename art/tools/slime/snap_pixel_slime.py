@@ -52,10 +52,30 @@ def find_grid(a):
     return p, best[2], score(Y, p, False)[1]
 
 
-def snap(path):
+def offsets(a, P):
+    """도트 크기 P가 정해졌을 때 격자 시작점만 찾기."""
+    h, w = a.shape[:2]
+    best = []
+    for horizontal, img in ((True, a[h // 10:h - h // 10].astype(float)), (False, a[:, w // 50:w - w // 50].astype(float))):
+        n = img.shape[1] if horizontal else img.shape[0]
+        b = None
+        for o in np.arange(0, P, 0.5):
+            xs = np.arange(o, n - P, P)
+            pick = (lambda f: img[:, (xs + P * f).astype(int)]) if horizontal else (lambda f: img[(xs + P * f).astype(int)])
+            c = pick(0.5)
+            v = np.abs(c - pick(0.12)).mean() + np.abs(c - pick(0.88)).mean()
+            if b is None or v < b[0]: b = (v, o)
+        best.append(b[1])
+    return best
+
+
+def snap(path, P=None):
     a = np.asarray(Image.open(path).convert('RGB')).astype(int)
     H, W = a.shape[:2]
-    P, OX, OY = find_grid(a)
+    if P is None:
+        P, OX, OY = find_grid(a)
+    else:
+        OX, OY = offsets(a, P)
     print('grid', P, OX, OY)
     xs = np.arange(OX - P, W, P); ys = np.arange(OY, H, P)
     out = np.zeros((len(ys), len(xs), 4), np.uint8)
@@ -115,9 +135,20 @@ def split(d, body_rgb):
     return parts
 
 
+RECRUIT_BODY = 14   # 견본의 군졸 몸 폭(도트). 제미나이가 크게 그렸으면 도트 크기를 다시 잡는다.
+
+
 def build(branch):
-    d = snap(os.path.join(ROOT, f'art/source/gemini/slime-pixel/{branch}-ranks-pixel.png'))
+    src = os.path.join(ROOT, f'art/source/gemini/slime-pixel/{branch}-ranks-pixel.png')
+    d = snap(src)
     parts = split(d, BODY[branch])
+    bw = parts[0][2]
+    if abs(bw - RECRUIT_BODY) > 1:
+        a = np.asarray(Image.open(src).convert('RGB'))
+        P0 = find_grid(a)[0]
+        print(f'{branch}: 군졸 몸 {bw}도트 → 도트 크기 {P0} × {bw}/{RECRUIT_BODY}로 다시')
+        d = snap(src, round(P0 * bw / RECRUIT_BODY, 2))
+        parts = split(d, BODY[branch])
     dots_dir = os.path.join(ROOT, 'art/source/gemini/slime-pixel/dots'); os.makedirs(dots_dir, exist_ok=True)
     sprites = []
     for (piece, foot, bw), rk in zip(parts, RANKS):
