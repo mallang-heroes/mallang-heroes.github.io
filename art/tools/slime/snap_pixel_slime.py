@@ -81,7 +81,7 @@ def snap(path, P=None):
     out = np.zeros((len(ys), len(xs), 4), np.uint8)
     for j, y in enumerate(ys):
         for i, x in enumerate(xs):
-            y0, y1 = int(max(0, y + 2)), int(min(H, y + P - 2)); x0, x1 = int(max(0, x + 2)), int(min(W, x + P - 2))
+            y0, y1 = int(max(0, y + 1)), int(min(H, y + P - 1)); x0, x1 = int(max(0, x + 1)), int(min(W, x + P - 1))
             if y1 <= y0 or x1 <= x0: continue
             c = np.median(a[y0:y1, x0:x1].reshape(-1, 3), 0)
             out[j, i, :3] = c
@@ -97,7 +97,34 @@ def snap(path, P=None):
     # 안쪽에 남은 밝은 하늘색 번짐(창 자루 옆 등)도 버림
     strong = (c[..., 1] - c[..., 0] > 45) & (c[..., 2] - c[..., 0] > 45) & (np.abs(c[..., 1] - c[..., 2]) < 35)   # 청록·하늘색 계열
     out[strong, 3] = 0
+    global FACE_BLOBS
+    FACE_BLOBS = face_blobs(a, P, OX - P, OY)
     return out
+
+
+FACE_BLOBS = []
+
+
+def face_blobs(a, P, gx, gy):
+    """원본에서 몸 색에 둘러싸인 작은 진한 덩어리(눈·입) → 도트 좌표 (가운데 y, 가운데 x, 넓이)."""
+    dark = a.sum(2) < 200
+    lab, n = ndimage.label(dark)
+    H, W = dark.shape
+    found = []
+    for k, sl in enumerate(ndimage.find_objects(lab), 1):
+        if sl is None: continue
+        h = sl[0].stop - sl[0].start; w = sl[1].stop - sl[1].start
+        if h > P * 3.2 or w > P * 4.5 or h * w < P * P * 0.3: continue
+        blob = lab[sl] == k
+        y0, y1 = max(0, sl[0].start - 3), min(H, sl[0].stop + 3); x0, x1 = max(0, sl[1].start - 3), min(W, sl[1].stop + 3)
+        ring = np.ones((y1 - y0, x1 - x0), bool)
+        ring[sl[0].start - y0:sl[0].stop - y0, sl[1].start - x0:sl[1].stop - x0] &= ~blob
+        rc = a[y0:y1, x0:x1][ring & ~dark[y0:y1, x0:x1]]
+        if len(rc) < ring.sum() * 0.85: continue
+        if ((rc[:, 1] > 200) & (rc[:, 2] > 200) & (rc[:, 0] < 120)).mean() > 0.05: continue
+        ys, xs = np.where(blob)
+        found.append(((ys.mean() + sl[0].start - gy) / P, (xs.mean() + sl[1].start - gx) / P, len(ys) / (P * P), h / P, w / P))
+    return found
 
 
 def split(d, body_rgb):
@@ -131,11 +158,64 @@ def split(d, body_rgb):
         fy = rows[-1] + 1
         widest = max(rows, key=lambda r: body[r].sum())
         wc = np.where(body[widest])[0]
-        parts.append((piece, ((wc[0] + wc[-1] + 1) / 2, fy), wc[-1] - wc[0] + 1))
+        parts.append((piece, ((wc[0] + wc[-1] + 1) / 2, fy), wc[-1] - wc[0] + 1, (ys[0], x0)))
     return parts
 
 
 RECRUIT_BODY = 14   # 견본의 군졸 몸 폭(도트). 제미나이가 크게 그렸으면 도트 크기를 다시 잡는다.
+TEMPLATE_W = [14, 16, 18, 20]
+OUTLINE = (42, 33, 28)
+CHEEK = (255, 160, 165)
+
+
+def redraw_face(piece, off, body_rgb):
+    """얼굴 다시 찍기: 제미나이 도트는 격자가 고르지 않아 1도트짜리 눈·입이 줄이면서 뭉개진다.
+    원본에서 찾은 눈 두 개의 자리를 기준으로, 얼굴 줄의 진한·분홍 점을 몸색으로 지우고
+    견본과 같은 얼굴(눈 1×2, 볼 2도트씩, 입)을 다시 찍는다."""
+    oy, ox = off
+    H, W = piece.shape[:2]
+    blobs = [(y - oy, x - ox, a, h, w) for y, x, a, h, w in FACE_BLOBS if 0 <= y - oy < H and 0 <= x - ox < W]
+    # 눈: 키가 폭보다 크고 크기가 비슷하며 같은 높이인 두 덩어리
+    best = None
+    for i in range(len(blobs)):
+        for j in range(i + 1, len(blobs)):
+            b1, b2 = blobs[i], blobs[j]
+            if abs(b1[0] - b2[0]) > 0.8 or abs(b1[1] - b2[1]) < 3: continue
+            if b1[3] < b1[4] * 1.1 or b2[3] < b2[4] * 1.1: continue
+            score = abs(b1[2] - b2[2]) + abs(b1[0] - b2[0])
+            if best is None or score < best[0]: best = (score, b1, b2)
+    if best is None:
+        print('  눈을 못 찾음 — 얼굴은 그대로')
+        return
+    l, r = sorted([best[1], best[2]], key=lambda b: b[1])
+    ey = int(round((l[0] + r[0]) / 2 - 1.0))
+    el, er = int(l[1]), int(r[1])
+    c = piece[..., :3].astype(int)
+    base = np.array(body_rgb)
+    for y in range(ey - 2, ey + 4):
+        for x in range(el - 5, er + 6):
+            if not (0 <= y < H and 0 <= x < W) or piece[y, x, 3] == 0: continue
+            v = c[y, x]
+            pink = v[0] > 200 and v[1] < 190 and v[2] > 140 and v[0] - v[1] > 40
+            facey = abs(v - base).sum() > 90 and abs(v - base * 0.8).sum() > 90 and v.sum() < 330   # 몸색과 다른 어두운 점(입 옆 잡티)
+            if v.sum() < 260 or pink or (facey and ey <= y <= ey + 2 and el - 1 <= x <= er + 1):
+                # 외곽선(바로 옆이 투명)은 건드리지 않음
+                if any(not (0 <= yy < H and 0 <= xx < W) or piece[yy, xx, 3] == 0 for yy, xx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1))):
+                    continue
+                nb = [c[yy, xx] for yy, xx in ((y - 1, x), (y, x - 1), (y - 2, x), (y, x + 1), (y + 1, x))
+                      if 0 <= yy < H and 0 <= xx < W and np.abs(c[yy, xx] - base).sum() < 150]
+                piece[y, x, :3] = nb[0] if nb else base
+                c[y, x] = piece[y, x, :3]
+
+    def put(y, x, col):
+        if 0 <= y < H and 0 <= x < W and piece[y, x, 3] > 0:
+            piece[y, x, :3] = col
+    for ex in (el, er):
+        put(ey, ex, OUTLINE); put(ey + 1, ex, OUTLINE)
+    for x in (el - 2, el - 1, er + 1, er + 2): put(ey + 2, x, CHEEK)
+    mid = (el + er) / 2
+    if (er - el) % 2 == 0: put(ey + 2, int(mid), OUTLINE)
+    else: put(ey + 2, int(mid), OUTLINE); put(ey + 2, int(mid) + 1, OUTLINE)
 
 
 def build(branch):
@@ -151,7 +231,8 @@ def build(branch):
         parts = split(d, BODY[branch])
     dots_dir = os.path.join(ROOT, 'art/source/gemini/slime-pixel/dots'); os.makedirs(dots_dir, exist_ok=True)
     sprites = []
-    for (piece, foot, bw), rk in zip(parts, RANKS):
+    for (piece, foot, bw, off), rk in zip(parts, RANKS):
+        redraw_face(piece, off, BODY[branch])
         Image.fromarray(piece).save(os.path.join(dots_dir, f'{branch}-{rk}.png'))
         h, w = piece.shape[:2]
         big = Image.fromarray(piece).resize((w * DOT2X, h * DOT2X), Image.NEAREST)
