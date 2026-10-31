@@ -181,8 +181,13 @@ def redraw_face(piece, off, body_rgb):
         for j in range(i + 1, len(blobs)):
             b1, b2 = blobs[i], blobs[j]
             if abs(b1[0] - b2[0]) > 0.8 or abs(b1[1] - b2[1]) < 3: continue
+            if b1[3] < 1.5 or b2[3] < 1.5 or b1[2] < 1.2 or b2[2] < 1.2: continue   # 눈은 2도트 높이
             if b1[3] < b1[4] * 1.1 or b2[3] < b2[4] * 1.1: continue
             score = abs(b1[2] - b2[2]) + abs(b1[0] - b2[0])
+            # 두 눈 사이 아래쪽에 입(가로로 긴 덩어리)이 있으면 확실한 눈
+            mid = (b1[1] + b2[1]) / 2; low = max(b1[0], b2[0])
+            if any(0.8 < m[0] - low < 2.5 and abs(m[1] - mid) < 1.5 and m[4] > m[3] for m in blobs):
+                score -= 5
             if best is None or score < best[0]: best = (score, b1, b2)
     if best is None:
         print('  눈을 못 찾음 — 얼굴은 그대로')
