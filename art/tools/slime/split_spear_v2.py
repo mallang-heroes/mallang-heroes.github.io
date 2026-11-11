@@ -25,7 +25,7 @@ def seg_dist(xx, yy, a, b):
 def fit_clean(path, sil, size):
     sys.path.insert(0, 'art/tools/slime')
     from keying import key_out, components
-    g = sorted(components(key_out(path)), key=lambda c: c[0][0])[0][1]   # 왼쪽 조각 = 몸
+    g = sorted(components(key_out(path), merge=0), key=lambda c: -c[2])[0][1]   # 왼쪽 조각 = 몸
     ga = np.asarray(g)[..., 3] > 128
     ys, xs = np.where(sil); gy, gx = np.where(ga)
     k = ((xs.max()-xs.min())/(gx.max()-gx.min()) + (ys.max()-ys.min())/(gy.max()-gy.min())) / 2
