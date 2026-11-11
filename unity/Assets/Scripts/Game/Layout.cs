@@ -18,11 +18,12 @@ namespace Mallang
         public int caveFrameMs;
         public Foot[] feet;
         public Foot[] feetV2;
+        public Foot[] feetB;
 
         [Serializable] public class XY { public float x, y; }
         [Serializable] public class RectData { public float x, y, w, h; }
         [Serializable] public class FrameData { public int x, y, w, h; }
-        [Serializable] public class Foot { public string name; public float x, y; }
+        [Serializable] public class Foot { public string name; public float x, y, w; }
 
         static Layout cached;
         Dictionary<string, Vector2> footMap, footMapV2;
@@ -33,6 +34,19 @@ namespace Mallang
             var text = Resources.Load<TextAsset>("Art/Map/layout");
             cached = JsonUtility.FromJson<Layout>(text.text);
             return cached;
+        }
+
+        Dictionary<string, Foot> footMapB;
+
+        /// 맵에 맞춘 슬라임(UnitsB): 발 위치(도트)와 몸 폭(도트). 없으면 null.
+        public Foot FootOfB(string spriteName)
+        {
+            if (footMapB == null)
+            {
+                footMapB = new Dictionary<string, Foot>();
+                if (feetB != null) foreach (var f in feetB) footMapB[f.name] = f;
+            }
+            return footMapB.TryGetValue(spriteName, out var v) ? v : null;
         }
 
         /// 큰 새 슬라임(UnitsV2) 발 위치. 없으면 null.

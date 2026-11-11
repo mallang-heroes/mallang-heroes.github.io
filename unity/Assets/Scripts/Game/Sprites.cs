@@ -18,11 +18,9 @@ namespace Mallang
         public const float BoardPerDotV2 = 1.5f;
         public const int Unit2PxPerDot = 3; // sync_art.py UNIT2_PX와 같아야 함
 
-        /// 맵에 맞춰 다시 뽑은 기본 슬라임(base-*): 그림의 몸 폭이 23·26·37·48도트라 등급 차이가 고르지 않아서,
+        /// 맵에 맞춰 다시 뽑은 슬라임(UnitsB: base-* 기본, <병과>-* 장비): 그림마다 몸 폭(도트)이 제각각이라
         /// 게임에서 보이는 몸 폭을 등급별로 정해 맞춘다 (보드 기준, 칸 63).
         public static readonly float[] BaseBodyBoard = { 30, 36, 42, 48 };
-        static readonly float[] BaseBodyDots = { 23, 26, 37, 48 };
-        public static float BoardPerDotBase(int tier) => BaseBodyBoard[tier] / BaseBodyDots[tier];
 
         /// 미리보기 그림 고르기 (Space로 돌아감): 옛 그림 → 큰 새 그림(V2) → 맵에 맞춘 기본 슬라임
         public enum Look { V1, V2, Base }
@@ -75,8 +73,8 @@ namespace Mallang
             if (Mode == Look.Base)
             {
                 int dash = name.IndexOf('-');
-                int tier = System.Array.IndexOf(Rules.TierKeys, name.Substring(dash + 1));
-                var b = UnitV2("base" + name.Substring(dash), BoardPerDotBase(Mathf.Max(0, tier)));
+                int tier = Mathf.Max(0, System.Array.IndexOf(Rules.TierKeys, name.Substring(dash + 1)));
+                var b = UnitB(name, tier) ?? UnitB("base" + name.Substring(dash), tier); // 장비 그림이 없으면 기본 슬라임
                 if (b != null) return b;
             }
             if (UseV2)
@@ -85,6 +83,21 @@ namespace Mallang
                 if (v2 != null) return v2;
             }
             return UnitV1(name);
+        }
+
+        static Sprite UnitB(string name, int tier)
+        {
+            string key = $"unitB:{name}";
+            if (cache.TryGetValue(key, out var s)) return s;
+            var f = Layout.Load().FootOfB(name);
+            if (f == null) return null;
+            var t = Resources.Load<Texture2D>($"Art/UnitsB/{name}");
+            if (t == null) return null;
+            float boardPerDot = BaseBodyBoard[tier] / f.w;
+            var pivot = new Vector2(f.x * Unit2PxPerDot / t.width, 1 - f.y * Unit2PxPerDot / t.height);
+            s = Sprite.Create(t, new Rect(0, 0, t.width, t.height), pivot, Ppu(Unit2PxPerDot / boardPerDot), 0, SpriteMeshType.FullRect);
+            s.name = name;
+            return cache[key] = s;
         }
 
         static Sprite UnitV2(string name, float boardPerDot = BoardPerDotV2)

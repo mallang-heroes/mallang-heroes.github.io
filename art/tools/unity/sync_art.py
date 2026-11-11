@@ -6,6 +6,7 @@
   Map/cave-glow.png     동굴 4프레임 시트 (@2x)
   Units/<병과>-<등급>.png  도트 슬라임 (1도트 = 4px로 키움)
   UnitsV2/<병과>-<등급>.png  유니티 시트로 다시 뽑은 큰 슬라임 (1도트 = 3px)
+  UnitsB/<병과|base>-<등급>.png  맵에 맞춘 기본 슬라임·장비 (1도트 = 3px, 게임 크기는 몸 폭으로 맞춤)
   Map/layout.json       궁·동굴 위치, 동굴 프레임, 배치 칸, 슬라임 발 위치 (유니티 JsonUtility용, 게임 코드는 이것만 읽음)
 실행: python3 art/tools/unity/sync_art.py (저장소 루트에서)
 """
@@ -48,6 +49,16 @@ def main():
             im = Image.open(os.path.join(dots2, f))
             im.resize((im.width * UNIT2_PX, im.height * UNIT2_PX), Image.NEAREST).save(os.path.join(DST, 'UnitsV2', f))
         feet2 = json.load(open(os.path.join(dots2, 'feet.json'), encoding='utf-8'))
+    # 맵에 맞춘 기본 슬라임 + 장비 (UnitsB): 몸 폭으로 게임 크기를 맞추므로 발 위치와 함께 몸 폭도 넘긴다
+    dotsb = os.path.join(ROOT, 'art/source/gemini/slime-base/dots')
+    feetb = {}
+    if os.path.isdir(dotsb):
+        os.makedirs(os.path.join(DST, 'UnitsB'), exist_ok=True)
+        for f in sorted(os.listdir(dotsb)):
+            if not f.endswith('.png'): continue
+            im = Image.open(os.path.join(dotsb, f))
+            im.resize((im.width * UNIT2_PX, im.height * UNIT2_PX), Image.NEAREST).save(os.path.join(DST, 'UnitsB', f))
+        feetb = json.load(open(os.path.join(dotsb, 'feet.json'), encoding='utf-8'))
     # 유니티 JsonUtility로 읽기 쉬운 모양(사전 없이 목록만)으로 한 파일에 모음
     m = json.load(open(os.path.join(ROOT, 'assets/data/map-portrait.json'), encoding='utf-8'))
     glow = json.load(open(os.path.join(ROOT, 'assets/images/map/map-portrait-cave-glow.json'), encoding='utf-8'))
@@ -62,7 +73,8 @@ def main():
         'caveFrames': frames,
         'caveFrameMs': list(glow['frames'].values())[0]['duration'],
         'feet': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet.items())],
-        'feetV2': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet2.items())],
+        'feetV2': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet2.items()) if not k.startswith('base-')],
+        'feetB': [{'name': k, 'x': v[0], 'y': v[1], 'w': v[2]} for k, v in sorted(feetb.items())],
     }
     json.dump(layout, open(os.path.join(DST, 'Map/layout.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('ok', sorted(os.listdir(os.path.join(DST, 'Units'))))

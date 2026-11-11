@@ -211,26 +211,6 @@
  ],
  "feetV2": [
   {
-   "name": "base-gungwan",
-   "x": 20.5,
-   "y": 28.0
-  },
-  {
-   "name": "base-gunjol",
-   "x": 12.5,
-   "y": 17.0
-  },
-  {
-   "name": "base-jangsu",
-   "x": 26.0,
-   "y": 36.0
-  },
-  {
-   "name": "base-jeongbyeong",
-   "x": 15.0,
-   "y": 20.0
-  },
-  {
    "name": "spear-gungwan",
    "x": 20.5,
    "y": 44.0
@@ -249,6 +229,56 @@
    "name": "spear-jeongbyeong",
    "x": 15.5,
    "y": 35.0
+  }
+ ],
+ "feetB": [
+  {
+   "name": "base-gungwan",
+   "x": 20.5,
+   "y": 28.0,
+   "w": 37.0
+  },
+  {
+   "name": "base-gunjol",
+   "x": 12.5,
+   "y": 18.0,
+   "w": 23.0
+  },
+  {
+   "name": "base-jangsu",
+   "x": 26.0,
+   "y": 36.0,
+   "w": 48.0
+  },
+  {
+   "name": "base-jeongbyeong",
+   "x": 15.0,
+   "y": 20.0,
+   "w": 26.0
+  },
+  {
+   "name": "spear-gungwan",
+   "x": 22.5,
+   "y": 53.0,
+   "w": 38.47094801223241
+  },
+  {
+   "name": "spear-gunjol",
+   "x": 15.0,
+   "y": 32.0,
+   "w": 23.914373088685014
+  },
+  {
+   "name": "spear-jangsu",
+   "x": 29.0,
+   "y": 89.0,
+   "w": 49.908256880733944
+  },
+  {
+   "name": "spear-jeongbyeong",
+   "x": 18.5,
+   "y": 39.0,
+   "w": 27.033639143730884
   }
  ]
 }
