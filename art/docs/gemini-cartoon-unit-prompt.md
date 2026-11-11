@@ -41,3 +41,38 @@ Background: one solid flat cyan color (#00FFFF). No shadow, no ground, no frame.
 | 도트처럼 나옴 | `Smooth cartoon, no pixels, like the slimes in the second image.` |
 | 창이 기울거나 몸에 박힘 | `Spears perfectly vertical, held beside the body on the right, not crossing the face.` |
 | 크기가 다 같음 | `Clearly different sizes: recruit small, general biggest.` |
+
+
+## ③ 팔 달린 새 디자인 (2026-11-11, 찌르기 모션용)
+
+> 손이 몸에 붙은 작은 혹이라 창을 들고 찌르는 동작이 어색하다 → **짧고 통통한 팔**을 단 디자인으로 바꾼다.
+> 그림체·장비는 ①(`spear-sheet-v1.png`) 그대로. 먼저 대기 자세 4등급(③-1)을 받아 맵 위에서 확인하고,
+> 마음에 들면 같은 대화에서 공격 자세(③-2: 준비·찌르기)를 받는다. 공격은 오른쪽으로 찌르는 그림 하나만 받고 왼쪽은 뒤집어 쓴다.
+> 새 대화, 첨부 2장: `art/source/gemini/map-cartoon/map-v1.png` → `art/source/gemini/unit-cartoon/spear-sheet-v1.png`.
+
+### ③-1 대기 자세
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The first attached image is the map of my cute mobile tower-defense game. The second image is my current unit sheet: 4 red jelly slime spear soldiers. Keep exactly that art style (clean, cute, smooth 2D cartoon, NOT pixel art, glossy jelly body, soft shading, thin dark outline, light from the top-left), the same colors, faces, hats, helmet, sash, pedestal and spears.
+
+Redesign only the arms: give each slime two short, chubby, soft jelly arms (same red jelly as the body, rounded mitten hands, no fingers), long enough to really grip and thrust a spear, like a cute chibi character. Still no legs, the round dome body sits on a flat base.
+Draw the same 4 ranks side by side, rank 1 to 4 from left to right (recruit, soldier, officer, general), each centered in its own equal-width cell, same baseline, facing the viewer in a relaxed standing pose. Each slime holds its spear upright in its right hand (the hand on the left side of the image), the other arm resting at its side.
+Sizes grow a little from left to right (the general about 1.6 times as wide as the recruit). Everything stays inside its own cell.
+Background: one solid flat cyan color (#00FFFF). No shadow, no ground, no frame.
+```
+
+### ③-2 공격 자세 (같은 대화, ③-1이 마음에 들 때)
+```
+Perfect. Now draw the attack poses of exactly these 4 slimes (same design, colors, sizes, gear), all turned slightly to face the RIGHT side of the image, in two rows:
+Top row, READY pose: the body leans back and squashes a little, both hands grip the spear and pull it back, the spear held horizontally at chest height pointing right, ready to thrust.
+Bottom row, THRUST pose: the body stretches forward to the right, both arms push the spear straight forward to the right with full force, the spear horizontal and extended far to the right, a determined cute face.
+Each slime in the same cell column as before (rank 1 to 4 from left to right), all on the same baseline per row, nothing touching another cell.
+Background: one solid flat cyan color (#00FFFF). No shadow, no ground, no frame, no motion lines.
+```
+
+| 문제 | 덧붙일 영어 |
+|---|---|
+| 팔이 너무 길어 사람처럼 됨 | `Shorter, chubbier arms, still a round cute slime, the arms only about one third of the body height.` |
+| 장비·얼굴이 바뀜 | `Keep the hats, helmet, sash, pedestal, spears and faces exactly like the attached sheet.` |
+| 찌르기 그림이 왼쪽을 봄 | `All attack poses face and thrust to the RIGHT.` |
