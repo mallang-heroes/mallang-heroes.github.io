@@ -32,29 +32,16 @@ Only this one character, centered. Solid flat magenta background (#FF00FF). No s
 
 ---
 
-## ② 등급별 파츠 — 몸 + 두 손과 창 (등급마다 1장, 새 대화창)
+## ② 몸 / 두 손+창 분리 — Claude가 직접 (제미나이 안 씀)
 
-첨부: Claude가 자른 `spear-rN-cut.png` 중 하나(마젠타 배경판 `spear-rN-input.png`).
+제미나이에게 분리를 맡겼더니 한 손이 몸에 붙어 남고 창 각도가 바뀌어서(시도 `spear-r1-parts-try1.png`), **원본 그림에서 Claude가 두 손+창을 직접 떼고 몸 빈자리를 메움**. 스크립트 `art/tools/slime/split_spear_v2.py` (좌표 `spear-rig.json`). 창이 창대 방향으로만 움직여서, 몸에서 드러나는 곳은 손 자리 정도라 메운 자국이 거의 안 보임.
 
-```
-Generate an image. Do not write any words, letters or numbers anywhere in the image.
-
-Split the attached slime character into TWO separate pieces drawn side by side with wide empty space between them, at exactly the same size, colors and style as the attached image:
-
-LEFT piece: the slime body only — same dome body, face, hat and belt — but WITHOUT the spear and WITHOUT the two small hands. Where the spear and hands crossed the body, the jelly body, belt and armor are smooth and complete.
-RIGHT piece: only the spear with the two small round jelly hands gripping it, exactly the same size, positions and angle as in the attached image, with the whole spear shaft and blade complete.
-
-Solid flat magenta background (#FF00FF). No shadow, no floor, no text.
-```
-
-**확인할 것:** 몸 쪽에 창·손 자국이 없는지, 허리띠·갑옷이 창 뒤에 가려졌던 부분까지 이어져 있는지, 창과 두 손의 각도·간격이 원래와 같은지.
-
-## ③ 공격 얼굴 · 눈 감음 (등급마다 1장, ②와 같은 창)
+## ③ (선택) 공격 얼굴 · 눈 감음 — 첨부: `spear-rN-body.png`
 
 ```
 Generate an image. Do not write any words, letters or numbers anywhere in the image.
 
-Redraw ONLY the left piece (the slime body without the spear) of your previous image twice, side by side, exactly the same size, shape, hat, belt and colors, identical in every detail except the face:
+Redraw the attached slime body twice, side by side, exactly the same size, shape, hat, belt and colors, identical in every detail except the face:
 1. Attack face: eyes squeezed shut in determined arcs, eyebrows angled down, mouth wide open shouting.
 2. Blink: the normal face with the eyes closed as two small curved lines.
 Solid flat magenta background (#FF00FF). No shadow, no text.
@@ -66,7 +53,7 @@ Solid flat magenta background (#FF00FF). No shadow, no text.
 
 | 할 말 | 하는 일 |
 |---|---|
-| **"창병 리깅해줘"** + ②·③ 8장 | 몸·창 분리 저장, 등급별 크기 맞춤(칸 안에 장수까지), 창 축·창끝 좌표 → 애니메이션 → 시트·JSON → 봄 맵 미리보기 |
+| (완료) 창병 리깅 | `art/tools/slime/build_spear_v2.py` → `art/out/slime-v2/spear-rN.png/json`, 미리보기 `spear-anim.gif`·`spear-on-spring-map.png`. 맵 배치는 **무기 제외 몸 가운데**를 칸 가운데에(앵커 = 몸 발밑 가운데) |
 
 **애니메이션 (계획)**
 - 대기 4프레임(6fps): 몸이 숨쉬듯 눌렸다 늘어남, 두 손+창은 몸을 따라 살짝 오르내림, 가끔 눈 깜빡임.
