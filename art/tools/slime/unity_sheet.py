@@ -43,17 +43,28 @@ def dot_size(path):
     return p + (w[2] - w[0]) / max(1.0, w.sum()) 
 
 
+MAP_OUTLINE = (60, 68, 70)   # 맵·궁 외곽선 청회색 #3C4446
+
+
 def main(branch='spear'):
     path = os.path.join(SRC, f'{branch}-sheet.png')
+    # 하늘색 배경 + 제미나이가 넣은 어두운 청록 그림자를 모두 순수 하늘색으로
+    a = np.asarray(Image.open(path).convert('RGB')).astype(int)
+    bgm = (a[..., 1] > 140) & (a[..., 2] > 140) & (a[..., 0] < 120)
+    a[bgm] = (0, 255, 255)
+    os.makedirs(PREV, exist_ok=True)
+    tmp = os.path.join(PREV, f'_{branch}-bg.png')
+    Image.fromarray(a.astype(np.uint8)).save(tmp)
     P = round(dot_size(path), 2)
-    d = sp.snap(path, P)
+    d = sp.snap(tmp, P)
+    os.remove(tmp)
     parts = sp.split(d, sp.BODY[branch])
     os.makedirs(DOTS, exist_ok=True); os.makedirs(PREV, exist_ok=True)
     fp = os.path.join(DOTS, 'feet.json')
     feet = json.load(open(fp, encoding='utf-8')) if os.path.exists(fp) else {}
     pieces = []
     for (piece, foot, bw, off), rk in zip(parts, sp.RANKS):
-        piece = sp.clean_piece(piece, sp.BODY[branch])
+        piece = sp.clean_piece(piece, sp.BODY[branch], MAP_OUTLINE if branch == 'base' else (42, 33, 28))
         foot = (foot[0] + 1, foot[1] + 1)
         feet[f'{branch}-{rk}'] = [float(foot[0]), float(foot[1])]
         Image.fromarray(piece).save(os.path.join(DOTS, f'{branch}-{rk}.png'))

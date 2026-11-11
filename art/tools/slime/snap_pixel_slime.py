@@ -19,6 +19,7 @@ RANKS = ['gunjol', 'jeongbyeong', 'gungwan', 'jangsu']
 BODY = {   # 병과별 몸 기본색 (견본과 같음) — 발 위치를 찾을 때 씀
     'spear': (240, 106, 85), 'archer': (116, 201, 94), 'gunner': (164, 134, 224),
     'cavalry': (240, 177, 69), 'navy': (85, 166, 234), 'mystic': (180, 187, 197),
+    'base': (218, 108, 85),   # 맵에 맞춘 기본 슬라임 (차분한 산호색)
 }
 
 
@@ -223,7 +224,7 @@ def redraw_face(piece, off, body_rgb):
     else: put(ey + 2, int(mid), OUTLINE); put(ey + 2, int(mid) + 1, OUTLINE)
 
 
-def clean_piece(piece, body_rgb):
+def clean_piece(piece, body_rgb, outline=(42, 33, 28)):
     """도트 정리: 제미나이 격자가 고르지 않아 생긴 흠을 고친다.
     ① 혼자 떨어진 점 지우기 ② 배경(하늘색)이 번진 청록 점을 옆 색으로
     ④ 바깥 외곽선이 끊긴 곳을 1도트 진한 갈색 외곽선으로 이어 닫기."""
@@ -255,7 +256,15 @@ def clean_piece(piece, body_rgb):
     ring = np.zeros_like(big)
     ring[1:, :] |= big[:-1, :]; ring[:-1, :] |= big[1:, :]; ring[:, 1:] |= big[:, :-1]; ring[:, :-1] |= big[:, 1:]
     ring &= ~np.pad(a, 1)
-    out[ring] = (42, 33, 28, 255)
+    out[ring] = (*outline, 255)
+    # 가장자리에 남은 청록 섞인 진한 점 → 외곽선 색
+    oc = out[..., :3].astype(int)
+    oa = out[..., 3] > 0
+    edge = oa & ~np.pad(np.ones((H, W), bool), 1)
+    pad2 = np.pad(oa, 1)
+    border = oa & ~(pad2[:-2, 1:-1] & pad2[2:, 1:-1] & pad2[1:-1, :-2] & pad2[1:-1, 2:])
+    tealish = border & (oc[..., 1] > oc[..., 0] + 10) & (oc[..., 2] > oc[..., 0] + 10) & (oc.sum(2) < 400)
+    out[tealish] = (*outline, 255)
     return out
 
 

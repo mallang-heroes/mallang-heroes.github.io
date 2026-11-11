@@ -211,6 +211,26 @@
  ],
  "feetV2": [
   {
+   "name": "base-gungwan",
+   "x": 20.5,
+   "y": 28.0
+  },
+  {
+   "name": "base-gunjol",
+   "x": 12.5,
+   "y": 17.0
+  },
+  {
+   "name": "base-jangsu",
+   "x": 26.0,
+   "y": 36.0
+  },
+  {
+   "name": "base-jeongbyeong",
+   "x": 15.0,
+   "y": 20.0
+  },
+  {
    "name": "spear-gungwan",
    "x": 20.5,
    "y": 44.0
@@ -223,7 +243,7 @@
   {
    "name": "spear-jangsu",
    "x": 24.0,
-   "y": 44.0
+   "y": 43.0
   },
   {
    "name": "spear-jeongbyeong",

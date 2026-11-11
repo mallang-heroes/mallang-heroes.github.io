@@ -13,6 +13,22 @@
  ],
  "spear-jangsu": [
   24.0,
-  44.0
+  43.0
+ ],
+ "base-gunjol": [
+  12.5,
+  17.0
+ ],
+ "base-jeongbyeong": [
+  15.0,
+  20.0
+ ],
+ "base-gungwan": [
+  20.5,
+  28.0
+ ],
+ "base-jangsu": [
+  26.0,
+  36.0
  ]
 }

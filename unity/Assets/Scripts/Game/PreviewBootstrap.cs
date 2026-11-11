@@ -64,10 +64,11 @@ namespace Mallang
         void Update()
         {
             FitCamera();
-            // Space: 큰 새 슬라임 ↔ 옛 슬라임 비교
+            // Space: 기본 슬라임(맵에 맞춘 것) → 옛 그림 → 큰 새 그림(V2) 순서로 바꿔 보기
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Sprites.UseV2 = !Sprites.UseV2;
+                Sprites.Mode = (Sprites.Look)(((int)Sprites.Mode + 1) % 3);
+                Debug.Log($"슬라임 그림: {Sprites.Mode}");
                 foreach (var v in FindObjectsByType<SlimeView>(FindObjectsSortMode.None)) v.Refresh();
             }
             spawnTimer += Time.deltaTime;

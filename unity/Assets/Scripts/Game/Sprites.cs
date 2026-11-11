@@ -18,8 +18,13 @@ namespace Mallang
         public const float BoardPerDotV2 = 1.5f;
         public const int Unit2PxPerDot = 3; // sync_art.py UNIT2_PX와 같아야 함
 
-        /// 큰 새 슬라임을 쓸지 (없는 병과는 옛 그림으로). 미리보기에서 Space로 바꿈.
-        public static bool UseV2 = true;
+        /// 맵에 맞춰 다시 뽑은 기본 슬라임(base-*): 몸 폭 23~48도트로 잘게 그려져 있어 1도트 = 보드 1.125.
+        public const float BoardPerDotBase = 1.125f;
+
+        /// 미리보기 그림 고르기 (Space로 돌아감): 옛 그림 → 큰 새 그림(V2) → 맵에 맞춘 기본 슬라임
+        public enum Look { V1, V2, Base }
+        public static Look Mode = Look.Base;
+        public static bool UseV2 => Mode == Look.V2;
 
         static readonly Dictionary<string, Sprite> cache = new Dictionary<string, Sprite>();
 
@@ -64,6 +69,12 @@ namespace Mallang
         /// 도트 슬라임 (예: "spear-jangsu"). 피벗 = 발. UseV2면 큰 새 그림이 있을 때 그것을 쓴다.
         public static Sprite Unit(string name)
         {
+            if (Mode == Look.Base)
+            {
+                int dash = name.IndexOf('-');
+                var b = UnitV2("base" + name.Substring(dash), BoardPerDotBase);
+                if (b != null) return b;
+            }
             if (UseV2)
             {
                 var v2 = UnitV2(name);
@@ -72,7 +83,7 @@ namespace Mallang
             return UnitV1(name);
         }
 
-        static Sprite UnitV2(string name)
+        static Sprite UnitV2(string name, float boardPerDot = BoardPerDotV2)
         {
             string key = $"unit2:{name}";
             if (cache.TryGetValue(key, out var s)) return s;
@@ -82,7 +93,7 @@ namespace Mallang
             if (t == null) return null;
             var foot = footDots.Value * Unit2PxPerDot;
             var pivot = new Vector2(foot.x / t.width, 1 - foot.y / t.height);
-            s = Sprite.Create(t, new Rect(0, 0, t.width, t.height), pivot, Ppu(Unit2PxPerDot / BoardPerDotV2), 0, SpriteMeshType.FullRect);
+            s = Sprite.Create(t, new Rect(0, 0, t.width, t.height), pivot, Ppu(Unit2PxPerDot / boardPerDot), 0, SpriteMeshType.FullRect);
             s.name = name;
             return cache[key] = s;
         }
