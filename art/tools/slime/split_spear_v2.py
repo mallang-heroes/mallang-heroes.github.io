@@ -46,9 +46,20 @@ def split(r):
     # 무기가 덮던 자리만 메움(손이 몸 테두리에 걸친 곳 포함). 깃털·모자 사이는 안 메움
     sil = big | (ndimage.binary_closing(big, iterations=45) & weapon)
     sil = ndimage.binary_fill_holes(sil)
+    # 창이 몸 테두리를 지나던 곳의 실루엣을 둥글게 다듬음
+    near = ndimage.binary_dilation(weapon, iterations=25)
+    smooth = ndimage.gaussian_filter(ndimage.binary_closing(sil, iterations=30).astype(float), 9) > .5
+    sil = np.where(near, smooth, sil)
     hole = sil & ndimage.binary_dilation(weapon | (a[..., 3] <= 128), iterations=3)
-    rgb = cv2.inpaint(np.ascontiguousarray(a[..., :3]), (hole*255).astype(np.uint8), 9, cv2.INPAINT_TELEA)
-    rgb = np.where(hole[..., None], cv2.GaussianBlur(rgb, (0, 0), 2.5), rgb)
+    lum = a[..., :3].astype(float) @ [.3, .59, .11]
+    edge = sil & ~ndimage.binary_erosion(sil, iterations=7)          # 몸 테두리 띠
+    dark_near = ndimage.binary_dilation(hole, iterations=8) & (lum < 90) & ~edge
+    fillm = (hole | dark_near) & ~edge | (hole & edge)
+    rgb = cv2.inpaint(np.ascontiguousarray(a[..., :3]), (fillm*255).astype(np.uint8), 12, cv2.INPAINT_TELEA)
+    # 메운 자리의 몸 테두리는 외곽선 색으로 다시 그음
+    rim = hole & ~ndimage.binary_erosion(sil, iterations=5)
+    rgb[rim] = [74, 24, 26]
+    rgb = np.where((fillm & ~rim)[..., None], cv2.GaussianBlur(rgb, (0, 0), 2.5), rgb)
     ba = np.dstack([rgb, np.where(sil, np.maximum(a[..., 3], 255*hole), 0)]).astype(np.uint8)
     ba[..., 3] = np.where(sil, np.where(hole, 255, a[..., 3]), 0)
     # 몸 중심(무기 제외) — 열 기준
