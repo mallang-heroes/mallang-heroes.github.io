@@ -207,3 +207,34 @@ Background: one solid flat cyan color (#00FFFF), no shadow, no ground, no frame.
 ```
 
 다른 병과는 `spear soldiers` 와 무기 부분만 ②의 표대로 바꾼다 (모자·투구는 같음).
+
+
+## ⑥ 맵과 같은 도트 크기로 다시 (2026-11-11)
+
+> 나란히 비교(`art/preview/slime-base/pixel-scale-compare.png`)해 보니 유닛 도트가 맵보다 2~3배 잘아서 따로 논다 → **1도트 = 보드 3(맵과 같음)** 으로 확정.
+> 몸 폭은 그대로 보드 30·36·42·48 → **10·12·14·16도트**. 이 크기는 제미나이가 정확히 못 맞추니, 기본 몸은 코드로 그린 견본(`make_map_dot_template.py` → `art/source/pixel/map-dot-template-base.png`, 1도트 = 16px)을 그대로 쓰고 제미나이는 **장비만** 얹게 한다.
+> 맵 위 미리보기: `art/preview/slime-base/map-dot-template-on-map.png`.
+> 새 대화, 첨부 1장 `map-dot-template-base.png`. 받으면 `unity_sheet.py <병과> mapdot`로 16px 격자에 맞춰 정리.
+
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The attached image is a pixel-art sprite sheet of 4 tiny slimes for my mobile tower-defense game. Every square block of 16x16 image pixels is ONE art pixel.
+Keep the image size, the 4 cells, the baseline and every slime body, color and face exactly as they are. Do not move, resize, smooth or redraw the bodies.
+Only add equipment on top, drawn on the SAME 16x16 pixel grid: every new shape is made of whole 16x16 squares, no smaller pixels, no anti-aliasing, no gradients. Use few flat muted colors and the same dark slate outline (#3C4446), one block thick.
+
+They are Korean Joseon-dynasty spear soldiers, rank 1 to 4 from left to right. Keep the gear very simple and chunky, it is tiny on screen:
+1. Recruit: an off-white cloth headband (one block tall) with a small knot on the side; a short plain wooden spear standing upright just right of the body, a 1-block-wide shaft with a 1-block grey tip.
+2. Soldier: a black Joseon felt hat (jeollip) with a wide flat brim and a small dark red cord; a spear 1 block wide with a 2-block iron tip and one red block as tassel.
+3. Officer: the same black felt hat with one small blue-green feather block on the side; a navy blue sash band across the lower body below the face; a longer iron spear.
+4. General: a steel helmet with a gold rim line and a small red plume on top; a long spear with a gold block below the tip and a red tassel; the body stands on a low dark-red pedestal 2 blocks tall, only 2 blocks wider than the body. No cape, no armor.
+
+Each spear is held upright on the right side of its slime, the tip pointing straight up, everything inside its own cell.
+Background: the same solid flat cyan (#00FFFF), no shadow, no ground, no frame.
+```
+
+| 문제 | 덧붙일 영어 |
+|---|---|
+| 몸이나 얼굴을 다시 그림 | `Copy the 4 bodies pixel for pixel from the attached image, only add the gear.` |
+| 장비가 잔 도트·부드럽게 나옴 | `Bigger blocks: every gear pixel must be a full 16x16 square like the body, flat colors only.` |
+| 창이 눕거나 기울어짐 | `All spears perfectly vertical, tip straight up.` |
