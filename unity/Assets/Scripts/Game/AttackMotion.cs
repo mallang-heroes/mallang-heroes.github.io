@@ -4,7 +4,8 @@ namespace Mallang
 {
     /// <summary>
     /// 공격 모션 (미리보기).
-    /// 무기 파츠가 있으면(창병 등): 창을 목표 쪽으로 돌려 겨눔(0.1초) → 뒤로 당김 → 쭉 찔러 넣기(0.07초) → 빼서 세워 들기(0.2초).
+    /// 무기 파츠가 있으면(창병 등): 창을 세운 채 목표 쪽으로 비스듬히(최대 40도) 기울이며 뒤로 당김(0.1초)
+    ///   → 목표 쪽으로 쭉 찔러 넣기(0.07초) → 잠깐 멈춤 → 빼서 다시 세워 들기(0.2초).
     ///   몸은 찌르는 순간 목표 쪽으로 살짝 기울며 늘어난다.
     /// 무기 파츠가 없으면(기본 슬라임): 사거리 안 가장 앞선 몬스터를 향해
     ///   ① 움츠림(0.07초, 납작) → ② 튀어나가며 찌르기(0.08초, 길쭉 + 목표 쪽으로 몇 도트) → ③ 제자리로 말랑 복귀(0.18초)
@@ -49,9 +50,8 @@ namespace Mallang
                 target = FindTarget();
                 if (target == null) { cooldown = 0.1f; return; }
                 dir = (target.BoardPos - Foot).normalized;
-                // 창끝(위 = 0도)이 목표를 보도록: 월드 방향(dx, -dy)
-                aimAngle = Mathf.Atan2(-dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-                if (aimAngle < -180) aimAngle += 360;
+                // 창은 눕히지 않고 목표 쪽으로만 비스듬히 (최대 40도). 창끝 위 = 0도, 오른쪽으로 기울면 음수.
+                aimAngle = -Mathf.Sign(dir.x) * Mathf.Lerp(15f, 40f, Mathf.Abs(dir.x));
                 t = 0; struck = false;
                 cooldown = interval;
             }
@@ -88,7 +88,7 @@ namespace Mallang
 
         void WeaponStab()
         {
-            float reach = 14f + slime.Tier * 4f;   // 찔러 넣는 거리 (보드)
+            float reach = 12f + slime.Tier * 3f;   // 찔러 넣는 거리 (보드)
             float ang, push; float sx = 1, sy = 1; Vector2 lean = Vector2.zero;
             if (t < Aim)
             {   // 겨누기: 창을 목표 쪽으로 돌리며 살짝 뒤로 당김, 몸은 움츠림

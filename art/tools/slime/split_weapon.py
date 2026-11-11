@@ -69,6 +69,21 @@ def main(branch='spear'):
         a = np.asarray(Image.open(os.path.join(DOTS, f'{branch}-{rk}.png'))).copy()
         w, grip, top = split(a)
         body = a.copy(); body[w, 3] = 0
+        # 창을 떼어 낸 자리(몸 왼쪽이 세로로 잘림)를 몸 오른쪽을 좌우로 뒤집어 채운다 (슬라임 몸은 좌우 대칭)
+        feet = json.load(open(os.path.join(DOTS, 'feet.json'), encoding='utf-8'))
+        cx = feet[f'{branch}-{rk}'][0]          # 발 x = 몸 가운데
+        H, W = w.shape
+        for y, x in zip(*np.where(w)):
+            if y < top - 2: continue                   # 몸보다 위(창끝·술)는 채우지 않음
+            mx = int(round(2 * cx - x - 1))
+            if 0 <= mx < W and a[y, mx, 3] > 0 and not w[y, mx]:
+                body[y, x] = a[y, mx]
+        # 떼어 내고 남은 창 부스러기(몸과 안 붙은 작은 점) 지우기
+        bl, bn = ndimage.label(body[..., 3] > 0, structure=np.ones((3, 3)))
+        if bn > 1:
+            sizes = ndimage.sum(np.ones_like(bl), bl, range(1, bn + 1))
+            keep_id = 1 + int(np.argmax(sizes))
+            body[(bl != keep_id) & (bl > 0), 3] = 0
         weap = a.copy(); weap[~w, 3] = 0
         Image.fromarray(body).save(os.path.join(PARTS, f'{branch}-{rk}-body.png'))
         Image.fromarray(weap).save(os.path.join(PARTS, f'{branch}-{rk}-weapon.png'))
