@@ -19,6 +19,7 @@ namespace Mallang
         public Foot[] feet;
         public Foot[] feetV2;
         public Foot[] feetB;
+        public Foot[] feetC;
         public Foot[] grips;
 
         [Serializable] public class XY { public float x, y; }
@@ -48,6 +49,19 @@ namespace Mallang
                 if (grips != null) foreach (var g in grips) gripMap[g.name] = g;
             }
             return gripMap.TryGetValue(spriteName, out var v) ? v : null;
+        }
+
+        Dictionary<string, Foot> footMapC;
+
+        /// 카툰 유닛(UnitsC): 발 위치(px, @2x 그림 왼쪽 위 기준)와 몸 폭(보드). 없으면 null.
+        public Foot FootOfC(string spriteName)
+        {
+            if (footMapC == null)
+            {
+                footMapC = new Dictionary<string, Foot>();
+                if (feetC != null) foreach (var f in feetC) footMapC[f.name] = f;
+            }
+            return footMapC.TryGetValue(spriteName, out var v) ? v : null;
         }
 
         /// 맵에 맞춘 슬라임(UnitsB): 발 위치(도트)와 몸 폭(도트). 없으면 null.

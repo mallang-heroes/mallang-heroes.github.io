@@ -82,10 +82,10 @@ namespace Mallang
             {
                 Time.timeScale = Time.timeScale < 1f ? 1f : 0.25f;
             }
-            // Space: 기본 슬라임(맵에 맞춘 것) → 옛 그림 → 큰 새 그림(V2) 순서로 바꿔 보기
+            // Space: 카툰 → 옛 그림 → 큰 새 그림(V2) → 도트 기본 슬라임 순서로 바꿔 보기
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Sprites.Mode = (Sprites.Look)(((int)Sprites.Mode + 1) % 3);
+                Sprites.Mode = (Sprites.Look)(((int)Sprites.Mode + 1) % 4);
                 Debug.Log($"슬라임 그림: {Sprites.Mode}");
                 foreach (var v in FindObjectsByType<SlimeView>(FindObjectsSortMode.None)) v.Refresh();
             }

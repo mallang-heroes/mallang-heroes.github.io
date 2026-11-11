@@ -76,6 +76,14 @@ def main():
             im = Image.open(os.path.join(partsdir, f))
             im.resize((im.width * UNIT2_PX, im.height * UNIT2_PX), Image.NEAREST).save(os.path.join(DST, 'UnitsB/Parts', f))
         grips = json.load(open(os.path.join(partsdir, 'parts.json'), encoding='utf-8'))
+    # 카툰 유닛 (UnitsC): cartoon_sheet.py가 @2x로 줄여 둔 그림 그대로
+    cdir = os.path.join(ROOT, 'art/source/gemini/unit-cartoon/units')
+    feetc = {}
+    if os.path.isdir(cdir):
+        os.makedirs(os.path.join(DST, 'UnitsC'), exist_ok=True)
+        for f in sorted(os.listdir(cdir)):
+            if f.endswith('.png'): shutil.copy(os.path.join(cdir, f), os.path.join(DST, 'UnitsC', f))
+        feetc = json.load(open(os.path.join(cdir, 'feet.json'), encoding='utf-8'))
     # 유니티 JsonUtility로 읽기 쉬운 모양(사전 없이 목록만)으로 한 파일에 모음
     m = json.load(open(os.path.join(ROOT, 'assets/data/map-portrait.json'), encoding='utf-8'))
     glow = json.load(open(os.path.join(ROOT, 'assets/images/map/map-portrait-cave-glow.json'), encoding='utf-8'))
@@ -93,6 +101,7 @@ def main():
         'feet': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet.items())],
         'feetV2': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet2.items()) if not k.startswith('base-')],
         'grips': [{'name': k, 'x': v['grip'][0], 'y': v['grip'][1], 'w': v.get('tip', 0)} for k, v in sorted(grips.items())],   # w = 쥔 자리→창끝 길이(도트)
+        'feetC': [{'name': k, 'x': v[0], 'y': v[1], 'w': v[2]} for k, v in sorted(feetc.items())],   # px @2x, w = 몸 폭(보드)
         'feetB': [{'name': k, 'x': v[0], 'y': v[1], 'w': v[2]} for k, v in sorted(feetb.items())],
     }
     json.dump(layout, open(os.path.join(DST, 'Map/layout.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

@@ -261,6 +261,32 @@
    "w": 36.5
   }
  ],
+ "feetC": [
+  {
+   "name": "spear-gungwan",
+   "x": 54.32,
+   "y": 125.95,
+   "w": 35.8
+  },
+  {
+   "name": "spear-gunjol",
+   "x": 40.73,
+   "y": 90.97,
+   "w": 36.2
+  },
+  {
+   "name": "spear-jangsu",
+   "x": 64.06,
+   "y": 158.88,
+   "w": 45.9
+  },
+  {
+   "name": "spear-jeongbyeong",
+   "x": 50.88,
+   "y": 110.31,
+   "w": 38.1
+  }
+ ],
  "feetB": [
   {
    "name": "base-gungwan",

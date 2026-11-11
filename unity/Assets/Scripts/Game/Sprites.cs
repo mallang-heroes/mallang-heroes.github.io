@@ -23,8 +23,8 @@ namespace Mallang
         public static readonly float[] BaseBodyBoard = { 30, 36, 42, 48 };
 
         /// 미리보기 그림 고르기 (Space로 돌아감): 옛 그림 → 큰 새 그림(V2) → 맵에 맞춘 기본 슬라임
-        public enum Look { V1, V2, Base }
-        public static Look Mode = Look.Base;
+        public enum Look { V1, V2, Base, Cartoon }
+        public static Look Mode = Look.Cartoon;
         public static bool UseV2 => Mode == Look.V2;
 
         static readonly Dictionary<string, Sprite> cache = new Dictionary<string, Sprite>();
@@ -70,6 +70,12 @@ namespace Mallang
         /// 도트 슬라임 (예: "spear-jangsu"). 피벗 = 발. UseV2면 큰 새 그림이 있을 때 그것을 쓴다.
         public static Sprite Unit(string name)
         {
+            if (Mode == Look.Cartoon)
+            {
+                // 카툰 그림은 아직 창병만 → 다른 병과는 같은 등급 창병으로 대신 보여 줌 (느낌 확인용)
+                var c = UnitC(name) ?? UnitC("spear" + name.Substring(name.IndexOf('-')));
+                if (c != null) return c;
+            }
             if (Mode == Look.Base)
             {
                 int dash = name.IndexOf('-');
@@ -104,6 +110,22 @@ namespace Mallang
             var weapon = Sprite.Create(tw, new Rect(0, 0, tw.width, tw.height), wp, ppu, 0, SpriteMeshType.FullRect);
             var grip = new Vector2(g.x - f.x, g.y - f.y) * boardPerDot;   // 보드, y 아래로
             return (body, weapon, grip, g.w * boardPerDot);   // tipLen: 쥔 자리→창끝 (보드)
+        }
+
+        /// 카툰 유닛(UnitsC): 맵과 같은 @2x(보드 1 = 2px)로 미리 줄여 둔 그림. 피벗 = 발.
+        static Sprite UnitC(string name)
+        {
+            string key = $"unitC:{name}";
+            if (cache.TryGetValue(key, out var s)) return s;
+            var f = Layout.Load().FootOfC(name);
+            if (f == null) return null;
+            var t = Resources.Load<Texture2D>($"Art/UnitsC/{name}");
+            if (t == null) return null;
+            t.wrapMode = TextureWrapMode.Clamp;
+            var pivot = new Vector2(f.x / t.width, 1 - f.y / t.height);
+            s = Sprite.Create(t, new Rect(0, 0, t.width, t.height), pivot, Ppu(MapPxPerBoard), 0, SpriteMeshType.FullRect);
+            s.name = name;
+            return cache[key] = s;
         }
 
         static Sprite UnitB(string name, int tier)
