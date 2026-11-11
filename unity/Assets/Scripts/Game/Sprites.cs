@@ -14,6 +14,13 @@ namespace Mallang
         public const float BoardPerDot = 2f;
         public const int UnitPxPerDot = 4; // sync_art.py UNIT_PX와 같아야 함
 
+        /// 큰 새 슬라임(UnitsV2): 몸 폭 20~28도트로 그린 것. 1도트 = 보드 1.5 = 그림 3px.
+        public const float BoardPerDotV2 = 1.5f;
+        public const int Unit2PxPerDot = 3; // sync_art.py UNIT2_PX와 같아야 함
+
+        /// 큰 새 슬라임을 쓸지 (없는 병과는 옛 그림으로). 미리보기에서 Space로 바꿈.
+        public static bool UseV2 = true;
+
         static readonly Dictionary<string, Sprite> cache = new Dictionary<string, Sprite>();
 
         static Texture2D Tex(string path)
@@ -54,8 +61,33 @@ namespace Mallang
             return list;
         }
 
-        /// 도트 슬라임 (예: "spear-jangsu"). 피벗 = 발.
+        /// 도트 슬라임 (예: "spear-jangsu"). 피벗 = 발. UseV2면 큰 새 그림이 있을 때 그것을 쓴다.
         public static Sprite Unit(string name)
+        {
+            if (UseV2)
+            {
+                var v2 = UnitV2(name);
+                if (v2 != null) return v2;
+            }
+            return UnitV1(name);
+        }
+
+        static Sprite UnitV2(string name)
+        {
+            string key = $"unit2:{name}";
+            if (cache.TryGetValue(key, out var s)) return s;
+            var footDots = Layout.Load().FootOfV2(name);
+            if (footDots == null) return null;
+            var t = Resources.Load<Texture2D>($"Art/UnitsV2/{name}");
+            if (t == null) return null;
+            var foot = footDots.Value * Unit2PxPerDot;
+            var pivot = new Vector2(foot.x / t.width, 1 - foot.y / t.height);
+            s = Sprite.Create(t, new Rect(0, 0, t.width, t.height), pivot, Ppu(Unit2PxPerDot / BoardPerDotV2), 0, SpriteMeshType.FullRect);
+            s.name = name;
+            return cache[key] = s;
+        }
+
+        static Sprite UnitV1(string name)
         {
             string key = $"unit:{name}";
             if (cache.TryGetValue(key, out var s)) return s;

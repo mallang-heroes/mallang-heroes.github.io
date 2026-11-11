@@ -14,6 +14,9 @@ namespace Mallang
         Vector3 basePos;
         SpriteRenderer sr;
 
+        /// 그림을 다시 고른다 (옛/새 그림 바꿀 때).
+        public void Refresh() => sr.sprite = Sprites.Unit($"{BranchKey}-{Rules.TierKeys[Tier]}");
+
         public static SlimeView Create(Transform parent, string branchKey, int tier, int tileIndex)
         {
             var go = new GameObject($"{branchKey}-{Rules.TierKeys[tier]}");

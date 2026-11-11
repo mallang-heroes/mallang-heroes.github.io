@@ -17,6 +17,7 @@ namespace Mallang
         public FrameData[] caveFrames;
         public int caveFrameMs;
         public Foot[] feet;
+        public Foot[] feetV2;
 
         [Serializable] public class XY { public float x, y; }
         [Serializable] public class RectData { public float x, y, w, h; }
@@ -24,7 +25,7 @@ namespace Mallang
         [Serializable] public class Foot { public string name; public float x, y; }
 
         static Layout cached;
-        Dictionary<string, Vector2> footMap;
+        Dictionary<string, Vector2> footMap, footMapV2;
 
         public static Layout Load()
         {
@@ -32,6 +33,17 @@ namespace Mallang
             var text = Resources.Load<TextAsset>("Art/Map/layout");
             cached = JsonUtility.FromJson<Layout>(text.text);
             return cached;
+        }
+
+        /// 큰 새 슬라임(UnitsV2) 발 위치. 없으면 null.
+        public Vector2? FootOfV2(string spriteName)
+        {
+            if (footMapV2 == null)
+            {
+                footMapV2 = new Dictionary<string, Vector2>();
+                if (feetV2 != null) foreach (var f in feetV2) footMapV2[f.name] = new Vector2(f.x, f.y);
+            }
+            return footMapV2.TryGetValue(spriteName, out var v) ? v : (Vector2?)null;
         }
 
         /// 슬라임 그림의 발 위치 (도트, 그림 왼쪽 위 기준).

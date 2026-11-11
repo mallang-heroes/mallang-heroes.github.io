@@ -64,6 +64,12 @@ namespace Mallang
         void Update()
         {
             FitCamera();
+            // Space: 큰 새 슬라임 ↔ 옛 슬라임 비교
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Sprites.UseV2 = !Sprites.UseV2;
+                foreach (var v in FindObjectsByType<SlimeView>(FindObjectsSortMode.None)) v.Refresh();
+            }
             spawnTimer += Time.deltaTime;
             if (spawnTimer < Rules.SpawnGap) return;
             spawnTimer -= Rules.SpawnGap;

@@ -208,5 +208,27 @@
    "x": 10.0,
    "y": 18.0
   }
+ ],
+ "feetV2": [
+  {
+   "name": "spear-gungwan",
+   "x": 20.5,
+   "y": 44.0
+  },
+  {
+   "name": "spear-gunjol",
+   "x": 14.5,
+   "y": 30.0
+  },
+  {
+   "name": "spear-jangsu",
+   "x": 24.0,
+   "y": 44.0
+  },
+  {
+   "name": "spear-jeongbyeong",
+   "x": 15.5,
+   "y": 35.0
+  }
  ]
 }
