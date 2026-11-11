@@ -48,9 +48,19 @@ namespace Mallang
             MapView.Create(transform);
             var units = new GameObject("Units").transform;
             units.SetParent(transform, false);
-            foreach (var p in Plan) SlimeView.Create(units, p.branch, p.tier, p.tile);
+            foreach (var p in Plan)
+            {
+                var v = SlimeView.Create(units, p.branch, p.tier, p.tile);
+                AttackMotion.Attach(v, BranchName(p.branch));
+            }
 
             track = new RoadTrack();
+        }
+
+        static string BranchName(string key)
+        {
+            foreach (var b in Board.Branches) if (b.Key == key) return b.Name;
+            return "창병";
         }
 
         void FitCamera()
@@ -64,6 +74,11 @@ namespace Mallang
         void Update()
         {
             FitCamera();
+            // S: 공격 모션 느리게(1/4) ↔ 보통
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                Time.timeScale = Time.timeScale < 1f ? 1f : 0.25f;
+            }
             // Space: 기본 슬라임(맵에 맞춘 것) → 옛 그림 → 큰 새 그림(V2) 순서로 바꿔 보기
             if (Input.GetKeyDown(KeyCode.Space))
             {

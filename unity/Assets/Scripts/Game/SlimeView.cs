@@ -10,6 +10,12 @@ namespace Mallang
     {
         public string BranchKey { get; private set; }
         public int Tier { get; private set; }
+        public int TileIndex { get; private set; }
+        Vector2 poseOff;          // 공격 모션이 주는 위치(보드)·크기
+        Vector2 poseScale = Vector2.one;
+
+        /// 공격 모션에서 매 프레임 넣는 자세 (보드 좌표 이동, 가로·세로 배율). 발을 기준으로 늘었다 줄었다 한다.
+        public void SetPose(Vector2 boardOffset, Vector2 scale) { poseOff = boardOffset; poseScale = scale; }
         float phase;
         Vector3 basePos;
         SpriteRenderer sr;
@@ -26,6 +32,7 @@ namespace Mallang
             var v = go.AddComponent<SlimeView>();
             v.BranchKey = branchKey;
             v.Tier = tier;
+            v.TileIndex = tileIndex;
             v.sr = go.AddComponent<SpriteRenderer>();
             v.sr.sprite = Sprites.Unit($"{branchKey}-{Rules.TierKeys[tier]}");
             v.sr.sortingOrder = Board.SortOrder(foot.y);
@@ -38,9 +45,12 @@ namespace Mallang
 
         void Update()
         {
-            bool up = Mathf.Repeat(Time.time / HopPeriod + phase, 1f) < 0.5f;
+            bool attacking = poseScale != Vector2.one || poseOff != Vector2.zero;
+            bool up = !attacking && Mathf.Repeat(Time.time / HopPeriod + phase, 1f) < 0.5f;
             float dy = up ? Sprites.BoardPerDot / Board.UnitsPerWorld : 0f; // 1도트
-            transform.localPosition = basePos + new Vector3(0, dy, 0);
+            var off = new Vector3(poseOff.x, -poseOff.y, 0) / Board.UnitsPerWorld;  // 보드 y는 아래로
+            transform.localPosition = basePos + off + new Vector3(0, dy, 0);
+            transform.localScale = new Vector3(poseScale.x, poseScale.y, 1);   // 피벗이 발이라 발은 땅에 붙은 채로
         }
     }
 }
