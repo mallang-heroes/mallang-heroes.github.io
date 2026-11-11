@@ -159,3 +159,26 @@ Background: the same solid flat cyan (#00FFFF) as the template, no ground, no sh
 ```
 
 다른 병과는 첨부 견본만 바꾸고 `spear soldiers` 줄과 무기 줄을 ②의 표대로 바꾼다 (모자·투구는 같음).
+
+
+## ④ 맵과 어울리는 기본 슬라임 새로 (2026-11-11)
+
+> 따로 뽑은 슬라임은 맵과 그림체가 따로 논다: 슬라임은 쨍한 색·굵은 갈색 외곽선·스티커 느낌, 맵은 차분한 올리브 잔디(#7BA148)·모래(#DDBC82)·어두운 청회색 외곽선(#3C4446)이고 도트도 맵이 더 굵다(1도트 ≈ 보드 3).
+> 처음 세로 시안(`pixel-layout-with-units.png`)에서 맵 위에 같이 그린 슬라임은 잘 어울렸다 → **맵 위에 직접 그리게 해서** 그림체를 맞추고, 마음에 들면 같은 대화에서 하늘색 배경 시트로 다시 받는다.
+> 장비 없는 기본 슬라임부터. 새 대화, 첨부 `art/preview/map-portrait/bg.png` 1장.
+
+### ④-1 맵 위에 그려 보기
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The attached image is the map of my cute vertical mobile tower-defense game. Keep this map exactly as it is and draw my player units on it, so they look like they were drawn together with the map by the same artist: same pixel size as the map's pixels, same muted warm palette, same dark slate outline color (#3C4446) and the same soft top-left lighting as the palace and the cave.
+
+The units are plain jelly slimes with no hats, no weapons and no clothes yet. Draw 4 of them in a row on the grass just below the palace, one rank each, growing from left to right: small, a little bigger, bigger, biggest (the biggest about as wide as one third of the palace).
+Each slime: a soft round dome, wider at the bottom with a flat base, NOT pointy, NOT a teardrop. Muted coral red body (a bit softer than pure red, so it sits well on the olive grass), one lighter tone on top, one darker tone at the bottom, a small soft shine on the top-left. A cute face big enough to read on a phone: two dark eyes each with a tiny white shine, small pink cheeks, a tiny happy mouth. Two tiny round nub hands, no arms, no legs. A small soft shadow on the grass under each slime.
+Do not change anything else on the map.
+```
+
+### ④-2 마음에 들면 같은 대화에서 시트로
+```
+Perfect. Now draw exactly these 4 slimes again, same pixel size, same colors, same faces, side by side on one solid flat cyan background (#00FFFF), each centered in its own equal-width cell, all standing on the same baseline, no shadow, no ground, nothing else.
+```
