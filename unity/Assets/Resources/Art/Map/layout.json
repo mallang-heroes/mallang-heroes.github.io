@@ -235,22 +235,26 @@
   {
    "name": "spear-gungwan",
    "x": 4.5,
-   "y": 50.5
+   "y": 50.5,
+   "w": 50.5
   },
   {
    "name": "spear-gunjol",
    "x": 2.5,
-   "y": 24.5
+   "y": 24.5,
+   "w": 24.5
   },
   {
    "name": "spear-jangsu",
    "x": 7.5,
-   "y": 74.5
+   "y": 74.5,
+   "w": 74.5
   },
   {
    "name": "spear-jeongbyeong",
    "x": 6.5,
-   "y": 36.5
+   "y": 36.5,
+   "w": 36.5
   }
  ],
  "feetB": [

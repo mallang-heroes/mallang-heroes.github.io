@@ -85,7 +85,7 @@ def main():
         'caveFrameMs': list(glow['frames'].values())[0]['duration'],
         'feet': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet.items())],
         'feetV2': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet2.items()) if not k.startswith('base-')],
-        'grips': [{'name': k, 'x': v['grip'][0], 'y': v['grip'][1]} for k, v in sorted(grips.items())],
+        'grips': [{'name': k, 'x': v['grip'][0], 'y': v['grip'][1], 'w': v.get('tip', 0)} for k, v in sorted(grips.items())],   # w = 쥔 자리→창끝 길이(도트)
         'feetB': [{'name': k, 'x': v[0], 'y': v[1], 'w': v[2]} for k, v in sorted(feetb.items())],
     }
     json.dump(layout, open(os.path.join(DST, 'Map/layout.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

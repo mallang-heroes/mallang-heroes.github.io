@@ -57,7 +57,7 @@ def split(a):
     # 쥔 자리: 몸 높이 중간쯤 자루
     rows = np.where(weapon[top:, sx])[0]
     grip_y = top + (rows[len(rows) // 2] if len(rows) else (H - top) // 2)
-    return weapon, (sx + 0.5, grip_y + 0.5), top
+    return weapon, (sx + 0.5, grip_y + 0.5), top, sx, half
 
 
 def main(branch='spear'):
@@ -67,14 +67,17 @@ def main(branch='spear'):
     previews = []
     for rk in RANKS:
         a = np.asarray(Image.open(os.path.join(DOTS, f'{branch}-{rk}.png'))).copy()
-        w, grip, top = split(a)
+        w, grip, top, sx, half = split(a)
         body = a.copy(); body[w, 3] = 0
         # 창을 떼어 낸 자리(몸 왼쪽이 세로로 잘림)를 몸 오른쪽을 좌우로 뒤집어 채운다 (슬라임 몸은 좌우 대칭)
         feet = json.load(open(os.path.join(DOTS, 'feet.json'), encoding='utf-8'))
         cx = feet[f'{branch}-{rk}'][0]          # 발 x = 몸 가운데
         H, W = w.shape
+        # 채울 줄: 창 말고도 다른 그림(모자·몸)이 있는 줄 (창끝·술만 있는 줄은 채우지 않음)
+        rest = (a[..., 3] > 0) & ~w
+        rest_rows = rest[:, min(W, sx + half + 1):].any(1)
         for y, x in zip(*np.where(w)):
-            if y < top - 2: continue                   # 몸보다 위(창끝·술)는 채우지 않음
+            if not rest_rows[y]: continue
             mx = int(round(2 * cx - x - 1))
             if 0 <= mx < W and a[y, mx, 3] > 0 and not w[y, mx]:
                 body[y, x] = a[y, mx]
@@ -87,7 +90,8 @@ def main(branch='spear'):
         weap = a.copy(); weap[~w, 3] = 0
         Image.fromarray(body).save(os.path.join(PARTS, f'{branch}-{rk}-body.png'))
         Image.fromarray(weap).save(os.path.join(PARTS, f'{branch}-{rk}-weapon.png'))
-        meta[f'{branch}-{rk}'] = {'grip': [float(grip[0]), float(grip[1])]}
+        tip_row = int(np.where(w.any(1))[0][0])
+        meta[f'{branch}-{rk}'] = {'grip': [float(grip[0]), float(grip[1])], 'tip': float(grip[1] - tip_row)}   # tip = 쥔 자리→창끝 길이(도트)
         pv = a.copy(); pv[w, :3] = (255, 0, 0)
         previews.append(Image.fromarray(pv))
         print(rk, 'grip', grip, 'weapon px', int(w.sum()))

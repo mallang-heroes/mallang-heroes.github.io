@@ -21,13 +21,17 @@ namespace Mallang
         Transform weapon;
         SpriteRenderer weaponSr;
         Vector2 gripFromFoot;          // 보드, y 아래로
+        public Vector2 GripFromFoot => new Vector2(Mathf.Abs(gripFromFoot.x) * gripSide, gripFromFoot.y);
+        float gripSide = -1;   // -1 = 그림대로 왼손, +1 = 오른손 (목표가 오른쪽이면 오른손으로 바꿔 쥠 — 몸을 가로지르지 않게)
+        public void SetGripSide(float side) => gripSide = side;
+        public float TipLen { get; private set; }   // 쥔 자리→창끝 (보드)
         public bool HasWeapon => weapon != null && weapon.gameObject.activeSelf;
 
         /// 무기 자세: angleDeg = 시계 반대 방향 회전(0 = 창끝 위), thrust = 보드 좌표 이동
         public void SetWeaponPose(float angleDeg, Vector2 thrust)
         {
             if (weapon == null) return;
-            var p = gripFromFoot + thrust;
+            var p = GripFromFoot + thrust;
             weapon.localPosition = new Vector3(p.x, -p.y, 0) / Board.UnitsPerWorld;
             weapon.localRotation = Quaternion.Euler(0, 0, angleDeg);
         }
@@ -58,6 +62,8 @@ namespace Mallang
             weaponSr.sprite = parts.Value.weapon;
             weaponSr.sortingOrder = sr.sortingOrder + 1;
             gripFromFoot = parts.Value.gripFromFoot;
+            gripSide = Mathf.Sign(gripFromFoot.x);
+            TipLen = parts.Value.tipLen;
             SetWeaponPose(0, Vector2.zero);
         }
 

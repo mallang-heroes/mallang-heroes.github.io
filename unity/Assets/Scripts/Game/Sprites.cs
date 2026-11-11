@@ -87,7 +87,7 @@ namespace Mallang
 
         /// 무기를 떼어 낸 파츠: (몸, 무기, 발→쥔 자리 보드 거리). 없으면 null.
         /// 몸은 피벗 = 발, 무기는 피벗 = 쥔 자리. 크기는 UnitB와 같은 몸 폭 기준.
-        public static (Sprite body, Sprite weapon, Vector2 gripFromFoot)? UnitParts(string name, int tier)
+        public static (Sprite body, Sprite weapon, Vector2 gripFromFoot, float tipLen)? UnitParts(string name, int tier)
         {
             if (Mode != Look.Base) return null;
             var lay = Layout.Load();
@@ -103,7 +103,7 @@ namespace Mallang
             var body = Sprite.Create(tb, new Rect(0, 0, tb.width, tb.height), bp, ppu, 0, SpriteMeshType.FullRect);
             var weapon = Sprite.Create(tw, new Rect(0, 0, tw.width, tw.height), wp, ppu, 0, SpriteMeshType.FullRect);
             var grip = new Vector2(g.x - f.x, g.y - f.y) * boardPerDot;   // 보드, y 아래로
-            return (body, weapon, grip);
+            return (body, weapon, grip, g.w * boardPerDot);   // tipLen: 쥔 자리→창끝 (보드)
         }
 
         static Sprite UnitB(string name, int tier)

@@ -4,8 +4,8 @@ namespace Mallang
 {
     /// <summary>
     /// 공격 모션 (미리보기).
-    /// 무기 파츠가 있으면(창병 등): 창을 세운 채 목표 쪽으로 비스듬히(최대 40도) 기울이며 뒤로 당김(0.1초)
-    ///   → 목표 쪽으로 쭉 찔러 넣기(0.07초) → 잠깐 멈춤 → 빼서 다시 세워 들기(0.2초).
+    /// 무기 파츠가 있으면(창병 등): 창끝을 목표로 재빨리 돌려 겨누며 뒤로 당김(0.06초)
+    ///   → 창끝이 몬스터에 닿도록 창 방향으로 쭉 찔러 넣기(0.06초) → 잠깐 멈춤 → 빼서 다시 세워 들기(0.18초).
     ///   몸은 찌르는 순간 목표 쪽으로 살짝 기울며 늘어난다.
     /// 무기 파츠가 없으면(기본 슬라임): 사거리 안 가장 앞선 몬스터를 향해
     ///   ① 움츠림(0.07초, 납작) → ② 튀어나가며 찌르기(0.08초, 길쭉 + 목표 쪽으로 몇 도트) → ③ 제자리로 말랑 복귀(0.18초)
@@ -24,8 +24,9 @@ namespace Mallang
         float range, interval, lunge;
 
         const float Wind = 0.07f, Strike = 0.08f, Recover = 0.18f;
-        const float Aim = 0.10f, Stab = 0.07f, Hold = 0.06f, Back = 0.20f;   // 무기 찌르기
-        float aimAngle;
+        const float Aim = 0.09f, Stab = 0.045f, Hold = 0.08f, Back = 0.16f;   // 무기 찌르기: 크게 당겼다가 순식간에 찌름
+        float aimAngle, reachNow;
+        Vector2 aimDir;
 
         public static AttackMotion Attach(SlimeView s, string branchName)
         {
@@ -50,8 +51,17 @@ namespace Mallang
                 target = FindTarget();
                 if (target == null) { cooldown = 0.1f; return; }
                 dir = (target.BoardPos - Foot).normalized;
-                // 창은 눕히지 않고 목표 쪽으로만 비스듬히 (최대 40도). 창끝 위 = 0도, 오른쪽으로 기울면 음수.
-                aimAngle = -Mathf.Sign(dir.x) * Mathf.Lerp(15f, 40f, Mathf.Abs(dir.x));
+                if (slime.HasWeapon)
+                {   // 목표 쪽 손으로 쥐고(몸을 가로지르지 않게), 창끝이 목표를 향하게 (창끝 위 = 0도, 시계 반대가 +)
+                    slime.SetGripSide(target.BoardPos.x >= Foot.x ? 1f : -1f);
+                    var hand = Foot + slime.GripFromFoot;
+                    var to = target.BoardPos + new Vector2(0, -6) - hand;
+                    aimDir = to.normalized;
+                    aimAngle = Mathf.Atan2(-aimDir.y, aimDir.x) * Mathf.Rad2Deg - 90f;
+                    if (aimAngle < -180) aimAngle += 360;
+                    // 창끝이 몬스터에 닿을 만큼만 내지름
+                    reachNow = Mathf.Clamp(to.magnitude - slime.TipLen + 2f, 4f, 32f);   // 창끝이 몬스터 속으로 살짝 들어가게
+                }
                 t = 0; struck = false;
                 cooldown = interval;
             }
@@ -88,25 +98,26 @@ namespace Mallang
 
         void WeaponStab()
         {
-            float reach = 12f + slime.Tier * 3f;   // 찔러 넣는 거리 (보드)
+            float reach = reachNow;   // 찔러 넣는 거리 (보드): 창끝이 몬스터에 닿을 만큼
             float ang, push; float sx = 1, sy = 1; Vector2 lean = Vector2.zero;
             if (t < Aim)
             {   // 겨누기: 창을 목표 쪽으로 돌리며 살짝 뒤로 당김, 몸은 움츠림
                 float k = Ease(t / Aim);
-                ang = aimAngle * k; push = -4f * k;
+                ang = aimAngle * k; push = -10f * k;   // 크게 뒤로 당김 (예비 동작)
                 sx = 1 + 0.06f * k; sy = 1 - 0.06f * k;
             }
             else if (t < Aim + Stab)
             {   // 찌르기: 쭉 뻗음, 몸도 목표 쪽으로 기울며 늘어남
                 float k = Ease((t - Aim) / Stab);
-                ang = aimAngle; push = Mathf.Lerp(-4f, reach, k);
+                ang = aimAngle; push = Mathf.Lerp(-10f, reach + 6f, k);   // 목표보다 조금 더 깊이 (오버슈트)
                 sx = 1.06f - 0.12f * k; sy = 0.94f + 0.14f * k;
                 lean = dir * 3f * k;
                 if (!struck && k > 0.7f) { struck = true; Impact(); }
             }
             else if (t < Aim + Stab + Hold)
             {   // 찌른 채로 잠깐 멈춤 (타격감)
-                ang = aimAngle; push = reach; sx = 0.94f; sy = 1.08f; lean = dir * 3f;
+                float k = (t - Aim - Stab) / Hold;
+                ang = aimAngle; push = reach + 6f * (1 - Ease(k)); sx = 0.94f; sy = 1.08f; lean = dir * 3f;
             }
             else if (t < Aim + Stab + Hold + Back)
             {   // 빼서 다시 세워 들기, 몸은 말랑하게 출렁
@@ -116,8 +127,8 @@ namespace Mallang
                 float wob = Mathf.Sin(k * Mathf.PI * 2f) * (1 - k);
                 sx = 1 - 0.06f * wob; sy = 1 + 0.06f * wob; lean = dir * 3f * (1 - e);
             }
-            else { t = -1; ang = 0; push = 0; }
-            slime.SetWeaponPose(ang, dir * push);
+            else { t = -1; ang = 0; push = 0; slime.SetGripSide(-1f); }
+            slime.SetWeaponPose(ang, aimDir * push);   // 창 방향으로만 밀고 당김 → 창끝이 앞장선다
             slime.SetPose(lean, new Vector2(sx, sy));
         }
 
