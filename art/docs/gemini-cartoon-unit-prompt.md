@@ -76,3 +76,27 @@ Background: one solid flat cyan color (#00FFFF). No shadow, no ground, no frame,
 | 팔이 너무 길어 사람처럼 됨 | `Shorter, chubbier arms, still a round cute slime, the arms only about one third of the body height.` |
 | 장비·얼굴이 바뀜 | `Keep the hats, helmet, sash, pedestal, spears and faces exactly like the attached sheet.` |
 | 찌르기 그림이 왼쪽을 봄 | `All attack poses face and thrust to the RIGHT.` |
+
+
+## ④ 슬라임 새 디자인 — 맵만 첨부 (2026-11-11)
+
+> ③처럼 지금 창병 시트를 첨부하면 제미나이가 그 그림을 그대로 베낀다 → **맵 한 장만** 첨부하고 디자인은 글로만 설명해서 처음부터 새로 뽑는다.
+> 새 대화, 첨부 1장: `art/source/gemini/map-cartoon/map-v1.png`. 공격 자세는 ③-2를 같은 대화에서 이어 보낸다.
+
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The attached image is the map of my cute vertical mobile tower-defense game. Design brand-new player units that look like they belong on this map: the same clean, cute, smooth 2D cartoon style (NOT pixel art), soft clean shading, gentle highlights, a thin dark outline, light from the top-left, the same cheerful palette.
+
+The units are cute red jelly slime soldiers of the Korean Joseon dynasty, armed with spears. Character design:
+- body: a glossy, squishy red jelly slime, a soft round dome slightly wider at the bottom with a flat base, no legs
+- arms: two short, chubby, soft jelly arms of the same red jelly, with rounded mitten hands (no fingers), long enough to firmly grip a spear with both hands and thrust it forward
+- face: big shiny dark eyes with white highlights, small pink cheeks, a small smile, cute but brave
+Draw a sprite sheet of 4 ranks side by side, rank 1 to 4 from left to right, each centered in its own equal-width cell, all standing on the same baseline, facing the viewer, holding a spear upright in one hand with the other arm relaxed:
+1. Recruit (smallest): a plain off-white cloth headband, a short plain wooden spear.
+2. Soldier: a black Joseon felt soldier hat (jeollip) with a wide round brim and a red cord, an iron-tipped spear with a small red tassel.
+3. Officer: the same black felt hat with a peacock feather, a navy blue sash around the lower body, a longer iron spear.
+4. General (biggest): a steel helmet with gold trim and a small red plume, a long spear with a gold fitting and a red tassel, the slime standing on a low round dark-red pedestal. No cape, no armor.
+Sizes grow a little from left to right (the general about 1.6 times as wide as the recruit). Everything stays inside its own cell, nothing touching another unit.
+Background: one solid flat cyan color (#00FFFF). No shadow, no ground, no frame.
+```
