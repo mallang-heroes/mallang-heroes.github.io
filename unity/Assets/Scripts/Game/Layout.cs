@@ -20,6 +20,21 @@ namespace Mallang
         public Foot[] feetV2;
         public Foot[] feetB;
         public Foot[] feetC;
+        public PartC[] partsC;
+
+        /// 카툰 파츠: 몸 그림의 발(fx,fy)·손(hx,hy), 무기 그림의 쥔 곳(gx,gy)·창끝(tx,ty). 모두 @2x px, 그림 왼쪽 위 기준.
+        [Serializable] public class PartC { public string name; public float fx, fy, hx, hy, gx, gy, tx, ty; }
+        Dictionary<string, PartC> partMapC;
+
+        public PartC PartOfC(string spriteName)
+        {
+            if (partMapC == null)
+            {
+                partMapC = new Dictionary<string, PartC>();
+                if (partsC != null) foreach (var p in partsC) partMapC[p.name] = p;
+            }
+            return partMapC.TryGetValue(spriteName, out var v) ? v : null;
+        }
         public Foot[] grips;
 
         [Serializable] public class XY { public float x, y; }

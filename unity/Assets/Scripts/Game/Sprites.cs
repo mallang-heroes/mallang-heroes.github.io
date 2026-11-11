@@ -95,6 +95,8 @@ namespace Mallang
         /// 몸은 피벗 = 발, 무기는 피벗 = 쥔 자리. 크기는 UnitB와 같은 몸 폭 기준.
         public static (Sprite body, Sprite weapon, Vector2 gripFromFoot, float tipLen)? UnitParts(string name, int tier)
         {
+            if (Mode == Look.Cartoon)
+                return UnitPartsC(name) ?? UnitPartsC("spear" + name.Substring(name.IndexOf('-')));
             if (Mode != Look.Base) return null;
             var lay = Layout.Load();
             var f = lay.FootOfB(name); var g = lay.GripOf(name);
@@ -110,6 +112,26 @@ namespace Mallang
             var weapon = Sprite.Create(tw, new Rect(0, 0, tw.width, tw.height), wp, ppu, 0, SpriteMeshType.FullRect);
             var grip = new Vector2(g.x - f.x, g.y - f.y) * boardPerDot;   // 보드, y 아래로
             return (body, weapon, grip, g.w * boardPerDot);   // tipLen: 쥔 자리→창끝 (보드)
+        }
+
+        /// 카툰 파츠 (UnitsC/Parts): 창 없는 몸 + 창만. 몸 피벗 = 발, 창 피벗 = 쥔 곳, 손 위치에 쥔다.
+        static (Sprite body, Sprite weapon, Vector2 gripFromFoot, float tipLen)? UnitPartsC(string name)
+        {
+            var p = Layout.Load().PartOfC(name);
+            if (p == null) return null;
+            string kb = $"partC:{name}:b", kw = $"partC:{name}:w";
+            if (!cache.TryGetValue(kb, out var body) || !cache.TryGetValue(kw, out var weapon))
+            {
+                var tb = Resources.Load<Texture2D>($"Art/UnitsC/Parts/{name}-body");
+                var tw = Resources.Load<Texture2D>($"Art/UnitsC/Parts/{name}-weapon");
+                if (tb == null || tw == null) return null;
+                tb.wrapMode = TextureWrapMode.Clamp; tw.wrapMode = TextureWrapMode.Clamp;
+                body = Sprite.Create(tb, new Rect(0, 0, tb.width, tb.height), new Vector2(p.fx / tb.width, 1 - p.fy / tb.height), Ppu(MapPxPerBoard), 0, SpriteMeshType.FullRect);
+                weapon = Sprite.Create(tw, new Rect(0, 0, tw.width, tw.height), new Vector2(p.gx / tw.width, 1 - p.gy / tw.height), Ppu(MapPxPerBoard), 0, SpriteMeshType.FullRect);
+                cache[kb] = body; cache[kw] = weapon;
+            }
+            var grip = new Vector2((p.hx - p.fx) / MapPxPerBoard, (p.hy - p.fy) / MapPxPerBoard);   // 보드, y 아래로
+            return (body, weapon, grip, (p.gy - p.ty) / MapPxPerBoard);
         }
 
         /// 카툰 유닛(UnitsC): 맵과 같은 @2x(보드 1 = 2px)로 미리 줄여 둔 그림. 피벗 = 발.
