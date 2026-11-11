@@ -58,3 +58,24 @@ def components(img, merge=6, min_area=400):
         bb = im.getbbox()
         out.append(((sl[1].start + bb[0], sl[0].start + bb[1], sl[1].start + bb[2], sl[0].start + bb[3]), im.crop(bb), int(own.sum())))
     return out
+
+
+def key_out_purple(path):
+    """보라색 몸(포수)용: 마젠타와 색이 가까워 기본 key_out은 몸이 반투명해짐 → 'R·B 모두 아주 높고 G 낮음'만 배경으로."""
+    a = np.asarray(Image.open(path).convert("RGB")).astype(np.float32)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    bg = np.clip((np.minimum(r, b) - 200) / 45, 0, 1) * (1 - np.clip((g - 40) / 50, 0, 1))
+    alpha = 1 - bg
+    alpha[(r > 225) & (b > 215) & (g < 135) & (np.abs(r - b) < 30)] = 0
+    h, w = alpha.shape
+    y0, y1, x0, x1 = int(h*.79), int(h*.93), int(w*.87), int(w*.955)
+    wm = alpha[y0:y1, x0:x1]
+    lab, n = ndimage.label(wm > .05)
+    for i in range(1, n + 1):
+        ys, xs = np.where(lab == i)
+        if len(ys) < 3000 and (ys.max() - ys.min()) < 70 and (xs.max() - xs.min()) < 70:
+            wm[lab == i] = 0
+    K = np.array([252.0, 45.0, 253.0])
+    safe = np.maximum(alpha, 1e-3)[..., None]
+    rgb = np.clip((a - (1 - alpha)[..., None] * K) / safe, 0, 255)
+    return Image.fromarray(np.dstack([rgb, alpha*255]).astype(np.uint8), "RGBA")
