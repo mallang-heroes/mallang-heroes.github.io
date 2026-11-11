@@ -26,7 +26,8 @@ namespace Mallang
 
             // 바닥: 왼쪽 위를 보드 (0,0)에
             var ground = MakeRenderer("Ground", Sprites.Map("ground", new Vector2(0, 1)), Vector2.zero);
-            ground.sortingOrder = -100000;
+            ground.sortingOrder = short.MinValue; // 정렬 순서는 -32768~32767 (넘으면 값이 돌아서 맨 앞에 그려짐)
+            ground.transform.localPosition += new Vector3(0, 0, 1); // 카메라에서 한 칸 더 멀리 (확실히 맨 뒤)
 
             // 궁: 왼쪽 아래를 rect 아래 끝에
             var pr = layout.palace;
