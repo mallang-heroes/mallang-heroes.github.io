@@ -20,6 +20,7 @@
    285,
    496
   ],
+  "body_src": "archer-r1-clean-try1.png",
   "size": [
    1024,
    768
@@ -34,7 +35,7 @@
    93
   ],
   "bot": [
-   706,
+   709,
    673
   ],
   "nock": [
@@ -49,13 +50,14 @@
    288,
    500
   ],
+  "body_src": "archer-r2-clean-try1.png",
   "size": [
    1024,
    784
   ],
-  "body_cx": 450,
+  "body_cx": 387,
   "body_bottom": 691,
-  "body_w": 718
+  "body_w": 593
  },
  "3": {
   "top": [
@@ -78,12 +80,13 @@
    288,
    495
   ],
+  "body_src": "archer-r3-clean-try1.png",
   "size": [
    1024,
    766
   ],
-  "body_cx": 394,
-  "body_bottom": 674,
+  "body_cx": 395,
+  "body_bottom": 675,
   "body_w": 583
  },
  "4": {
@@ -92,8 +95,8 @@
    84
   ],
   "bot": [
-   707,
-   676
+   706,
+   677
   ],
   "nock": [
    349,
@@ -107,12 +110,13 @@
    285,
    500
   ],
+  "body_src": "archer-r4-clean-try1.png",
   "size": [
    1024,
    790
   ],
-  "body_cx": 444,
+  "body_cx": 383,
   "body_bottom": 696,
-  "body_w": 716
+  "body_w": 594
  }
 }

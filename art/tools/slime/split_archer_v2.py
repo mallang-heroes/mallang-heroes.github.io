@@ -32,6 +32,40 @@ def refit(pts_mask, a, b):
     return proj(a), proj(b)
 
 
+def fit_clean(path, orig_sil, size, r, g):
+    gi = key_out(path)
+    comps = sorted(components(gi, merge=0), key=lambda c: -c[2])
+    keep = np.zeros(np.asarray(gi).shape[:2], bool)
+    a = np.asarray(gi).copy()
+    for (x0, y0, x1, y1), im, area in comps:
+        if area > 3000:
+            keep[y0:y1, x0:x1] |= np.asarray(im)[..., 3] > 0
+    a[..., 3] = np.where(keep, a[..., 3], 0)
+    ga = a[..., 3] > 128
+    oy, ox = np.where(orig_sil); gy, gx = np.where(ga)
+    k = (oy.max() - oy.min()) / (gy.max() - gy.min())
+    im = Image.fromarray(a, 'RGBA'); im = im.resize((round(im.width*k), round(im.height*k)), Image.LANCZOS)
+    out = Image.new('RGBA', size); out.alpha_composite(im, (int(ox.min() - gx.min()*k), int(oy.min() - gy.min()*k)))
+    b = np.asarray(out).copy()
+    if r == 1:   # 군졸: 몸에 남은 뒷손 지우기
+        hh, ww = b.shape[:2]; yy, xx = np.mgrid[0:hh, 0:ww]
+        hx, hy = g['hand']
+        m = (((xx-hx+2)/88)**2 + ((yy-hy+4)/60)**2 <= 1) & (b[..., 3] > 0)
+        lum = b[..., :3].astype(float) @ [.3, .59, .11]
+        m |= ndimage.binary_dilation(m, iterations=8) & (lum < 90) & (xx < hx+95) & (yy > hy-70)
+        rgb = cv2.inpaint(np.ascontiguousarray(b[..., :3]), (m*255).astype(np.uint8), 18, cv2.INPAINT_TELEA)
+        b[..., :3] = np.where(m[..., None], cv2.GaussianBlur(rgb, (0, 0), 3), rgb)
+    return Image.fromarray(b, 'RGBA')
+
+
+def snap_bow(b, p):
+    R, G, B = [b[..., i].astype(int) for i in range(3)]
+    bow = (b[..., 3] > 200) & (R < 140) & (G < 110) & (B < 90) & (R >= G)
+    ys, xs = np.where(bow)
+    d = np.hypot(xs - p[0], ys - p[1]); i = d.argmin()
+    return (int(xs[i]), int(ys[i])) if d[i] < 45 else p
+
+
 def split(r):
     img = key_out(f'{D}/archer-r{r}-src.png')
     a = np.asarray(img).copy(); h, w = a.shape[:2]
@@ -83,13 +117,33 @@ def split(r):
     hole = fm
     fill = np.where(hole[..., None], cv2.GaussianBlur(fill, (0, 0), 1.8), fill)
     body = np.dstack([fill, np.where(sil, np.where(hole, 255, a[..., 3]), 0)]).astype(np.uint8)
-    Image.fromarray(body, 'RGBA').save(f'{D}/archer-r{r}-body.png')
+    import os
+    clean = f'{D}/archer-r{r}-clean-try1.png'   # 제미나이가 화살·시위·뒷손을 지워 그린 몸(활·앞팔 포함)
+    if os.path.exists(clean):
+        body = fit_clean(clean, a[..., 3] > 128, (w, h), r, g)
+        sil = np.asarray(body)[..., 3] > 128
+        g['body_src'] = os.path.basename(clean)
+        g['top'], g['bot'] = snap_bow(np.asarray(body), g['top']), snap_bow(np.asarray(body), g['bot'])
+        Image.fromarray(np.asarray(body), 'RGBA').save(f'{D}/archer-r{r}-body.png')
+    else:
+        Image.fromarray(body, 'RGBA').save(f'{D}/archer-r{r}-body.png')
     # 몸 가운데(활·팔 제외): 몸통 열 기준
-    core = ndimage.binary_opening(sil, iterations=25)
+    bimg = np.asarray(Image.open(f'{D}/archer-r{r}-body.png'))
+    R_, G_, B_ = [bimg[..., i].astype(int) for i in range(3)]
+    bowm = (bimg[..., 3] > 200) & (R_ < 150) & (G_ < 120) & (B_ < 100) & (R_ >= G_) & (R_ - B_ > 15)
+    lab, n = ndimage.label(ndimage.binary_closing(bowm, iterations=3))
+    tall = [i for i, sl in enumerate(ndimage.find_objects(lab), 1) if sl[0].stop - sl[0].start > 300]
+    bowm = np.isin(lab, tall)                         # 세로로 긴 갈색 덩어리 = 활
+    core = ndimage.binary_opening((bimg[..., 3] > 128) & ~ndimage.binary_dilation(bowm, iterations=4), iterations=25)
     rows = core.sum(1); ys = np.where(rows > rows.max()*.3)[0]
     y0, y1 = ys[0], ys[-1]
-    spans = [np.where(core[y])[0] for y in range(int(y0 + (y1-y0)*.7), int(y0 + (y1-y0)*.92))]
-    lo = int(np.median([s_[0] for s_ in spans])); hi = int(np.median([s_[-1] for s_ in spans]))
+    los, his = [], []
+    for y in range(int(y0 + (y1-y0)*.7), int(y0 + (y1-y0)*.92)):
+        xs_ = np.where(core[y])[0]
+        if not len(xs_): continue
+        run_end = xs_[0] + np.argmax(np.r_[np.diff(xs_) > 1, True])   # 왼쪽부터 끊기기 전까지
+        los.append(xs_[0]); his.append(xs_[run_end] if run_end < len(xs_) else xs_[-1])
+    lo, hi = int(np.median(los)), int(np.median(his))
     g.update(size=[w, h], body_cx=(lo+hi)//2, body_bottom=int(y1), body_w=hi-lo)
     return g
 

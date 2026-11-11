@@ -1,0 +1,117 @@
+{
+ "frames": {
+  "archer-r4-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-idle-1": {
+   "frame": {
+    "x": 284,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-idle-2": {
+   "frame": {
+    "x": 568,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-idle-3": {
+   "frame": {
+    "x": 852,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-attack-0": {
+   "frame": {
+    "x": 1136,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-attack-1": {
+   "frame": {
+    "x": 1420,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-attack-2": {
+   "frame": {
+    "x": 1704,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-attack-3": {
+   "frame": {
+    "x": 1988,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-attack-4": {
+   "frame": {
+    "x": 2272,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  },
+  "archer-r4-attack-5": {
+   "frame": {
+    "x": 2556,
+    "y": 0,
+    "w": 284,
+    "h": 193
+   }
+  }
+ },
+ "meta": {
+  "image": "archer-r4.png",
+  "scale": 2,
+  "size": {
+   "w": 2840,
+   "h": 193
+  },
+  "anchor": {
+   "x": 0.3873,
+   "y": 0.9378
+  },
+  "anims": {
+   "idle": {
+    "frames": 4,
+    "fps": 6,
+    "loop": true
+   },
+   "attack": {
+    "frames": 6,
+    "fps": 12,
+    "loop": false
+   }
+  },
+  "events": {
+   "projectile": {
+    "frame": 3,
+    "x": 229,
+    "y": 97,
+    "angle": 17.6,
+    "sprite": "archer-arrow.png"
+   }
+  }
+ }
+}
