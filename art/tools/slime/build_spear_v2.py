@@ -35,8 +35,11 @@ def arms(m, k, anchor, body_ref, body_tf, off, W, H, col, ss=4):
     for p, q in segs: capsule(p, q, rb + lw, rt + lw, out)
     for p, q in segs:
         capsule(p, q, rb, rt, col + (255,))
-        d.ellipse([p[0]-rb-lw, p[1]-rb-lw, p[0]+rb+lw, p[1]+rb+lw], fill=col + (255,))   # 뿌리는 테두리 없이 몸에 녹아듦
-    return img.resize((W, H), Image.LANCZOS)
+    # 손이 원래 있던 자리(몸 위)는 비워 둠 → 그 아래 몸·띠가 그대로 보이고, 팔은 그 둘레에서 뻗어 나옴
+    a = np.asarray(img).copy(); yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+    for p, q in segs:
+        a[..., 3][np.hypot(xx - p[0], yy - p[1]) <= HAND_R*k*ss*1.02] = 0
+    return Image.fromarray(a, 'RGBA').resize((W, H), Image.LANCZOS)
 
 
 def frames(r):

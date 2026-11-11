@@ -36,6 +36,16 @@ def fit_clean(path, sil, size):
     return out
 
 
+def erase_disk(im, c, rad):
+    a = np.asarray(im).copy(); h, w = a.shape[:2]
+    yy, xx = np.mgrid[0:h, 0:w]
+    m = (np.hypot(xx - c[0] + 4, yy - c[1] - 6) <= rad) & (a[..., 3] > 0)
+    rgb = cv2.inpaint(np.ascontiguousarray(a[..., :3]), (m*255).astype(np.uint8), 15, cv2.INPAINT_TELEA)
+    rgb = np.where(m[..., None], cv2.GaussianBlur(rgb, (0, 0), 3), rgb)
+    a[..., :3] = rgb
+    return Image.fromarray(a, 'RGBA')
+
+
 def split(r):
     im = Image.open(f'{D}/spear-r{r}-cut.png').convert('RGBA')
     if r == 1:
@@ -86,6 +96,8 @@ def split(r):
     if os.path.exists(clean):
         body = fit_clean(clean, sil, (w, h))
         meta['body_src'] = os.path.basename(clean)
+        if r == 1:   # 군졸 제미나이 몸에 남은 아래쪽 손 지우기
+            body = erase_disk(body, g['hands'][1], 64)
     body.save(f'{D}/spear-r{r}-body.png')
     Image.fromarray(wa, 'RGBA').save(f'{D}/spear-r{r}-weapon.png')
     return meta
