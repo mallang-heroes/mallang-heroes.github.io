@@ -18,6 +18,9 @@ namespace Mallang
             (20, "gunner", 1), (21, "archer", 1), (23, "spear", 2), (24, "archer", 0),
         };
 
+        /// 미리보기에서 몬스터를 빨리 보내 공격을 빨리 확인 (게임 수치는 그대로)
+        const float PreviewMobSpeed = 2f;
+
         RoadTrack track;
         float spawnTimer;
         int spawned;
@@ -91,7 +94,7 @@ namespace Mallang
             spawnTimer -= Rules.SpawnGap;
             float lane = (spawned++ % 2 == 0 ? 1 : -1) * Rules.LaneOffset;
             var color = Color.Lerp(new Color(0.55f, 0.36f, 0.25f), new Color(0.85f, 0.85f, 0.9f), (spawned % 10) / 10f);
-            MobPlaceholder.Create(transform, track, Board.SpeedForRound(1), lane, color);
+            MobPlaceholder.Create(transform, track, Board.SpeedForRound(1) * PreviewMobSpeed, lane, color);
         }
     }
 }
