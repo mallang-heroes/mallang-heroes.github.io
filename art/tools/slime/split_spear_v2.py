@@ -1,6 +1,6 @@
 """창병 v2: 원본 그림에서 '두 손+창'을 직접 떼고, 몸의 빈자리를 메움.
 python3 art/tools/slime/split_spear_v2.py  → spear-rN-body.png / spear-rN-weapon.png (+ rig json)"""
-import json
+import json, os, sys
 import numpy as np, cv2
 from PIL import Image
 from scipy import ndimage
@@ -20,6 +20,20 @@ def seg_dist(xx, yy, a, b):
     t = ((xx - a[0]) * d[0] + (yy - a[1]) * d[1]) / (d @ d)
     tc = np.clip(t, 0, 1)
     return np.hypot(xx - (a[0] + tc*d[0]), yy - (a[1] + tc*d[1])), t
+
+
+def fit_clean(path, sil, size):
+    sys.path.insert(0, 'art/tools/slime')
+    from keying import key_out, components
+    g = sorted(components(key_out(path)), key=lambda c: c[0][0])[0][1]   # 왼쪽 조각 = 몸
+    ga = np.asarray(g)[..., 3] > 128
+    ys, xs = np.where(sil); gy, gx = np.where(ga)
+    k = ((xs.max()-xs.min())/(gx.max()-gx.min()) + (ys.max()-ys.min())/(gy.max()-gy.min())) / 2
+    g2 = g.resize((round(g.width*k), round(g.height*k)), Image.LANCZOS)
+    a2 = np.asarray(g2)[..., 3] > 128; y2, x2 = np.where(a2)
+    ox = round((xs.min()+xs.max())/2 - (x2.min()+x2.max())/2); oy = ys.max() - y2.max()
+    out = Image.new('RGBA', size); out.alpha_composite(g2, (ox, oy))
+    return out
 
 
 def split(r):
@@ -67,7 +81,12 @@ def split(r):
     rows = sil.sum(1); ys = np.where(rows > rows.max()*.30)[0]
     meta = dict(size=[w, h], body_cx=int((xs[0]+xs[-1])/2), body_bottom=int(ys[-1]),
                 butt=g['butt'], tip=g['tip'], hands=g['hands'])
-    Image.fromarray(ba, 'RGBA').save(f'{D}/spear-r{r}-body.png')
+    body = Image.fromarray(ba, 'RGBA')
+    clean = f'{D}/spear-r{r}-parts-try1.png'   # 제미나이가 그려 준 '손·창 없는 몸'이 있으면 그걸 맞춰서 씀
+    if os.path.exists(clean):
+        body = fit_clean(clean, sil, (w, h))
+        meta['body_src'] = os.path.basename(clean)
+    body.save(f'{D}/spear-r{r}-body.png')
     Image.fromarray(wa, 'RGBA').save(f'{D}/spear-r{r}-weapon.png')
     return meta
 
