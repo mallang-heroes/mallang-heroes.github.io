@@ -19,6 +19,7 @@ namespace Mallang
         public Foot[] feet;
         public Foot[] feetV2;
         public Foot[] feetB;
+        public Foot[] grips;
 
         [Serializable] public class XY { public float x, y; }
         [Serializable] public class RectData { public float x, y, w, h; }
@@ -36,7 +37,18 @@ namespace Mallang
             return cached;
         }
 
-        Dictionary<string, Foot> footMapB;
+        Dictionary<string, Foot> footMapB, gripMap;
+
+        /// 무기 쥔 자리 (도트, 그림 왼쪽 위 기준). 파츠가 없으면 null.
+        public Foot GripOf(string spriteName)
+        {
+            if (gripMap == null)
+            {
+                gripMap = new Dictionary<string, Foot>();
+                if (grips != null) foreach (var g in grips) gripMap[g.name] = g;
+            }
+            return gripMap.TryGetValue(spriteName, out var v) ? v : null;
+        }
 
         /// 맵에 맞춘 슬라임(UnitsB): 발 위치(도트)와 몸 폭(도트). 없으면 null.
         public Foot FootOfB(string spriteName)

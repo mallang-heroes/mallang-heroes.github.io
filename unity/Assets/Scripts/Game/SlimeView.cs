@@ -16,12 +16,50 @@ namespace Mallang
 
         /// 공격 모션에서 매 프레임 넣는 자세 (보드 좌표 이동, 가로·세로 배율). 발을 기준으로 늘었다 줄었다 한다.
         public void SetPose(Vector2 boardOffset, Vector2 scale) { poseOff = boardOffset; poseScale = scale; }
+
+        // 무기 파츠 (있으면 공격 때 무기만 돌려 찌른다)
+        Transform weapon;
+        SpriteRenderer weaponSr;
+        Vector2 gripFromFoot;          // 보드, y 아래로
+        public bool HasWeapon => weapon != null && weapon.gameObject.activeSelf;
+
+        /// 무기 자세: angleDeg = 시계 반대 방향 회전(0 = 창끝 위), thrust = 보드 좌표 이동
+        public void SetWeaponPose(float angleDeg, Vector2 thrust)
+        {
+            if (weapon == null) return;
+            var p = gripFromFoot + thrust;
+            weapon.localPosition = new Vector3(p.x, -p.y, 0) / Board.UnitsPerWorld;
+            weapon.localRotation = Quaternion.Euler(0, 0, angleDeg);
+        }
         float phase;
         Vector3 basePos;
         SpriteRenderer sr;
 
-        /// 그림을 다시 고른다 (옛/새 그림 바꿀 때).
-        public void Refresh() => sr.sprite = Sprites.Unit($"{BranchKey}-{Rules.TierKeys[Tier]}");
+        /// 그림을 다시 고른다 (옛/새 그림 바꿀 때). 무기 파츠가 있으면 몸 + 무기로 나눠 그린다.
+        public void Refresh()
+        {
+            string name = $"{BranchKey}-{Rules.TierKeys[Tier]}";
+            var parts = Sprites.UnitParts(name, Tier);
+            if (parts == null)
+            {
+                sr.sprite = Sprites.Unit(name);
+                if (weapon != null) weapon.gameObject.SetActive(false);
+                return;
+            }
+            sr.sprite = parts.Value.body;
+            if (weapon == null)
+            {
+                var go = new GameObject("Weapon");
+                go.transform.SetParent(transform, false);
+                weapon = go.transform;
+                weaponSr = go.AddComponent<SpriteRenderer>();
+            }
+            weapon.gameObject.SetActive(true);
+            weaponSr.sprite = parts.Value.weapon;
+            weaponSr.sortingOrder = sr.sortingOrder + 1;
+            gripFromFoot = parts.Value.gripFromFoot;
+            SetWeaponPose(0, Vector2.zero);
+        }
 
         public static SlimeView Create(Transform parent, string branchKey, int tier, int tileIndex)
         {
@@ -34,8 +72,8 @@ namespace Mallang
             v.Tier = tier;
             v.TileIndex = tileIndex;
             v.sr = go.AddComponent<SpriteRenderer>();
-            v.sr.sprite = Sprites.Unit($"{branchKey}-{Rules.TierKeys[tier]}");
             v.sr.sortingOrder = Board.SortOrder(foot.y);
+            v.Refresh();
             v.phase = Random.value;
             v.basePos = go.transform.localPosition;
             return v;

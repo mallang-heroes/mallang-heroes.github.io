@@ -85,6 +85,27 @@ namespace Mallang
             return UnitV1(name);
         }
 
+        /// 무기를 떼어 낸 파츠: (몸, 무기, 발→쥔 자리 보드 거리). 없으면 null.
+        /// 몸은 피벗 = 발, 무기는 피벗 = 쥔 자리. 크기는 UnitB와 같은 몸 폭 기준.
+        public static (Sprite body, Sprite weapon, Vector2 gripFromFoot)? UnitParts(string name, int tier)
+        {
+            if (Mode != Look.Base) return null;
+            var lay = Layout.Load();
+            var f = lay.FootOfB(name); var g = lay.GripOf(name);
+            if (f == null || g == null) return null;
+            var tb = Resources.Load<Texture2D>($"Art/UnitsB/Parts/{name}-body");
+            var tw = Resources.Load<Texture2D>($"Art/UnitsB/Parts/{name}-weapon");
+            if (tb == null || tw == null) return null;
+            float boardPerDot = BaseBodyBoard[tier] / f.w;
+            float ppu = Ppu(Unit2PxPerDot / boardPerDot);
+            var bp = new Vector2(f.x * Unit2PxPerDot / tb.width, 1 - f.y * Unit2PxPerDot / tb.height);
+            var wp = new Vector2(g.x * Unit2PxPerDot / tw.width, 1 - g.y * Unit2PxPerDot / tw.height);
+            var body = Sprite.Create(tb, new Rect(0, 0, tb.width, tb.height), bp, ppu, 0, SpriteMeshType.FullRect);
+            var weapon = Sprite.Create(tw, new Rect(0, 0, tw.width, tw.height), wp, ppu, 0, SpriteMeshType.FullRect);
+            var grip = new Vector2(g.x - f.x, g.y - f.y) * boardPerDot;   // 보드, y 아래로
+            return (body, weapon, grip);
+        }
+
         static Sprite UnitB(string name, int tier)
         {
             string key = $"unitB:{name}";

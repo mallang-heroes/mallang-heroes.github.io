@@ -3,7 +3,10 @@ using UnityEngine;
 namespace Mallang
 {
     /// <summary>
-    /// 기본 슬라임 공격 모션 (미리보기): 사거리 안 가장 앞선 몬스터를 향해
+    /// 공격 모션 (미리보기).
+    /// 무기 파츠가 있으면(창병 등): 창을 목표 쪽으로 돌려 겨눔(0.1초) → 뒤로 당김 → 쭉 찔러 넣기(0.07초) → 빼서 세워 들기(0.2초).
+    ///   몸은 찌르는 순간 목표 쪽으로 살짝 기울며 늘어난다.
+    /// 무기 파츠가 없으면(기본 슬라임): 사거리 안 가장 앞선 몬스터를 향해
     ///   ① 움츠림(0.07초, 납작) → ② 튀어나가며 찌르기(0.08초, 길쭉 + 목표 쪽으로 몇 도트) → ③ 제자리로 말랑 복귀(0.18초)
     /// 찌르는 순간 병과별 타격 효과(창: 찌르기 선)와 몬스터 번쩍·밀림.
     /// 그림 한 장으로 하는 코드 모션이라 병과·등급 그림이 바뀌어도 그대로 쓴다. (위인은 파츠 리깅 예정)
@@ -20,6 +23,8 @@ namespace Mallang
         float range, interval, lunge;
 
         const float Wind = 0.07f, Strike = 0.08f, Recover = 0.18f;
+        const float Aim = 0.10f, Stab = 0.07f, Hold = 0.06f, Back = 0.20f;   // 무기 찌르기
+        float aimAngle;
 
         public static AttackMotion Attach(SlimeView s, string branchName)
         {
@@ -44,10 +49,14 @@ namespace Mallang
                 target = FindTarget();
                 if (target == null) { cooldown = 0.1f; return; }
                 dir = (target.BoardPos - Foot).normalized;
+                // 창끝(위 = 0도)이 목표를 보도록: 월드 방향(dx, -dy)
+                aimAngle = Mathf.Atan2(-dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+                if (aimAngle < -180) aimAngle += 360;
                 t = 0; struck = false;
                 cooldown = interval;
             }
             t += dt;
+            if (slime.HasWeapon) { WeaponStab(); return; }
 
             float sx = 1, sy = 1; Vector2 off = Vector2.zero;
             if (t < Wind)
@@ -77,6 +86,41 @@ namespace Mallang
 
         static float Ease(float x) => 1 - (1 - x) * (1 - x);
 
+        void WeaponStab()
+        {
+            float reach = 14f + slime.Tier * 4f;   // 찔러 넣는 거리 (보드)
+            float ang, push; float sx = 1, sy = 1; Vector2 lean = Vector2.zero;
+            if (t < Aim)
+            {   // 겨누기: 창을 목표 쪽으로 돌리며 살짝 뒤로 당김, 몸은 움츠림
+                float k = Ease(t / Aim);
+                ang = aimAngle * k; push = -4f * k;
+                sx = 1 + 0.06f * k; sy = 1 - 0.06f * k;
+            }
+            else if (t < Aim + Stab)
+            {   // 찌르기: 쭉 뻗음, 몸도 목표 쪽으로 기울며 늘어남
+                float k = Ease((t - Aim) / Stab);
+                ang = aimAngle; push = Mathf.Lerp(-4f, reach, k);
+                sx = 1.06f - 0.12f * k; sy = 0.94f + 0.14f * k;
+                lean = dir * 3f * k;
+                if (!struck && k > 0.7f) { struck = true; Impact(); }
+            }
+            else if (t < Aim + Stab + Hold)
+            {   // 찌른 채로 잠깐 멈춤 (타격감)
+                ang = aimAngle; push = reach; sx = 0.94f; sy = 1.08f; lean = dir * 3f;
+            }
+            else if (t < Aim + Stab + Hold + Back)
+            {   // 빼서 다시 세워 들기, 몸은 말랑하게 출렁
+                float k = (t - Aim - Stab - Hold) / Back;
+                float e = Ease(k);
+                ang = aimAngle * (1 - e); push = reach * (1 - e);
+                float wob = Mathf.Sin(k * Mathf.PI * 2f) * (1 - k);
+                sx = 1 - 0.06f * wob; sy = 1 + 0.06f * wob; lean = dir * 3f * (1 - e);
+            }
+            else { t = -1; ang = 0; push = 0; }
+            slime.SetWeaponPose(ang, dir * push);
+            slime.SetPose(lean, new Vector2(sx, sy));
+        }
+
         MobPlaceholder FindTarget()
         {
             MobPlaceholder best = null; float bestD = range;
@@ -93,6 +137,7 @@ namespace Mallang
         {
             if (target == null) return;
             target.Hit(4f + slime.Tier);
+            if (slime.HasWeapon) { HitEffect.Spark(transform.parent, target.BoardPos + new Vector2(0, -6), slime.Tier); return; }
             HitEffect.Thrust(transform.parent, Foot + new Vector2(0, -14) + dir * (lunge + 10), target.BoardPos + new Vector2(0, -6), slime.Tier);
         }
     }
@@ -128,6 +173,14 @@ namespace Mallang
             e.sr.color = new Color(1f, 0.97f, 0.85f, 0.95f);
             e.sr.sortingOrder = short.MaxValue - 10;
             e.life = e.max = 0.12f;
+        }
+
+        /// 찔린 자리 번쩍: 십자 모양 짧은 빛
+        public static void Spark(Transform parent, Vector2 at, int tier)
+        {
+            float len = 10f + tier * 3f;
+            Thrust(parent, at + new Vector2(-len / 2, 0), at + new Vector2(len / 2, 0), tier);
+            Thrust(parent, at + new Vector2(0, -len / 2), at + new Vector2(0, len / 2), tier);
         }
 
         void Update()
