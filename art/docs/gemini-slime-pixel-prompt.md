@@ -182,3 +182,28 @@ Do not change anything else on the map.
 ```
 Perfect. Now draw exactly these 4 slimes again, same pixel size, same colors, same faces, side by side on one solid flat cyan background (#00FFFF), each centered in its own equal-width cell, all standing on the same baseline, no shadow, no ground, nothing else.
 ```
+
+
+## ⑤ 기본 슬라임에 장비 얹기 (2026-11-11)
+
+> ④로 받은 기본 슬라임(`art/source/gemini/slime-unity/base-sheet.png`)이 맵과 잘 어울려서 확정. 게임 크기는 몸 폭 30·36·42·48(보드)로 고르게 맞춤 (`Sprites.BaseBodyBoard`).
+> 그 몸 위에 병과 장비만 얹는다. ④를 만든 **같은 대화**에 이어 보내면 가장 좋고, 새 대화면 `base-sheet.png`를 첨부.
+> 장비도 맵처럼 차분한 색, 청회색 외곽선. 받으면 `unity_sheet.py <병과>`로 정리.
+
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+Use exactly these 4 slimes (the attached image / the ones you just drew): keep the same image size, the same 4 cells, the same baseline, the same pixel size, and keep every slime body, color and face exactly as it is. Do not move, resize or redraw the bodies.
+Only add equipment on top, in the same soft pixel style as the slimes and the map: muted colors, the same dark slate outline (#3C4446), light from the top-left.
+
+They are Korean Joseon-dynasty spear soldiers, rank 1 to 4 from left to right:
+1. Recruit: a plain off-white cloth headband tied on the side, a short plain wooden spear held upright in the right nub hand.
+2. Soldier: a black Joseon felt soldier hat (jeollip) with a wide round brim and a dark red cord, an iron-tipped spear with a small red tassel.
+3. Officer: the same black felt hat with a small peacock feather on the side and a short bead string hanging from the brim, a navy blue sash across the lower body (below the face), a longer iron spear.
+4. General: a steel helmet with gold trim and a small red plume (the plume stays above the helmet, not wider than the body), a long spear with a gold fitting and a red tassel, the body standing on a low round dark-red pedestal only a little wider than the body. No cape, no armor.
+
+The spears may stick out above the heads, but everything stays inside its own cell.
+Background: one solid flat cyan color (#00FFFF), no shadow, no ground, no frame.
+```
+
+다른 병과는 `spear soldiers` 와 무기 부분만 ②의 표대로 바꾼다 (모자·투구는 같음).

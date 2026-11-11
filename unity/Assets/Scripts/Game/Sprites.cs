@@ -18,8 +18,11 @@ namespace Mallang
         public const float BoardPerDotV2 = 1.5f;
         public const int Unit2PxPerDot = 3; // sync_art.py UNIT2_PX와 같아야 함
 
-        /// 맵에 맞춰 다시 뽑은 기본 슬라임(base-*): 몸 폭 23~48도트로 잘게 그려져 있어 1도트 = 보드 1.125.
-        public const float BoardPerDotBase = 1.125f;
+        /// 맵에 맞춰 다시 뽑은 기본 슬라임(base-*): 그림의 몸 폭이 23·26·37·48도트라 등급 차이가 고르지 않아서,
+        /// 게임에서 보이는 몸 폭을 등급별로 정해 맞춘다 (보드 기준, 칸 63).
+        public static readonly float[] BaseBodyBoard = { 30, 36, 42, 48 };
+        static readonly float[] BaseBodyDots = { 23, 26, 37, 48 };
+        public static float BoardPerDotBase(int tier) => BaseBodyBoard[tier] / BaseBodyDots[tier];
 
         /// 미리보기 그림 고르기 (Space로 돌아감): 옛 그림 → 큰 새 그림(V2) → 맵에 맞춘 기본 슬라임
         public enum Look { V1, V2, Base }
@@ -72,7 +75,8 @@ namespace Mallang
             if (Mode == Look.Base)
             {
                 int dash = name.IndexOf('-');
-                var b = UnitV2("base" + name.Substring(dash), BoardPerDotBase);
+                int tier = System.Array.IndexOf(Rules.TierKeys, name.Substring(dash + 1));
+                var b = UnitV2("base" + name.Substring(dash), BoardPerDotBase(Mathf.Max(0, tier)));
                 if (b != null) return b;
             }
             if (UseV2)
@@ -85,7 +89,7 @@ namespace Mallang
 
         static Sprite UnitV2(string name, float boardPerDot = BoardPerDotV2)
         {
-            string key = $"unit2:{name}";
+            string key = $"unit2:{name}:{boardPerDot}";
             if (cache.TryGetValue(key, out var s)) return s;
             var footDots = Layout.Load().FootOfV2(name);
             if (footDots == null) return null;
