@@ -150,63 +150,63 @@
  "feet": [
   {
    "name": "archer-gungwan",
-   "x": 12.0,
-   "y": 19.0
+   "x": 13.0,
+   "y": 20.0
   },
   {
    "name": "archer-gunjol",
-   "x": 10.0,
-   "y": 12.0
+   "x": 11.0,
+   "y": 13.0
   },
   {
    "name": "archer-jangsu",
-   "x": 14.0,
-   "y": 25.0
+   "x": 15.0,
+   "y": 26.0
   },
   {
    "name": "archer-jeongbyeong",
-   "x": 10.0,
-   "y": 17.0
+   "x": 11.0,
+   "y": 18.0
   },
   {
    "name": "gunner-gungwan",
-   "x": 10.5,
-   "y": 24.0
+   "x": 11.5,
+   "y": 25.0
   },
   {
    "name": "gunner-gunjol",
-   "x": 9.0,
-   "y": 12.0
-  },
-  {
-   "name": "gunner-jangsu",
-   "x": 14.5,
-   "y": 30.0
-  },
-  {
-   "name": "gunner-jeongbyeong",
-   "x": 10.0,
-   "y": 19.0
-  },
-  {
-   "name": "spear-gungwan",
-   "x": 11.0,
-   "y": 19.0
-  },
-  {
-   "name": "spear-gunjol",
    "x": 10.0,
    "y": 13.0
   },
   {
+   "name": "gunner-jangsu",
+   "x": 15.5,
+   "y": 31.0
+  },
+  {
+   "name": "gunner-jeongbyeong",
+   "x": 11.0,
+   "y": 20.0
+  },
+  {
+   "name": "spear-gungwan",
+   "x": 12.0,
+   "y": 20.0
+  },
+  {
+   "name": "spear-gunjol",
+   "x": 11.0,
+   "y": 14.0
+  },
+  {
    "name": "spear-jangsu",
-   "x": 14.5,
-   "y": 24.0
+   "x": 15.5,
+   "y": 25.0
   },
   {
    "name": "spear-jeongbyeong",
-   "x": 9.0,
-   "y": 17.0
+   "x": 10.0,
+   "y": 18.0
   }
  ]
 }

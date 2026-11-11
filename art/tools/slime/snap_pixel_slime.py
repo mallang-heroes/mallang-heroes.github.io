@@ -223,6 +223,42 @@ def redraw_face(piece, off, body_rgb):
     else: put(ey + 2, int(mid), OUTLINE); put(ey + 2, int(mid) + 1, OUTLINE)
 
 
+def clean_piece(piece, body_rgb):
+    """도트 정리: 제미나이 격자가 고르지 않아 생긴 흠을 고친다.
+    ① 혼자 떨어진 점 지우기 ② 배경(하늘색)이 번진 청록 점을 옆 색으로
+    ④ 바깥 외곽선이 끊긴 곳을 1도트 진한 갈색 외곽선으로 이어 닫기."""
+    H, W = piece.shape[:2]
+    a = piece[..., 3] > 0
+    # ① 4방향 이웃이 하나도 없는 점
+    pad = np.pad(a, 1)
+    nb = pad[:-2, 1:-1].astype(int) + pad[2:, 1:-1] + pad[1:-1, :-2] + pad[1:-1, 2:]
+    piece[a & (nb == 0), 3] = 0
+    a = piece[..., 3] > 0
+    # ② 청록 번짐 → 주변 불투명 이웃 중 청록이 아닌 색의 가운데값
+    c = piece[..., :3].astype(int)
+    teal = a & (c[..., 1] - c[..., 0] > 35) & (c[..., 2] - c[..., 0] > 35) & (np.abs(c[..., 1] - c[..., 2]) < 70)
+    teal &= ~((np.abs(c - np.array(body_rgb)).sum(2) < 90))   # 몸색(수군 하늘색 등)은 남김
+    for y, x in zip(*np.where(teal)):
+        cand = [c[yy, xx] for yy in range(y - 1, y + 2) for xx in range(x - 1, x + 2)
+                if 0 <= yy < H and 0 <= xx < W and a[yy, xx] and not teal[yy, xx]]
+        if cand:
+            piece[y, x, :3] = np.median(np.array(cand), 0)
+        else:
+            piece[y, x, 3] = 0
+    a = piece[..., 3] > 0
+    # ④ 외곽선 닫기: 진하지 않은 불투명 도트와 4방향으로 맞닿은 투명 칸 → 외곽선 (그림을 한 칸씩 넓혀서)
+    c = piece[..., :3].astype(int)
+    solid = a & (c.sum(2) >= 230)
+    out = np.zeros((H + 2, W + 2, 4), np.uint8)
+    out[1:-1, 1:-1] = piece
+    big = np.pad(solid, 1)
+    ring = np.zeros_like(big)
+    ring[1:, :] |= big[:-1, :]; ring[:-1, :] |= big[1:, :]; ring[:, 1:] |= big[:, :-1]; ring[:, :-1] |= big[:, 1:]
+    ring &= ~np.pad(a, 1)
+    out[ring] = (42, 33, 28, 255)
+    return out
+
+
 def build(branch):
     src = os.path.join(ROOT, f'art/source/gemini/slime-pixel/{branch}-ranks-pixel.png')
     d = snap(src)
@@ -238,6 +274,8 @@ def build(branch):
     sprites = []
     for (piece, foot, bw, off), rk in zip(parts, RANKS):
         redraw_face(piece, off, BODY[branch])
+        piece = clean_piece(piece, BODY[branch])
+        foot = (foot[0] + 1, foot[1] + 1)   # 외곽선 여백 1칸
         FEET[f'{branch}-{rk}'] = [float(foot[0]), float(foot[1])]
         Image.fromarray(piece).save(os.path.join(dots_dir, f'{branch}-{rk}.png'))
         h, w = piece.shape[:2]

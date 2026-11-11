@@ -1,50 +1,50 @@
 {
  "spear-gunjol": [
+  11.0,
+  14.0
+ ],
+ "spear-jeongbyeong": [
+  10.0,
+  18.0
+ ],
+ "spear-gungwan": [
+  12.0,
+  20.0
+ ],
+ "spear-jangsu": [
+  15.5,
+  25.0
+ ],
+ "archer-gunjol": [
+  11.0,
+  13.0
+ ],
+ "archer-jeongbyeong": [
+  11.0,
+  18.0
+ ],
+ "archer-gungwan": [
+  13.0,
+  20.0
+ ],
+ "archer-jangsu": [
+  15.0,
+  26.0
+ ],
+ "gunner-gunjol": [
   10.0,
   13.0
  ],
- "spear-jeongbyeong": [
-  9.0,
-  17.0
- ],
- "spear-gungwan": [
-  11.0,
-  19.0
- ],
- "spear-jangsu": [
-  14.5,
-  24.0
- ],
- "archer-gunjol": [
-  10.0,
-  12.0
- ],
- "archer-jeongbyeong": [
-  10.0,
-  17.0
- ],
- "archer-gungwan": [
-  12.0,
-  19.0
- ],
- "archer-jangsu": [
-  14.0,
-  25.0
- ],
- "gunner-gunjol": [
-  9.0,
-  12.0
- ],
  "gunner-jeongbyeong": [
-  10.0,
-  19.0
+  11.0,
+  20.0
  ],
  "gunner-gungwan": [
-  10.5,
-  24.0
+  11.5,
+  25.0
  ],
  "gunner-jangsu": [
-  14.5,
-  30.0
+  15.5,
+  31.0
  ]
 }
