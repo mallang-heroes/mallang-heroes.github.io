@@ -11,7 +11,7 @@ namespace Mallang
     ///   ① 움츠림(0.07초, 납작) → ② 튀어나가며 찌르기(0.08초, 길쭉 + 목표 쪽으로 몇 도트) → ③ 제자리로 말랑 복귀(0.18초)
     /// 찌르는 순간 병과별 타격 효과(창: 찌르기 선)와 몬스터 번쩍·밀림.
     /// 그림 한 장으로 하는 코드 모션이라 병과·등급 그림이 바뀌어도 그대로 쓴다. (위인은 파츠 리깅 예정)
-    /// 무기는 오른손 고정 → 좌우 뒤집지 않는다.
+    /// 무기는 오른손 고정 → 좌우 뒤집지 않는다. 카툰은 찌를 때 손이 창을 쥔 채 따라 나가고 몸에서 손까지 젤리 팔이 늘어난다 (SlimeView.UpdateArm).
     /// </summary>
     public class AttackMotion : MonoBehaviour
     {
@@ -110,13 +110,13 @@ namespace Mallang
                 float k = Ease((t - Aim) / Stab);
                 ang = aimAngle; push = Mathf.Lerp(-10f, reach + 6f, k);   // 목표보다 조금 더 깊이 (오버슈트)
                 sx = 1.06f - 0.12f * k; sy = 0.94f + 0.14f * k;
-                lean = dir * 3f * k;
+                lean = dir * 4f * k;
                 if (!struck && k > 0.7f) { struck = true; Impact(); }
             }
             else if (t < Aim + Stab + Hold)
             {   // 찌른 채로 잠깐 멈춤 (타격감)
                 float k = (t - Aim - Stab) / Hold;
-                ang = aimAngle; push = reach + 6f * (1 - Ease(k)); sx = 0.94f; sy = 1.08f; lean = dir * 3f;
+                ang = aimAngle; push = reach + 6f * (1 - Ease(k)); sx = 0.94f; sy = 1.08f; lean = dir * 4f;
             }
             else if (t < Aim + Stab + Hold + Back)
             {   // 빼서 다시 세워 들기, 몸은 말랑하게 출렁
@@ -124,7 +124,7 @@ namespace Mallang
                 float e = Ease(k);
                 ang = aimAngle * (1 - e); push = reach * (1 - e);
                 float wob = Mathf.Sin(k * Mathf.PI * 2f) * (1 - k);
-                sx = 1 - 0.06f * wob; sy = 1 + 0.06f * wob; lean = dir * 3f * (1 - e);
+                sx = 1 - 0.06f * wob; sy = 1 + 0.06f * wob; lean = dir * 4f * (1 - e);
             }
             else { t = -1; ang = 0; push = 0; }
             slime.SetWeaponPose(ang, aimDir * push);   // 창 방향으로만 밀고 당김 → 창끝이 앞장선다

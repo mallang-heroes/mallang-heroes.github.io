@@ -111,7 +111,9 @@ def main():
         'grips': [{'name': k, 'x': v['grip'][0], 'y': v['grip'][1], 'w': v.get('tip', 0)} for k, v in sorted(grips.items())],   # w = 쥔 자리→창끝 길이(도트)
         'feetC': [{'name': k, 'x': v[0], 'y': v[1], 'w': v[2]} for k, v in sorted(feetc.items())],   # px @2x, w = 몸 폭(보드)
         'partsC': [{'name': k, 'fx': v['foot'][0], 'fy': v['foot'][1], 'hx': v['hand'][0], 'hy': v['hand'][1],
-                    'gx': v['grip'][0], 'gy': v['grip'][1], 'tx': v['tip'][0], 'ty': v['tip'][1]} for k, v in sorted(partsc.items())],
+                    'gx': v['grip'][0], 'gy': v['grip'][1], 'tx': v['tip'][0], 'ty': v['tip'][1],
+                    'nub': v.get('nub', 6), 'color': v.get('color', [210, 95, 85]), 'line': v.get('line', [45, 32, 30])}
+                   for k, v in sorted(partsc.items())],
         'feetB': [{'name': k, 'x': v[0], 'y': v[1], 'w': v[2]} for k, v in sorted(feetb.items())],
     }
     json.dump(layout, open(os.path.join(DST, 'Map/layout.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

@@ -97,15 +97,31 @@ def main(path, branch):
         low = yy > yy.min() + (fy - yy.min()) * .45
         hx = xx[low].min()
         hy = yy[low][xx[low] <= hx + 2].mean()
-        info.append((fx, fy, width, hx + 6, hy))
-    k = sum(BODY) * S / sum(i[2] for i in info)
+        # 손 크기: 손 자리 세로줄에서 몸이 이어진 길이의 절반
+        col = m[:, hx + 6]; ry = int(round(hy))
+        y_a = ry
+        while y_a > 0 and col[y_a - 1]: y_a -= 1
+        y_b = ry
+        while y_b < len(col) - 1 and col[y_b + 1]: y_b += 1
+        nub = max(4, (y_b - y_a + 1) / 2)
+        # 팔 색: 손 안쪽 몸 색(가운데값), 외곽선: 손 둘레의 가장 어두운 색
+        cy0, cx0 = int(hy), int(hx + 6)
+        rgbp = c[..., :3]; al = c[..., 3] > 250
+        win = (slice(max(0, cy0 - 4), cy0 + 5), slice(cx0 + 2, cx0 + 14))
+        body_col = np.median(rgbp[win][al[win]], axis=0)
+        ring = (slice(max(0, cy0 - 30), cy0 + 30), slice(max(0, cx0 - 12), cx0 + 10))
+        px = rgbp[ring][al[ring]]
+        lum = px.sum(axis=1)
+        line_col = np.median(px[lum <= np.percentile(lum, 6)], axis=0)
+        info.append((fx, fy, width, hx + 6, hy, nub, body_col, line_col))
+    k = sum(BODY) * S / sum(i[2] for i in info)   # 몸 폭 합 기준 한 배율
     os.makedirs(OUT, exist_ok=True)
     pj = os.path.join(OUT, 'parts.json')
     parts = json.load(open(pj)) if os.path.exists(pj) else {}
     for t in range(4):
         name = f'{branch}-{TIERS[t]}'
         (bc, bm), (sc, smk) = bodies[t], spears[t]
-        fx, fy, width, hx, hy = info[t]
+        fx, fy, width, hx, hy, nub, body_col, line_col = info[t]
         shrink(bc, k).save(os.path.join(OUT, f'{name}-body.png'))
         shrink(sc, k).save(os.path.join(OUT, f'{name}-weapon.png'))
         yy, xx = np.where(smk)
@@ -115,7 +131,8 @@ def main(path, branch):
         gx = xx[np.abs(yy - gy_) < 3].mean() + .5
         r = lambda v: round(float(v) * k, 2)
         parts[name] = {'foot': [r(fx), r(fy)], 'hand': [r(hx), r(hy)], 'grip': [r(gx), r(gy_)], 'tip': [r(tx), r(ty)],
-                       'body': round(width * k / S, 1)}
+                       'body': round(width * k / S, 1), 'nub': r(nub),
+                       'color': [int(v) for v in body_col], 'line': [int(v) for v in line_col]}
         print(name, parts[name])
     json.dump(parts, open(pj, 'w'), indent=1)
 
