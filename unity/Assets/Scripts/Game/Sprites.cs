@@ -134,46 +134,6 @@ namespace Mallang
             return (body, weapon, grip, (p.gy - p.ty) / MapPxPerBoard);
         }
 
-        /// 카툰 젤리 팔: (늘어나는 팔 = 가로로 늘리는 알약 모양, 손 = 동그라미, 반지름 보드). 몸 색·외곽선은 파츠 정보에서.
-        /// 팔은 9칸 늘이기(Sliced)로 그려서 길이가 바뀌어도 둥근 끝과 외곽선 굵기가 그대로다.
-        public static (Sprite arm, Sprite hand, float radius)? UnitArm(string name)
-        {
-            if (Mode != Look.Cartoon) return null;
-            var lay = Layout.Load();
-            var p = lay.PartOfC(name) ?? lay.PartOfC("spear" + name.Substring(name.IndexOf('-')));
-            if (p == null || p.color == null || p.color.Length < 3) return null;
-            float r = p.nub / MapPxPerBoard;   // 보드
-            string key = $"arm:{p.name}";
-            if (cache.TryGetValue(key, out var arm) && cache.TryGetValue(key + ":h", out var hand)) return (arm, hand, r);
-            var fill = new Color32((byte)p.color[0], (byte)p.color[1], (byte)p.color[2], 255);
-            var line = new Color32((byte)p.line[0], (byte)p.line[1], (byte)p.line[2], 255);
-            const int R = 16;
-            arm = Blob(fill, line, 3 * R, R, R / (r / Board.UnitsPerWorld), new Vector4(R, 0, R, 0));
-            hand = Blob(fill, line, 2 * R, R, R / (r * 1.15f / Board.UnitsPerWorld), Vector4.zero);
-            cache[key] = arm; cache[key + ":h"] = hand;
-            return (arm, hand, r);
-        }
-
-        /// 둥근 젤리 조각 그림: 가로 w, 반지름 R(px)의 알약/동그라미, 외곽선 + 위쪽 밝은 띠.
-        static Sprite Blob(Color32 fill, Color32 line, int w, int R, float ppu, Vector4 border)
-        {
-            int h = 2 * R;
-            var t = new Texture2D(w, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear };
-            var hi = Color.Lerp(fill, Color.white, 0.25f);
-            for (int y = 0; y < h; y++)
-                for (int x = 0; x < w; x++)
-                {
-                    float cx = Mathf.Clamp(x + 0.5f, R, w - R);
-                    float d = Mathf.Sqrt((x + 0.5f - cx) * (x + 0.5f - cx) + (y + 0.5f - R) * (y + 0.5f - R));
-                    Color c = d <= R - 3.2f ? (Color)fill : (Color)line;
-                    if (d <= R - 3.2f && y > R + R * 0.25f && y < R + R * 0.6f) c = hi;   // 텍스처 y는 아래에서 위로
-                    c.a = Mathf.Clamp01(R - d + 0.5f);
-                    t.SetPixel(x, y, c);
-                }
-            t.Apply();
-            return Sprite.Create(t, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), ppu, 0, SpriteMeshType.FullRect, border);
-        }
-
         /// 카툰 유닛(UnitsC): 맵과 같은 @2x(보드 1 = 2px)로 미리 줄여 둔 그림. 피벗 = 발.
         static Sprite UnitC(string name)
         {

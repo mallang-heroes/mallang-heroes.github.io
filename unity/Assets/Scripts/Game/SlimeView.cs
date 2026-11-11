@@ -31,57 +31,11 @@ namespace Mallang
         public void SetWeaponPose(float angleDeg, Vector2 thrust)
         {
             if (weapon == null) return;
-            var rest = GripFromFoot;
-            var p = rest + thrust;
+            var p = GripFromFoot + thrust;
             weapon.localPosition = new Vector3(p.x, -p.y, 0) / Board.UnitsPerWorld;
             weapon.localRotation = Quaternion.Euler(0, 0, angleDeg);
-            UpdateArm(rest, p);
         }
 
-        // 카툰: 찌를 때 손(작은 젤리 손)이 창을 쥔 채 따라 나가고, 몸에서 손까지 젤리 팔이 쭉 늘어난다
-        SpriteRenderer armSr, handSr;
-        float armR;   // 팔 반지름 (보드)
-
-        void UpdateArm(Vector2 rest, Vector2 p)
-        {
-            if (armSr == null || !armSr.gameObject.activeSelf) return;
-            var d = p - rest;
-            float len = d.magnitude;
-            bool show = len > 1.5f;
-            armSr.enabled = show; handSr.enabled = show;
-            if (!show) return;
-            var mid = (rest + p) * 0.5f;
-            armSr.transform.localPosition = new Vector3(mid.x, -mid.y, 0) / Board.UnitsPerWorld;
-            armSr.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(-d.y, d.x) * Mathf.Rad2Deg);
-            // 늘어날수록 살짝 가늘어짐 (젤리)
-            float thin = Mathf.Lerp(1f, 0.75f, Mathf.Clamp01(len / 30f));
-            armSr.size = new Vector2((len + 2 * armR) / Board.UnitsPerWorld, 2 * armR * thin / Board.UnitsPerWorld);
-            handSr.transform.localPosition = new Vector3(p.x, -p.y, 0) / Board.UnitsPerWorld;
-        }
-
-        void SetupArm(string name)
-        {
-            var a = Sprites.UnitArm(name);
-            if (a == null)
-            {
-                if (armSr != null) { armSr.gameObject.SetActive(false); handSr.gameObject.SetActive(false); }
-                return;
-            }
-            if (armSr == null)
-            {
-                armSr = new GameObject("Arm").AddComponent<SpriteRenderer>();
-                armSr.transform.SetParent(transform, false);
-                armSr.drawMode = SpriteDrawMode.Sliced;
-                handSr = new GameObject("Hand").AddComponent<SpriteRenderer>();
-                handSr.transform.SetParent(transform, false);
-            }
-            armSr.gameObject.SetActive(true); handSr.gameObject.SetActive(true);
-            armSr.sprite = a.Value.arm; handSr.sprite = a.Value.hand;
-            armR = a.Value.radius;
-            armSr.sortingOrder = sr.sortingOrder + 1;     // 몸 < 팔 < 창 < 손
-            handSr.sortingOrder = sr.sortingOrder + 3;
-            armSr.enabled = false; handSr.enabled = false;
-        }
         float phase;
         Vector3 basePos;
         SpriteRenderer sr;
@@ -95,7 +49,6 @@ namespace Mallang
             {
                 sr.sprite = Sprites.Unit(name);
                 if (weapon != null) weapon.gameObject.SetActive(false);
-                if (armSr != null) { armSr.gameObject.SetActive(false); handSr.gameObject.SetActive(false); }
                 return;
             }
             sr.sprite = parts.Value.body;
@@ -108,11 +61,10 @@ namespace Mallang
             }
             weapon.gameObject.SetActive(true);
             weaponSr.sprite = parts.Value.weapon;
-            weaponSr.sortingOrder = sr.sortingOrder + 2;
+            weaponSr.sortingOrder = sr.sortingOrder + 1;
             gripFromFoot = parts.Value.gripFromFoot;
             gripSide = Mathf.Sign(gripFromFoot.x);
             TipLen = parts.Value.tipLen;
-            SetupArm(name);
             SetWeaponPose(0, Vector2.zero);
         }
 

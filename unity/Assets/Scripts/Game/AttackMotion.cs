@@ -11,7 +11,8 @@ namespace Mallang
     ///   ① 움츠림(0.07초, 납작) → ② 튀어나가며 찌르기(0.08초, 길쭉 + 목표 쪽으로 몇 도트) → ③ 제자리로 말랑 복귀(0.18초)
     /// 찌르는 순간 병과별 타격 효과(창: 찌르기 선)와 몬스터 번쩍·밀림.
     /// 그림 한 장으로 하는 코드 모션이라 병과·등급 그림이 바뀌어도 그대로 쓴다. (위인은 파츠 리깅 예정)
-    /// 무기는 오른손 고정 → 좌우 뒤집지 않는다. 카툰은 찌를 때 손이 창을 쥔 채 따라 나가고 몸에서 손까지 젤리 팔이 늘어난다 (SlimeView.UpdateArm).
+    /// 무기는 오른손 고정 → 좌우 뒤집지 않는다.
+    /// 카툰(2026-11-11): 창은 손에서 떨어지지 않는다 — 손에 쥔 채 창끝을 목표로 돌리고, 슬라임 몸 전체가 창과 함께 튀어나가 찌른다.
     /// </summary>
     public class AttackMotion : MonoBehaviour
     {
@@ -97,37 +98,39 @@ namespace Mallang
 
         void WeaponStab()
         {
-            float reach = reachNow;   // 찔러 넣는 거리 (보드): 창끝이 몬스터에 닿을 만큼
-            float ang, push; float sx = 1, sy = 1; Vector2 lean = Vector2.zero;
+            // 창은 손에 쥔 채(쥔 자리 고정) 방향만 바꾸고, 찌르기는 몸 전체가 창과 함께 튀어나가서 한다
+            float dash = Mathf.Clamp(reachNow, 6f, 12f + slime.Tier * 2f);   // 몸이 튀어나가는 거리 (보드): 창끝이 몬스터에 닿을 만큼, 너무 멀면 최대치
+            float ang; float sx = 1, sy = 1; Vector2 lean = Vector2.zero;
             if (t < Aim)
-            {   // 겨누기: 창을 목표 쪽으로 돌리며 살짝 뒤로 당김, 몸은 움츠림
+            {   // 겨누기: 창끝을 목표로 돌리며 몸은 뒤로 살짝 물러나 움츠림 (예비 동작)
                 float k = Ease(t / Aim);
-                ang = aimAngle * k; push = -10f * k;   // 크게 뒤로 당김 (예비 동작)
-                sx = 1 + 0.06f * k; sy = 1 - 0.06f * k;
+                ang = aimAngle * k;
+                lean = -aimDir * 4f * k;
+                sx = 1 + 0.1f * k; sy = 1 - 0.1f * k;
             }
             else if (t < Aim + Stab)
-            {   // 찌르기: 쭉 뻗음, 몸도 목표 쪽으로 기울며 늘어남
+            {   // 찌르기: 몸 전체가 창 방향으로 쭉 튀어나감, 몸은 길쭉하게
                 float k = Ease((t - Aim) / Stab);
-                ang = aimAngle; push = Mathf.Lerp(-10f, reach + 6f, k);   // 목표보다 조금 더 깊이 (오버슈트)
-                sx = 1.06f - 0.12f * k; sy = 0.94f + 0.14f * k;
-                lean = dir * 4f * k;
+                ang = aimAngle;
+                lean = Vector2.Lerp(-aimDir * 4f, aimDir * dash, k);
+                sx = 1.1f - 0.18f * k; sy = 0.9f + 0.2f * k;
                 if (!struck && k > 0.7f) { struck = true; Impact(); }
             }
             else if (t < Aim + Stab + Hold)
             {   // 찌른 채로 잠깐 멈춤 (타격감)
-                float k = (t - Aim - Stab) / Hold;
-                ang = aimAngle; push = reach + 6f * (1 - Ease(k)); sx = 0.94f; sy = 1.08f; lean = dir * 4f;
+                ang = aimAngle; lean = aimDir * dash; sx = 0.92f; sy = 1.1f;
             }
             else if (t < Aim + Stab + Hold + Back)
-            {   // 빼서 다시 세워 들기, 몸은 말랑하게 출렁
+            {   // 제자리로 돌아오며 창을 다시 세움, 몸은 말랑하게 출렁
                 float k = (t - Aim - Stab - Hold) / Back;
                 float e = Ease(k);
-                ang = aimAngle * (1 - e); push = reach * (1 - e);
+                ang = aimAngle * (1 - e);
+                lean = aimDir * dash * (1 - e);
                 float wob = Mathf.Sin(k * Mathf.PI * 2f) * (1 - k);
-                sx = 1 - 0.06f * wob; sy = 1 + 0.06f * wob; lean = dir * 4f * (1 - e);
+                sx = 1 - 0.08f * wob; sy = 1 + 0.08f * wob;
             }
-            else { t = -1; ang = 0; push = 0; }
-            slime.SetWeaponPose(ang, aimDir * push);   // 창 방향으로만 밀고 당김 → 창끝이 앞장선다
+            else { t = -1; ang = 0; }
+            slime.SetWeaponPose(ang, Vector2.zero);   // 창은 손에서 떨어지지 않음
             slime.SetPose(lean, new Vector2(sx, sy));
         }
 
