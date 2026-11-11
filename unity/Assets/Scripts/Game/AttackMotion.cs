@@ -4,7 +4,7 @@ namespace Mallang
 {
     /// <summary>
     /// 공격 모션 (미리보기).
-    /// 무기 파츠가 있으면(창병 등): 창끝을 목표로 재빨리 돌려 겨누며 뒤로 당김(0.06초)
+    /// 무기 파츠가 있으면(창병 등): 쥔 손은 그림 그대로 두고, 창끝을 목표로 재빨리 돌려 겨누며 뒤로 당김
     ///   → 창끝이 몬스터에 닿도록 창 방향으로 쭉 찔러 넣기(0.06초) → 잠깐 멈춤 → 빼서 다시 세워 들기(0.18초).
     ///   몸은 찌르는 순간 목표 쪽으로 살짝 기울며 늘어난다.
     /// 무기 파츠가 없으면(기본 슬라임): 사거리 안 가장 앞선 몬스터를 향해
@@ -52,8 +52,7 @@ namespace Mallang
                 if (target == null) { cooldown = 0.1f; return; }
                 dir = (target.BoardPos - Foot).normalized;
                 if (slime.HasWeapon)
-                {   // 목표 쪽 손으로 쥐고(몸을 가로지르지 않게), 창끝이 목표를 향하게 (창끝 위 = 0도, 시계 반대가 +)
-                    slime.SetGripSide(target.BoardPos.x >= Foot.x ? 1f : -1f);
+                {   // 그림에 그려진 손 그대로 쥔 채, 창끝이 목표를 향하게 (창끝 위 = 0도, 시계 반대가 +)
                     var hand = Foot + slime.GripFromFoot;
                     var to = target.BoardPos + new Vector2(0, -6) - hand;
                     aimDir = to.normalized;
@@ -127,7 +126,7 @@ namespace Mallang
                 float wob = Mathf.Sin(k * Mathf.PI * 2f) * (1 - k);
                 sx = 1 - 0.06f * wob; sy = 1 + 0.06f * wob; lean = dir * 3f * (1 - e);
             }
-            else { t = -1; ang = 0; push = 0; slime.SetGripSide(-1f); }
+            else { t = -1; ang = 0; push = 0; }
             slime.SetWeaponPose(ang, aimDir * push);   // 창 방향으로만 밀고 당김 → 창끝이 앞장선다
             slime.SetPose(lean, new Vector2(sx, sy));
         }
