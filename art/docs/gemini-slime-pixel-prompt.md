@@ -130,3 +130,32 @@ Same row layout, the same solid flat background color as the template, no ground
 | 기병 | `-cavalry.png` | 1. a wooden club, 2. a flail (handle, short chain, iron head), 3. a longer flail, 4. a gold flail. | `The Soldier, Officer and General each ride a small cute brown pony drawn in the same big pixels (the slime sits on its back); the Recruit has no pony.` |
 | 수군 | `-navy.png` (마젠타 배경) | 1. a wooden oar, 2. a Korean sword (hwando) held blade up, 3. a longer sword and a small oar on the back, 4. a gold-hilted sword. | (빈칸) |
 | 술사 | `-mystic.png` | 1. a paper talisman, 2. a big calligraphy brush, 3. a brush and a prayer-bead necklace, 4. a gold brush and a floating yellow talisman. | (빈칸) |
+
+
+## ③ 유니티 시트용 큰 슬라임 (2026-11-11, 유니티 전환 후)
+
+> 지금 슬라임(몸 14~20도트)은 눈이 1도트라 폰에서 얼굴이 뭉개진다 → 몸을 키운 견본으로 다시 뽑는다. 지금 그림은 그대로 두고, 새 그림은 따로 넣어 비교한 뒤 바꾼다.
+> 견본: `art/source/pixel/unity-sheet-template-<병과>.png` (`make_unity_sheet_template.py`)
+> - 몸 폭 군졸 20 · 정병 22 · 군관 25 · 장수 28 도트, 눈 2×3도트(흰 반짝임), 볼 3도트, 입 3도트
+> - 시트: 칸 4개 가로, 칸 하나 40×48도트, 1도트 = 8px → 1280×384, 발은 모든 칸에서 같은 높이(아래에서 4도트)
+> 병과마다 **새 대화**, 첨부는 그 병과 견본 1장만. 결과 PNG를 주면 Claude가 격자 정리 → 칸별 자르기·발 위치 → 유니티 스프라이트로 넣고 실행 확인.
+
+```
+Generate an image. Do not write any words, letters or numbers anywhere in the image.
+
+The attached image is a pixel-art sprite sheet template for my Unity game: 4 equal cells side by side, each with one plain slime body (20, 22, 25 and 28 art pixels wide), every art pixel an 8 by 8 square block, all slimes standing on the same baseline.
+Redraw this exact sheet and dress the slimes as Korean Joseon-dynasty spear soldiers, rank 1 to 4 from left to right.
+
+Keep EXACTLY: the image size and the 4 equal cells, each slime centered in its cell on the same baseline, the 8 by 8 pixel blocks on one grid, the body shapes and sizes, the colors, the 1-pixel dark brown outline, and the faces (2-pixel-wide eyes with a white shine, pink cheeks, small mouth). Do not move, resize or redraw the bodies.
+
+Add only, drawn with the same big square pixels and outlined:
+1. Recruit: a white cloth headband tied on the side, a short plain wooden spear held upright on the right side of the picture.
+2. Soldier: a black Joseon felt soldier hat (jeollip) with a wide round brim and a red cord, an iron-tipped spear with a small red tassel.
+3. Officer: the same black felt hat with a small peacock feather and a short bead string, a navy blue sash across the body, a longer iron spear.
+4. General: a gold-trimmed steel helmet with a red plume, a long spear with a gold fitting and a red tassel, the body standing on a flat round dark-red pedestal only 2 pixels wider than the body on each side and 3 pixels tall. No cape, no armor.
+
+Everything stays inside its own cell, nothing touches the cell edges. Flat colors, at most 3 tones per material, no gradients, no anti-aliasing, no blur.
+Background: the same solid flat cyan (#00FFFF) as the template, no ground, no shadow, no grid lines, no frame.
+```
+
+다른 병과는 첨부 견본만 바꾸고 `spear soldiers` 줄과 무기 줄을 ②의 표대로 바꾼다 (모자·투구는 같음).
