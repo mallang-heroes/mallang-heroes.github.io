@@ -238,6 +238,7 @@ def build(branch):
     sprites = []
     for (piece, foot, bw, off), rk in zip(parts, RANKS):
         redraw_face(piece, off, BODY[branch])
+        FEET[f'{branch}-{rk}'] = [float(foot[0]), float(foot[1])]
         Image.fromarray(piece).save(os.path.join(dots_dir, f'{branch}-{rk}.png'))
         h, w = piece.shape[:2]
         big = Image.fromarray(piece).resize((w * DOT2X, h * DOT2X), Image.NEAREST)
@@ -279,9 +280,17 @@ def ranks_preview(sprites, branch):
     row.resize((row.width * 2, row.height * 2), Image.NEAREST).convert('RGB').save(os.path.join(prev, f'{branch}-pixel-ranks.png'))
 
 
+FEET = {}
+
+
 def main(*branches):
     branches = branches or ('spear',)
     all_sprites = {b: build(b) for b in branches}
+    # 발 위치 (도트, 왼쪽 위 기준) — 유니티에서 칸에 세울 때 씀
+    fp = os.path.join(ROOT, 'art/source/gemini/slime-pixel/dots/feet.json')
+    old = json.load(open(fp, encoding='utf-8')) if os.path.exists(fp) else {}
+    old.update(FEET)
+    json.dump(old, open(fp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     for b, sp in all_sprites.items():
         ranks_preview(sp, b)
         map_preview({b: sp}, b)
