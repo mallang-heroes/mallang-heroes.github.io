@@ -62,7 +62,9 @@ namespace Mallang
             if (s >= track.Length) { Destroy(gameObject); return; }
             knock = Mathf.MoveTowards(knock, 0, 40f * Time.deltaTime);
             flash -= Time.deltaTime;
-            sr.color = flash > 0 ? Color.white : baseColor;
+            var c = flash > 0 ? Color.white : baseColor;
+            c.a = Mathf.Clamp01((track.Length - s) / 20f); // 궁에 닿을 때 스르륵 사라짐
+            sr.color = c;
             Place();
         }
     }

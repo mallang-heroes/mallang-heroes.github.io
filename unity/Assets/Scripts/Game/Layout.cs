@@ -13,7 +13,7 @@ namespace Mallang
         public float boardW, boardH, tile;
         public XY[] tiles;
         public RectData palace, cave;
-        public XY caveMouth;
+        public XY caveMouth, caveFront;
         public FrameData[] caveFrames;
         public int caveFrameMs;
         public Foot[] feet;

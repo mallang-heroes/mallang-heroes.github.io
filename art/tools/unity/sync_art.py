@@ -4,6 +4,7 @@
   Map/ground.png        궁·동굴 뺀 바닥 (@2x, 1170×1668)
   Map/palace.png        궁 (투명, @2x)
   Map/cave-glow.png     동굴 4프레임 시트 (@2x)
+  Map/ground-cartoon.png, Map/cave-front.png  카툰 맵 바닥(궁·동굴 포함) + 몬스터를 덮는 동굴 바위
   Units/<병과>-<등급>.png  도트 슬라임 (1도트 = 4px로 키움)
   UnitsV2/<병과>-<등급>.png  유니티 시트로 다시 뽑은 큰 슬라임 (1도트 = 3px)
   UnitsB/<병과|base>-<등급>.png  맵에 맞춘 기본 슬라임·장비 (1도트 = 3px, 게임 크기는 몸 폭으로 맞춤)
@@ -33,6 +34,11 @@ def main():
     png('assets/images/map/map-portrait-ground.webp', 'Map/ground.png')
     png('assets/images/map/map-portrait-palace.webp', 'Map/palace.png')
     png('assets/images/map/map-portrait-cave-glow.webp', 'Map/cave-glow.png')
+    # 카툰 맵 (2026-11-11 확정): build_cartoon_map.py 결과
+    cart = os.path.join(ROOT, 'art/source/gemini/map-cartoon/game')
+    if os.path.isdir(cart):
+        png('art/source/gemini/map-cartoon/game/ground.png', 'Map/ground-cartoon.png')
+        png('art/source/gemini/map-cartoon/game/cave-front.png', 'Map/cave-front.png')
     dots = os.path.join(ROOT, 'art/source/gemini/slime-pixel/dots')
     for f in sorted(os.listdir(dots)):
         if not f.endswith('.png'): continue
@@ -82,6 +88,7 @@ def main():
         'cave': m['cave']['rect'],
         'caveMouth': {'x': m['cave']['mouth'][0], 'y': m['cave']['mouth'][1]},
         'caveFrames': frames,
+        'caveFront': {'x': 462.0, 'y': 674.5},   # cave-front.png 왼쪽 위 (보드) — build_cartoon_map.py와 같아야 함
         'caveFrameMs': list(glow['frames'].values())[0]['duration'],
         'feet': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet.items())],
         'feetV2': [{'name': k, 'x': v[0], 'y': v[1]} for k, v in sorted(feet2.items()) if not k.startswith('base-')],

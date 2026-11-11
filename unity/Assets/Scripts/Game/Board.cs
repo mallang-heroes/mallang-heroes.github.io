@@ -63,8 +63,7 @@ namespace Mallang
             new Vector2(519, 459),
             new Vector2(66, 459),
             new Vector2(66, 258),
-            new Vector2(292.5f, 258),
-            new Vector2(292.5f, 232),
+            new Vector2(205, 258), // 궁 돌바닥 왼쪽 끝에서 멈춤 (카툰 맵, 돌바닥 위를 밟지 않게)
         };
 
         public const float Tile = 63;
