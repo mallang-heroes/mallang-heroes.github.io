@@ -1,0 +1,115 @@
+{
+ "frames": {
+  "spear-r1-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-idle-1": {
+   "frame": {
+    "x": 355,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-idle-2": {
+   "frame": {
+    "x": 710,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-idle-3": {
+   "frame": {
+    "x": 1065,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-attack-0": {
+   "frame": {
+    "x": 1420,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-attack-1": {
+   "frame": {
+    "x": 1775,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-attack-2": {
+   "frame": {
+    "x": 2130,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-attack-3": {
+   "frame": {
+    "x": 2485,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-attack-4": {
+   "frame": {
+    "x": 2840,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  },
+  "spear-r1-attack-5": {
+   "frame": {
+    "x": 3195,
+    "y": 0,
+    "w": 355,
+    "h": 129
+   }
+  }
+ },
+ "meta": {
+  "image": "spear-r1.png",
+  "scale": 2,
+  "size": {
+   "w": 3550,
+   "h": 129
+  },
+  "anchor": {
+   "x": 0.3296,
+   "y": 0.907
+  },
+  "anims": {
+   "idle": {
+    "frames": 4,
+    "fps": 6,
+    "loop": true
+   },
+   "attack": {
+    "frames": 6,
+    "fps": 12,
+    "loop": false
+   }
+  },
+  "events": {
+   "hit": {
+    "frame": 3,
+    "x": 227,
+    "y": 45
+   }
+  }
+ }
+}

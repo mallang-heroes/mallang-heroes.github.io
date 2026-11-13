@@ -1,0 +1,110 @@
+{
+ "1": {
+  "size": [
+   922,
+   528
+  ],
+  "body_cx": 322,
+  "body_bottom": 516,
+  "butt": [
+   15,
+   510
+  ],
+  "tip": [
+   915,
+   95
+  ],
+  "hands": [
+   [
+    555,
+    280
+   ],
+   [
+    215,
+    390
+   ]
+  ],
+  "body_src": "spear-r1-parts-try1.png"
+ },
+ "2": {
+  "size": [
+   851,
+   614
+  ],
+  "body_cx": 298,
+  "body_bottom": 602,
+  "butt": [
+   20,
+   600
+  ],
+  "tip": [
+   845,
+   218
+  ],
+  "hands": [
+   [
+    520,
+    385
+   ],
+   [
+    205,
+    485
+   ]
+  ],
+  "body_src": "spear-r2-parts-try1.png"
+ },
+ "3": {
+  "size": [
+   863,
+   605
+  ],
+  "body_cx": 310,
+  "body_bottom": 593,
+  "butt": [
+   40,
+   590
+  ],
+  "tip": [
+   860,
+   208
+  ],
+  "hands": [
+   [
+    525,
+    385
+   ],
+   [
+    215,
+    475
+   ]
+  ],
+  "body_src": "spear-r3-parts-try1.png"
+ },
+ "4": {
+  "size": [
+   842,
+   613
+  ],
+  "body_cx": 291,
+  "body_bottom": 600,
+  "butt": [
+   15,
+   600
+  ],
+  "tip": [
+   835,
+   222
+  ],
+  "hands": [
+   [
+    510,
+    395
+   ],
+   [
+    200,
+    490
+   ]
+  ],
+  "body_src": "spear-r4-parts-try1.png"
+ }
+}

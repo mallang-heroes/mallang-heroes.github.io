@@ -1,0 +1,115 @@
+{
+ "frames": {
+  "gunner-r2-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-idle-1": {
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-idle-2": {
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-idle-3": {
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-attack-0": {
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-attack-1": {
+   "frame": {
+    "x": 2240,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-attack-2": {
+   "frame": {
+    "x": 2688,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-attack-3": {
+   "frame": {
+    "x": 3136,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-attack-4": {
+   "frame": {
+    "x": 3584,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  },
+  "gunner-r2-attack-5": {
+   "frame": {
+    "x": 4032,
+    "y": 0,
+    "w": 448,
+    "h": 206
+   }
+  }
+ },
+ "meta": {
+  "image": "gunner-r2.png",
+  "scale": 2,
+  "size": {
+   "w": 4480,
+   "h": 206
+  },
+  "anchor": {
+   "x": 0.3103,
+   "y": 0.9417
+  },
+  "anims": {
+   "idle": {
+    "frames": 4,
+    "fps": 6,
+    "loop": true
+   },
+   "attack": {
+    "frames": 6,
+    "fps": 12,
+    "loop": false
+   }
+  },
+  "events": {
+   "projectile": {
+    "frame": 2,
+    "x": 229,
+    "y": 135
+   }
+  }
+ }
+}

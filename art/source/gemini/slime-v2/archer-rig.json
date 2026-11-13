@@ -1,0 +1,122 @@
+{
+ "1": {
+  "top": [
+   600,
+   91
+  ],
+  "bot": [
+   710,
+   673
+  ],
+  "nock": [
+   341,
+   477
+  ],
+  "tip": [
+   937,
+   290
+  ],
+  "hand": [
+   285,
+   496
+  ],
+  "body_src": "archer-r1-clean-try1.png",
+  "size": [
+   1024,
+   768
+  ],
+  "body_cx": 386,
+  "body_bottom": 607,
+  "body_w": 576
+ },
+ "2": {
+  "top": [
+   612,
+   93
+  ],
+  "bot": [
+   709,
+   673
+  ],
+  "nock": [
+   348,
+   491
+  ],
+  "tip": [
+   951,
+   298
+  ],
+  "hand": [
+   288,
+   500
+  ],
+  "body_src": "archer-r2-clean-try1.png",
+  "size": [
+   1024,
+   784
+  ],
+  "body_cx": 387,
+  "body_bottom": 691,
+  "body_w": 593
+ },
+ "3": {
+  "top": [
+   601,
+   87
+  ],
+  "bot": [
+   703,
+   668
+  ],
+  "nock": [
+   342,
+   477
+  ],
+  "tip": [
+   937,
+   289
+  ],
+  "hand": [
+   288,
+   495
+  ],
+  "body_src": "archer-r3-clean-try1.png",
+  "size": [
+   1024,
+   766
+  ],
+  "body_cx": 395,
+  "body_bottom": 675,
+  "body_w": 583
+ },
+ "4": {
+  "top": [
+   600,
+   84
+  ],
+  "bot": [
+   706,
+   677
+  ],
+  "nock": [
+   349,
+   484
+  ],
+  "tip": [
+   951,
+   293
+  ],
+  "hand": [
+   285,
+   500
+  ],
+  "body_src": "archer-r4-clean-try1.png",
+  "size": [
+   1024,
+   790
+  ],
+  "body_cx": 383,
+  "body_bottom": 696,
+  "body_w": 594
+ }
+}

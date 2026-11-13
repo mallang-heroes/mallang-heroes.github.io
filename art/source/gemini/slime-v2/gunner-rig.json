@@ -1,0 +1,110 @@
+{
+ "1": {
+  "size": [
+   1024,
+   768
+  ],
+  "body_cx": 381,
+  "body_bottom": 610,
+  "butt": [
+   110,
+   600
+  ],
+  "tip": [
+   935,
+   255
+  ],
+  "hands": [
+   [
+    600,
+    385
+   ],
+   [
+    295,
+    490
+   ]
+  ],
+  "body_src": "gunner-r1-parts-try1.png"
+ },
+ "2": {
+  "size": [
+   1024,
+   784
+  ],
+  "body_cx": 378,
+  "body_bottom": 693,
+  "butt": [
+   110,
+   688
+  ],
+  "tip": [
+   935,
+   340
+  ],
+  "hands": [
+   [
+    605,
+    470
+   ],
+   [
+    290,
+    580
+   ]
+  ],
+  "body_src": "gunner-r2-parts-try1.png"
+ },
+ "3": {
+  "size": [
+   1024,
+   766
+  ],
+  "body_cx": 394,
+  "body_bottom": 675,
+  "butt": [
+   110,
+   598
+  ],
+  "tip": [
+   935,
+   250
+  ],
+  "hands": [
+   [
+    600,
+    380
+   ],
+   [
+    290,
+    490
+   ]
+  ],
+  "body_src": "gunner-r3-parts-try1.png"
+ },
+ "4": {
+  "size": [
+   1024,
+   790
+  ],
+  "body_cx": 367,
+  "body_bottom": 698,
+  "butt": [
+   105,
+   688
+  ],
+  "tip": [
+   935,
+   320
+  ],
+  "hands": [
+   [
+    605,
+    465
+   ],
+   [
+    290,
+    580
+   ]
+  ],
+  "body_src": "gunner-r4-parts-try1.png"
+ }
+}

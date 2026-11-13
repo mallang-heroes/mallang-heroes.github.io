@@ -1,0 +1,115 @@
+{
+ "frames": {
+  "cavalry-r1-idle-0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-idle-1": {
+   "frame": {
+    "x": 183,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-idle-2": {
+   "frame": {
+    "x": 366,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-idle-3": {
+   "frame": {
+    "x": 549,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-attack-0": {
+   "frame": {
+    "x": 732,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-attack-1": {
+   "frame": {
+    "x": 915,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-attack-2": {
+   "frame": {
+    "x": 1098,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-attack-3": {
+   "frame": {
+    "x": 1281,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-attack-4": {
+   "frame": {
+    "x": 1464,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  },
+  "cavalry-r1-attack-5": {
+   "frame": {
+    "x": 1647,
+    "y": 0,
+    "w": 183,
+    "h": 96
+   }
+  }
+ },
+ "meta": {
+  "image": "cavalry-r1.png",
+  "scale": 2,
+  "size": {
+   "w": 1830,
+   "h": 96
+  },
+  "anchor": {
+   "x": 0.306,
+   "y": 0.8958
+  },
+  "anims": {
+   "idle": {
+    "frames": 4,
+    "fps": 6,
+    "loop": true
+   },
+   "attack": {
+    "frames": 6,
+    "fps": 12,
+    "loop": false
+   }
+  },
+  "events": {
+   "hit": {
+    "frame": 3,
+    "x": 171,
+    "y": 94
+   }
+  }
+ }
+}
